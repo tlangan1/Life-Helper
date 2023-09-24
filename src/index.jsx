@@ -2,7 +2,7 @@
 import { render } from "solid-js/web";
 
 import "./index.css";
-import App from "./App";
+import LifeHelperApp from "./LifeHelperApp";
 
 const root = document.getElementById("root");
 
@@ -17,7 +17,7 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 render(
   () => (
     <GlobalStateProvider count={1}>
-      <App />
+      <LifeHelperApp />
     </GlobalStateProvider>
   ),
   root
