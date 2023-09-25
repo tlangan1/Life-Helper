@@ -2,46 +2,21 @@ import { Show, For, createSignal, createResource } from "solid-js";
 import { useGlobalState } from "./GlobalStateProvider";
 
 function LifeHelperApp() {
-  var [requestTodos, setRequestTodos] = createSignal(false);
+  var [refreshData, setRefreshData] = createSignal(0);
   var [, , dataServer] = useGlobalState();
 
   console.log("Data Server", dataServer);
 
-  const fetchTodos = async () => (await fetch(dataServer + "/todos")).json();
-  const [todos] = createResource(requestTodos, fetchTodos);
+  const fetchObjectives = async () =>
+    (await fetch(dataServer + "/objectives")).json();
 
-  setRequestTodos(true);
+  const [objectives] = createResource(refreshData, fetchObjectives);
 
-  console.log("todos.state is ", todos.state);
-
-  //   function postTask(evt) {
-  //     // post body data
-  //     const task = {
-  //       task_list_id: 1, // TODO create a task_list_id control
-  //       task_name: evt.target.value,
-  //       task_description: "This is a full description of the task", // TODO create a task_description control
-  //     };
-
-  //     // request options
-  //     const options = {
-  //       method: "POST",
-  //       body: JSON.stringify(task),
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     };
-
-  //     // send POST request
-  //     fetch(dataServer + "/Addtask", options)
-  //       .then((res) => res.json())
-  //       .then((res) => console.log(res));
-  //   }
-
-  function postObjective(evt) {
+  async function postObjective(evt) {
     // post body data
     const task = {
       name: evt.target.value,
-      description: "This is a description of an objective", // TODO create a task_description control
+      description: "This is a description of an objective", // TODO create an objective description control
     };
 
     // request options
@@ -54,34 +29,28 @@ function LifeHelperApp() {
     };
 
     // send POST request
-    fetch(dataServer + "/AddObjective", options)
-      .then((res) => res.json())
-      .then((res) => console.log(res));
+    await fetch(dataServer + "/AddObjective", options);
+
+    setRefreshData(refreshData() + 1);
+    evt.target.value = "";
   }
 
   return (
     <section class="todoapp">
       <header class="header">
-        <h1>TODOs</h1>
+        <h1>Objectives</h1>
         <input
           class="new-todo"
-          onChange={(e) => {
-            // setTodos((todos) => [...todos, e.target.value]);
-            // e.target.value = "";
-
-            // postTodo(e);
-            // postTask(e);
-            postObjective(e);
-          }}
-          placeholder="What needs to be done?"
+          onChange={(e) => postObjective(e)}
+          placeholder="Enter an objective"
         />
       </header>
-      <span>{todos.loading && "Loading..."}</span>
-      <span>{todos.error && "Error"}</span>
-      {todos.state == "ready" && (
-        <Show when={todos().length > 0}>
+      <span>{objectives.loading && "Loading..."}</span>
+      <span>{objectives.error && "Error"}</span>
+      {objectives.state == "ready" && (
+        <Show when={objectives().length > 0}>
           <ul class="todo-list">
-            <For each={todos()}>
+            <For each={objectives()}>
               {(todo) => (
                 <li class="todo">
                   <div class="view">
