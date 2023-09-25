@@ -2,7 +2,6 @@ import { Show, For, createSignal, createResource } from "solid-js";
 import { useGlobalState } from "./GlobalStateProvider";
 
 function LifeHelperApp() {
-  //   const [todos, setTodos] = createSignal([]);
   var [requestTodos, setRequestTodos] = createSignal(false);
   var [, , dataServer] = useGlobalState();
 
@@ -15,23 +14,47 @@ function LifeHelperApp() {
 
   console.log("todos.state is ", todos.state);
 
-  function postTodo(evt) {
+  //   function postTask(evt) {
+  //     // post body data
+  //     const task = {
+  //       task_list_id: 1, // TODO create a task_list_id control
+  //       task_name: evt.target.value,
+  //       task_description: "This is a full description of the task", // TODO create a task_description control
+  //     };
+
+  //     // request options
+  //     const options = {
+  //       method: "POST",
+  //       body: JSON.stringify(task),
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     };
+
+  //     // send POST request
+  //     fetch(dataServer + "/Addtask", options)
+  //       .then((res) => res.json())
+  //       .then((res) => console.log(res));
+  //   }
+
+  function postObjective(evt) {
     // post body data
-    const todo = {
-      todo_name: evt.target.value,
+    const task = {
+      name: evt.target.value,
+      description: "This is a description of an objective", // TODO create a task_description control
     };
 
     // request options
     const options = {
       method: "POST",
-      body: JSON.stringify(todo),
+      body: JSON.stringify(task),
       headers: {
         "Content-Type": "application/json",
       },
     };
 
     // send POST request
-    fetch(dataServer + "/Addtodo", options)
+    fetch(dataServer + "/AddObjective", options)
       .then((res) => res.json())
       .then((res) => console.log(res));
   }
@@ -46,7 +69,9 @@ function LifeHelperApp() {
             // setTodos((todos) => [...todos, e.target.value]);
             // e.target.value = "";
 
-            postTodo(e);
+            // postTodo(e);
+            // postTask(e);
+            postObjective(e);
           }}
           placeholder="What needs to be done?"
         />
