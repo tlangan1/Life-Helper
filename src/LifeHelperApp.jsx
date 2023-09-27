@@ -9,10 +9,7 @@ function LifeHelperApp(props) {
     var response = await fetch(dataServer + `/get/${props.type}s`);
     if (!response.ok) {
       alert(
-        "Server Error: status is " +
-          response.status +
-          " reason is " +
-          response.statusText
+        `Server Error: status is ${response.status} reason is ${response.statusText}`
       );
     } else {
       return await response.json();
@@ -21,43 +18,30 @@ function LifeHelperApp(props) {
 
   const [items] = createResource(refreshData, fetchItems);
 
-  async function addItem(evt) {
+  async function affectItem(evt, affectType) {
     // body data
-    const item = {
-      name: evt.target.value,
-      description: `This is a description of an ${props.type}`, // TODO create a description control
-    };
+    var item;
 
-    // request options
-    const options = {
-      method: "POST",
-      body: JSON.stringify(item),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    // send POST request
-    var response = await fetch(dataServer + `/add/${props.type}`, options);
-
-    if (!response.ok) {
-      alert(
-        "Server Error: status is " +
-          response.status +
-          " reason is " +
-          response.statusText
-      );
-    } else {
-      setRefreshData((refreshData() + 1) % 2);
-      evt.target.value = "";
+    switch (affectType) {
+      case "add":
+        item = {
+          name: evt.target.value,
+          description: `This is a description of an ${props.type}`, // TODO create a description control
+        };
+        break;
+      case "update":
+        item = {
+          name: evt.target.value,
+          item_id: evt.target.attributes.item_id.value,
+          description: `This is a description of an ${props.type}`, // TODO create a description control
+        };
+        break;
+      case "delete":
+        item = {
+          item_id: evt.target.attributes.item_id.value,
+        };
+        break;
     }
-  }
-
-  async function deleteItem(evt) {
-    // body data
-    const item = {
-      item_id: evt.target.attributes.item_id.value,
-    };
 
     // request options
     const options = {
@@ -69,14 +53,14 @@ function LifeHelperApp(props) {
     };
 
     // send POST request
-    var response = await fetch(dataServer + `/delete/${props.type}`, options);
+    var response = await fetch(
+      dataServer + `/${affectType}/${props.type}`,
+      options
+    );
 
     if (!response.ok) {
       alert(
-        "Server Error: status is " +
-          response.status +
-          " reason is " +
-          response.statusText
+        `Server Error: status is ${response.status} reason is ${response.statusText}`
       );
     } else {
       setRefreshData((refreshData() + 1) % 2);
@@ -90,7 +74,7 @@ function LifeHelperApp(props) {
         <h1>{props.type}s</h1>
         <input
           class="new-item"
-          onChange={(e) => addItem(e)}
+          onChange={(e) => affectItem(e, "add")}
           placeholder={`Enter ${props.type}`}
         />
       </header>
@@ -118,7 +102,7 @@ function LifeHelperApp(props) {
                     <button
                       item_id={item.item_id}
                       class="destroy"
-                      onClick={(e) => deleteItem(e)}
+                      onClick={(e) => affectItem(e, "delete")}
                     />
                   </div>
                 </li>
