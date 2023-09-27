@@ -1,62 +1,125 @@
-import { Show, For, createSignal, createResource } from "solid-js";
+import { Show, For, createSignal, createResource, onMount } from "solid-js";
 import { useGlobalState } from "./GlobalStateProvider";
 
-function LifeHelperApp() {
+function LifeHelperApp(props) {
   var [refreshData, setRefreshData] = createSignal(0);
   var [, , dataServer] = useGlobalState();
 
-  console.log("Data Server", dataServer);
+  const fetchItems = async () => {
+    var response = await fetch(dataServer + `/get/${props.type}s`);
+    if (!response.ok) {
+      alert(
+        "Server Error: status is " +
+          response.status +
+          " reason is " +
+          response.statusText
+      );
+    } else {
+      return await response.json();
+    }
+  };
 
-  const fetchObjectives = async () =>
-    (await fetch(dataServer + "/objectives")).json();
+  const [items] = createResource(refreshData, fetchItems);
 
-  const [objectives] = createResource(refreshData, fetchObjectives);
-
-  async function postObjective(evt) {
-    // post body data
-    const task = {
+  async function addItem(evt) {
+    // body data
+    const item = {
       name: evt.target.value,
-      description: "This is a description of an objective", // TODO create an objective description control
+      description: `This is a description of an ${props.type}`, // TODO create a description control
     };
 
     // request options
     const options = {
       method: "POST",
-      body: JSON.stringify(task),
+      body: JSON.stringify(item),
       headers: {
         "Content-Type": "application/json",
       },
     };
 
     // send POST request
-    await fetch(dataServer + "/AddObjective", options);
+    var response = await fetch(dataServer + `/add/${props.type}`, options);
 
-    setRefreshData(refreshData() + 1);
-    evt.target.value = "";
+    if (!response.ok) {
+      alert(
+        "Server Error: status is " +
+          response.status +
+          " reason is " +
+          response.statusText
+      );
+    } else {
+      setRefreshData((refreshData() + 1) % 2);
+      evt.target.value = "";
+    }
+  }
+
+  async function deleteItem(evt) {
+    // body data
+    const item = {
+      item_id: evt.target.attributes.item_id.value,
+    };
+
+    // request options
+    const options = {
+      method: "POST",
+      body: JSON.stringify(item),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    // send POST request
+    var response = await fetch(dataServer + `/delete/${props.type}`, options);
+
+    if (!response.ok) {
+      alert(
+        "Server Error: status is " +
+          response.status +
+          " reason is " +
+          response.statusText
+      );
+    } else {
+      setRefreshData((refreshData() + 1) % 2);
+      evt.target.value = "";
+    }
   }
 
   return (
-    <section class="todoapp">
+    <section class="app">
       <header class="header">
-        <h1>Objectives</h1>
+        <h1>{props.type}s</h1>
         <input
-          class="new-todo"
-          onChange={(e) => postObjective(e)}
-          placeholder="Enter an objective"
+          class="new-item"
+          onChange={(e) => addItem(e)}
+          placeholder={`Enter ${props.type}`}
         />
       </header>
-      <span>{objectives.loading && "Loading..."}</span>
-      <span>{objectives.error && "Error"}</span>
-      {objectives.state == "ready" && (
-        <Show when={objectives().length > 0}>
-          <ul class="todo-list">
-            <For each={objectives()}>
-              {(todo) => (
-                <li class="todo">
+      <span>{items.loading && "Loading..."}</span>
+      <span>{items.error && "Error"}</span>
+      {items.state == "ready" && (
+        <Show when={items().length > 0}>
+          <ul class="item-list">
+            <For each={items()}>
+              {(item) => (
+                <li
+                  class="item"
+                  onDblClick={() => {
+                    props.setter("goal");
+                    setRefreshData((refreshData() + 1) % 2);
+                  }}
+                >
                   <div class="view">
-                    <input type="checkbox" class="toggle"></input>
-                    <label>{todo}</label>
-                    <button class="destroy" />
+                    {props.type == "task" ? (
+                      <input type="checkbox" class="toggle"></input>
+                    ) : (
+                      <input type="checkbox" class="toggle" disabled></input>
+                    )}
+                    <label>{item.item_name}</label>
+                    <button
+                      item_id={item.item_id}
+                      class="destroy"
+                      onClick={(e) => deleteItem(e)}
+                    />
                   </div>
                 </li>
               )}

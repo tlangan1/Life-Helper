@@ -7,6 +7,7 @@ import LifeHelperApp from "./LifeHelperApp";
 const root = document.getElementById("root");
 
 import { GlobalStateProvider } from "./GlobalStateProvider";
+import { createSignal } from "solid-js";
 
 if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   throw new Error(
@@ -14,11 +15,11 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
-render(
-  () => (
-    <GlobalStateProvider count={1}>
-      <LifeHelperApp />
+render(() => {
+  var [itemType, setItemType] = createSignal("objective");
+  return (
+    <GlobalStateProvider>
+      <LifeHelperApp type={itemType()} setter={setItemType} />
     </GlobalStateProvider>
-  ),
-  root
-);
+  );
+}, root);
