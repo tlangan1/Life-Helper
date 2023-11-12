@@ -1,12 +1,21 @@
+* {
+  box-sizing: border-box;
+}
+
 html,
-body {
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button {
   margin: 0;
   padding: 0;
 }
 
 button {
-  margin: 0;
-  padding: 0;
   border: 0;
   background: none;
   font-size: 100%;
@@ -21,8 +30,8 @@ button {
 }
 
 body {
-  font: 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
-  line-height: 1.4em;
+  font: 12px Arial, sans-serif;
+  /* line-height: 1.4em; */
   background: #f5f5f5;
   color: #4d4d4d;
   min-width: 230px;
@@ -43,10 +52,29 @@ body {
 
 .app {
   background: #fff;
-  margin: 130px 0 40px 0;
-  position: relative;
+  /* margin: 130px 0 40px 0;
+  position: relative; */
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
 }
+
+/* Tom L 09/30/2023: added this for upward navigation in the hierarchy */
+.app .return:after {
+  font-size: 30px;
+  content: "\25B2";
+  padding-inline-end: 10px;
+}
+
+.app .return:hover {
+  color: grey;
+}
+
+/* Tom L 10/2/2023: added this */
+.app input::placeholder {
+  font-style: italic;
+  font-weight: 300;
+  color: #e6e6e6;
+}
+/* Tom L 10/2/2023: end of addition */
 
 .app input::-webkit-input-placeholder {
   font-style: italic;
@@ -66,22 +94,33 @@ body {
   color: #e6e6e6;
 }
 
+.header-title {
+  display: flex;
+}
+
 .app h1 {
-  position: absolute;
-  top: -155px;
+  /* position: absolute;
+  top: -155px; */
+  padding: 10px;
   width: 100%;
   font-size: 50px;
   font-weight: 100;
   text-align: center;
   color: rgba(175, 47, 47, 0.15);
-  -webkit-text-rendering: optimizeLegibility;
+  /* -webkit-text-rendering: optimizeLegibility;
   -moz-text-rendering: optimizeLegibility;
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizeLegibility; */
+}
+
+/* Tom L 9/30/2023: added this */
+h1.goal_header,
+h1.task_header {
+  font-size: 30px;
 }
 
 .new-item,
 .edit {
-  position: relative;
+  /* position: relative; */
   margin: 0;
   width: 100%;
   font-size: 24px;
@@ -106,7 +145,7 @@ body {
 }
 
 .main {
-  position: relative;
+  /* position: relative; */
   z-index: 2;
   border-top: 1px solid #e6e6e6;
 }
@@ -116,7 +155,7 @@ body {
   height: 1px;
   border: none; /* Mobile Safari */
   opacity: 0;
-  position: absolute;
+  /* position: absolute; */
   right: 100%;
   bottom: 100%;
 }
@@ -125,7 +164,7 @@ body {
   width: 60px;
   height: 34px;
   font-size: 0;
-  position: absolute;
+  /* position: absolute; */
   top: -52px;
   left: -13px;
   -webkit-transform: rotate(90deg);
@@ -212,7 +251,9 @@ body {
   /* Reason: to make sure wrapping occurs at word boundaries */
   /* word-break: break-all; */
   /* Tom L (09-23-2023): End of commented out section */
-  padding: 15px 15px 15px 60px;
+  /* Tom L (09-30-2023): I altered the right padding to make room for the "x" */
+  padding: 15px 40px 15px 60px;
+  /* Tom L (09-30-2023): End of alteration */
   display: block;
   line-height: 1.2;
   transition: color 0.4s;
@@ -271,7 +312,7 @@ body {
 
 .footer:before {
   content: "";
-  position: absolute;
+  /* position: absolute; */
   right: 0;
   bottom: 0;
   left: 0;
@@ -295,7 +336,7 @@ body {
   margin: 0;
   padding: 0;
   list-style: none;
-  position: absolute;
+  /* position: absolute; */
   right: 0;
   left: 0;
 }
@@ -325,7 +366,7 @@ body {
 html .clear-completed:active {
   float: right;
   position: relative;
-  line-height: 20px;
+  /* line-height: 20px; */
   text-decoration: none;
   cursor: pointer;
 }

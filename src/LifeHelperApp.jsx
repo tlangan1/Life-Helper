@@ -12,7 +12,9 @@ import { FindParentElement } from "./helperFunctions";
 function LifeHelperApp(props) {
   var [refreshData, setRefreshData] = createSignal(0);
   var [, , dataServer] = useGlobalState();
-  var [parent, setParent] = createSignal();
+  // parent contains an object that represents the parent of the selected item
+  // for an objective it is the default as shown below
+  var [parent, setParent] = createSignal({ item_id: 0, item_name: "" });
   var [pageTitle, setPageTitle] = createSignal("");
 
   createEffect(pageTitleEffect);
@@ -23,9 +25,10 @@ function LifeHelperApp(props) {
         setPageTitle("Overall Objectives");
         break;
       case "goal":
-        setPageTitle(`Goals to achieve objective ${parent().item_name}`);
+        setPageTitle(`Goals to achieve objective "${parent().item_name}"`);
         break;
       case "task":
+        setPageTitle(`Tasks to achieve goal "${parent().item_name}"`);
         break;
       default:
         setPageTitle("Unknown Page Item");
@@ -33,7 +36,21 @@ function LifeHelperApp(props) {
   }
 
   const fetchItems = async () => {
-    var response = await fetch(dataServer + `/get/${props.type}s`);
+    // request options
+
+    var item = {};
+    if (props.type == "objective") item.item_id = 0;
+    else item.item_id = parent().item_id;
+
+    const options = {
+      method: "POST",
+      body: JSON.stringify(item),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    var response = await fetch(dataServer + `/get/${props.type}s`, options);
     if (!response.ok) {
       alert(
         `Server Error: status is ${response.status} reason is ${response.statusText}`
@@ -97,10 +114,28 @@ function LifeHelperApp(props) {
     }
   }
 
+  function returnToParent() {
+    switch (props.type) {
+      case "objective":
+        break;
+      case "goal":
+        props.setter("objective");
+        setRefreshData((refreshData() + 1) % 2);
+        break;
+      case "task":
+        props.setter("goal");
+        setRefreshData((refreshData() + 1) % 2);
+        break;
+    }
+  }
+
   return (
     <section class="app">
-      <header class="header">
-        <h1>{pageTitle()}</h1>
+      <header>
+        <div class="header-title">
+          <h1 class={`${props.type}_header`}>{pageTitle()}</h1>
+          <button class="return" onClick={returnToParent}></button>
+        </div>
         <input
           class="new-item"
           onChange={(e) => affectItem(e, "add")}
