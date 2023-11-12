@@ -1,3 +1,5 @@
+import "./LifeHelperApp.css";
+
 import {
   Show,
   For,
@@ -14,7 +16,7 @@ function LifeHelperApp(props) {
   var [, , dataServer] = useGlobalState();
   // parent contains an object that represents the parent of the selected item
   // for an objective it is the default as shown below
-  var [parent, setParent] = createSignal({ item_id: 0, item_name: "" });
+  var [parent, setParent] = createSignal([]);
   var [pageTitle, setPageTitle] = createSignal("");
 
   createEffect(pageTitleEffect);
@@ -25,10 +27,16 @@ function LifeHelperApp(props) {
         setPageTitle("Overall Objectives");
         break;
       case "goal":
-        setPageTitle(`Goals to achieve objective "${parent().item_name}"`);
+        setPageTitle(
+          `Goals to achieve objective "${
+            parent()[parent().length - 1].item_name
+          }"`
+        );
         break;
       case "task":
-        setPageTitle(`Tasks to achieve goal "${parent().item_name}"`);
+        setPageTitle(
+          `Tasks to achieve goal "${parent()[parent().length - 1].item_name}"`
+        );
         break;
       default:
         setPageTitle("Unknown Page Item");
@@ -40,7 +48,7 @@ function LifeHelperApp(props) {
 
     var item = {};
     if (props.type == "objective") item.item_id = 0;
-    else item.item_id = parent().item_id;
+    else item.item_id = parent()[parent().length - 1].item_id;
 
     const options = {
       method: "POST",
@@ -72,7 +80,7 @@ function LifeHelperApp(props) {
           name: evt.target.value,
           description: `This is a description of an ${props.type}`, // TODO create a description control
         };
-        item.item_id = parent().item_id;
+        item.item_id = parent()[parent().length - 1].item_id;
         break;
       case "update":
         item = {
@@ -115,6 +123,10 @@ function LifeHelperApp(props) {
   }
 
   function returnToParent() {
+    setParent(() => {
+      parent().pop();
+      return parent();
+    });
     switch (props.type) {
       case "objective":
         break;
@@ -157,27 +169,31 @@ function LifeHelperApp(props) {
                     if (props.type == "task") return;
 
                     var parentLi = FindParentElement(e.target, "li");
-                    setParent({
-                      item_id: parentLi.attributes.item_id.value,
-                      item_name: parentLi.attributes.item_name.value,
+                    setParent(() => {
+                      parent().push({
+                        item_id: parentLi.attributes.item_id.value,
+                        item_name: parentLi.attributes.item_name.value,
+                      });
+
+                      return parent();
                     });
                     if (props.type == "objective") props.setter("goal");
                     else if (props.type == "goal") props.setter("task");
                     setRefreshData((refreshData() + 1) % 2);
                   }}
                 >
-                  <div class="view">
-                    {props.type == "task" ? (
-                      <input type="checkbox" class="toggle"></input>
-                    ) : (
-                      <input type="checkbox" class="toggle" disabled></input>
-                    )}
-                    <label>{item.item_name}</label>
-                    <button
-                      class="destroy"
-                      onClick={(e) => affectItem(e, "delete")}
-                    />
-                  </div>
+                  {/* <div class="view"> */}
+                  {props.type == "task" ? (
+                    <input type="checkbox" class="toggle"></input>
+                  ) : (
+                    <input type="checkbox" class="toggle" disabled></input>
+                  )}
+                  <label>{item.item_name}</label>
+                  <button
+                    class="destroy"
+                    onClick={(e) => affectItem(e, "delete")}
+                  />
+                  {/* </div> */}
                 </li>
               )}
             </For>

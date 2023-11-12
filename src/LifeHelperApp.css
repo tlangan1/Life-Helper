@@ -1,0 +1,65 @@
+@import "./colors.css";
+
+html {
+  box-sizing: border-box;
+}
+
+::before,
+::after,
+* {
+  box-sizing: inherit;
+}
+
+html,
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button {
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-size: 1.5rem;
+  padding: 0.5rem;
+  color: var(--primary-color);
+}
+
+.app,
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header-title {
+  display: flex;
+}
+
+.item {
+  display: flex;
+}
+
+.app .return:after {
+  font-size: 30px;
+  content: "\25B2";
+  padding-inline-end: 10px;
+  color: var(--primary-color);
+}
+
+.app .return:hover {
+  color: grey;
+}
+
+button {
+  background: none;
+  border: 0;
+}
+
+.item-list li .destroy:after {
+  content: "×";
+}
