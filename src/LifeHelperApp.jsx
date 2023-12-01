@@ -1,4 +1,5 @@
 import "./LifeHelperApp.css";
+import { itemFromImport } from "./objective-goal-task.jsx";
 
 import {
   Show,
@@ -12,10 +13,17 @@ import { useGlobalState } from "./GlobalStateProvider";
 import { FindParentElement } from "./helperFunctions";
 
 function LifeHelperApp(props) {
+  //   var x = itemFromImport({ item_id: 5 });
+
   var [refreshData, setRefreshData] = createSignal(0);
   var [, , dataServer] = useGlobalState();
-  // parent contains an object that represents the parent of the selected item
-  // for an objective it is the default as shown below
+  // parent contains an array of at most two objects.
+  // 1) If the current view is the list of objectives then the array is empty.
+  // 2) If the current view is a list of goals, then the array contains
+  //    one object that identifies the objective with which they are associated.
+  // 3) If the current view is a list of tasks, then the array contains two objects.
+  //    The last object contains the goals to which they are associated
+  //    and the first object contains the objective to which the goal in the last object is associated.
   var [parent, setParent] = createSignal([]);
   var [pageTitle, setPageTitle] = createSignal("");
 
@@ -160,42 +168,16 @@ function LifeHelperApp(props) {
         <Show when={items().length > 0}>
           <ul class="item-list">
             <For each={items()}>
-              {(item) => (
-                <li
-                  class="item"
-                  item_id={item.item_id}
-                  item_name={item.item_name}
-                  onDblClick={(e) => {
-                    if (props.type == "task") return;
-
-                    var parentLi = FindParentElement(e.target, "li");
-                    setParent(() => {
-                      parent().push({
-                        item_id: parentLi.attributes.item_id.value,
-                        item_name: parentLi.attributes.item_name.value,
-                      });
-
-                      return parent();
-                    });
-                    if (props.type == "objective") props.setter("goal");
-                    else if (props.type == "goal") props.setter("task");
-                    setRefreshData((refreshData() + 1) % 2);
-                  }}
-                >
-                  {/* <div class="view"> */}
-                  {props.type == "task" ? (
-                    <input type="checkbox" class="toggle"></input>
-                  ) : (
-                    <input type="checkbox" class="toggle" disabled></input>
-                  )}
-                  <label>{item.item_name}</label>
-                  <button
-                    class="destroy"
-                    onClick={(e) => affectItem(e, "delete")}
-                  />
-                  {/* </div> */}
-                </li>
-              )}
+              {(item) =>
+                itemFromImport(
+                  item,
+                  props,
+                  setParent,
+                  parent,
+                  setRefreshData,
+                  refreshData
+                )
+              }
             </For>
           </ul>
         </Show>

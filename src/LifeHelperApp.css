@@ -41,18 +41,25 @@ header {
 }
 
 .item {
-  display: flex;
+  display: grid;
+  grid-template-columns: 0.2fr 1fr 0.2fr;
+  gap: 10px;
 }
 
-.app .return:after {
+.app .return::after {
   font-size: 30px;
   content: "\25B2";
   padding-inline-end: 10px;
-  color: var(--primary-color);
 }
 
-.app .return:hover {
-  color: grey;
+.app .return {
+  color: var(--primary-color);
+  opacity: 0.5;
+}
+
+.app .return:hover,
+.app .destroy:hover {
+  opacity: 1;
 }
 
 button {
@@ -60,6 +67,10 @@ button {
   border: 0;
 }
 
-.item-list li .destroy:after {
+.item-list li .destroy::after {
   content: "×";
+}
+
+.item-list li .toggle {
+  accent-color: #2196f3;
 }
