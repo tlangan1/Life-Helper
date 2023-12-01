@@ -74,3 +74,20 @@ button {
 .item-list li .toggle {
   accent-color: #2196f3;
 }
+
+input.toggle::before {
+  content: "Start";
+  position: relative;
+  opacity: 0;
+  color: white;
+  left: 1.5rem;
+  top: -0.7rem;
+  font-size: 0.2rem;
+}
+
+input.toggle:hover::before {
+  opacity: 1;
+  font-size: 0.6rem;
+  color: var(--primary-color);
+  transition: all 2s;
+}

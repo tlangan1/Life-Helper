@@ -30,7 +30,6 @@ export function itemFromImport(
         setRefreshData((refreshData() + 1) % 2);
       }}
     >
-      {/* <div class="view"> */}
       {props.type == "task" ? (
         <input type="checkbox" class="toggle"></input>
       ) : (
@@ -38,7 +37,6 @@ export function itemFromImport(
       )}
       <label>{item.item_name}</label>
       <button class="destroy" onClick={(e) => affectItem(e, "delete")} />
-      {/* </div> */}
     </li>
   );
 }
