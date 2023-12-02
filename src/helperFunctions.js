@@ -4,3 +4,63 @@ export function FindParentElement(currentElement, parentType) {
   if (currentElement.localName == parentType) return currentElement;
   else return FindParentElement(currentElement.parentElement, parentType);
 }
+
+export async function affectItem(
+  evt,
+  affectType,
+  item_id,
+  item_type,
+  dataServer
+) {
+  // body data
+  var item;
+
+  switch (affectType) {
+    case "add":
+      item = {
+        parent_id: item_id,
+        name: evt.target.value,
+        description: `This is a description of a ${item_type}`, // TODO create a description control
+      };
+      // item.item_id = parent()[parent().length - 1].item_id;
+      break;
+    case "update":
+      item = {
+        name: evt.target.value,
+        item_id: evt.target.attributes.item_id.value,
+        description: `This is a description of a ${item_type}`, // TODO create a description control
+      };
+      break;
+    case "delete":
+      var parentLi = FindParentElement(evt.target, "li");
+      item = {
+        item_id: parentLi.attributes.item_id.value,
+      };
+      break;
+  }
+
+  // request options
+  const options = {
+    method: "POST",
+    body: JSON.stringify(item),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  // send POST request
+  var response = await fetch(
+    dataServer + `/${affectType}/${item_type}`,
+    options
+  );
+
+  if (!response.ok) {
+    alert(
+      `Server Error: status is ${response.status} reason is ${response.statusText}`
+    );
+    return false;
+  } else {
+    evt.target.value = "";
+    return true;
+  }
+}

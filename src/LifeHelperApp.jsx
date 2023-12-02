@@ -1,5 +1,6 @@
 import "./LifeHelperApp.css";
 import { itemFromImport } from "./objective-goal-task.jsx";
+import { affectItem } from "./helperFunctions";
 
 import {
   Show,
@@ -79,59 +80,6 @@ function LifeHelperApp(props) {
 
   const [items] = createResource(refreshData, fetchItems);
 
-  async function affectItem(evt, affectType) {
-    // body data
-    var item;
-
-    switch (affectType) {
-      case "add":
-        item = {
-          parent_id: parent()[parent().length - 1].item_id,
-          name: evt.target.value,
-          description: `This is a description of a ${props.type}`, // TODO create a description control
-        };
-        // item.item_id = parent()[parent().length - 1].item_id;
-        break;
-      case "update":
-        item = {
-          name: evt.target.value,
-          item_id: evt.target.attributes.item_id.value,
-          description: `This is a description of a ${props.type}`, // TODO create a description control
-        };
-        break;
-      case "delete":
-        var parentLi = FindParentElement(evt.target, "li");
-        item = {
-          item_id: parentLi.attributes.item_id.value,
-        };
-        break;
-    }
-
-    // request options
-    const options = {
-      method: "POST",
-      body: JSON.stringify(item),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    // send POST request
-    var response = await fetch(
-      dataServer + `/${affectType}/${props.type}`,
-      options
-    );
-
-    if (!response.ok) {
-      alert(
-        `Server Error: status is ${response.status} reason is ${response.statusText}`
-      );
-    } else {
-      setRefreshData((refreshData() + 1) % 2);
-      evt.target.value = "";
-    }
-  }
-
   function returnToParent() {
     setParent(() => {
       parent().pop();
@@ -163,7 +111,18 @@ function LifeHelperApp(props) {
         </div>
         <input
           class="new-item"
-          onChange={(e) => affectItem(e, "add")}
+          onChange={(e) => {
+            if (
+              affectItem(
+                e,
+                "add",
+                parent()[parent().length - 1].item_id,
+                props.type,
+                dataServer
+              )
+            )
+              setRefreshData((refreshData() + 1) % 2);
+          }}
           placeholder={`Enter ${props.type}`}
         />
       </header>
