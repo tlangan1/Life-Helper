@@ -57,7 +57,7 @@ function LifeHelperApp(props) {
 
     var item = {};
     if (props.type != "objective")
-      item.item_id = parent()[parent().length - 1].item_id;
+      item.parent_id = parent()[parent().length - 1].item_id;
 
     const options = {
       method: "POST",
