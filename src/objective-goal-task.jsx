@@ -1,12 +1,12 @@
 import { FindParentElement } from "./helperFunctions";
 
 export function itemFromImport(
-  item,
-  props,
-  setParent,
-  parent,
-  setRefreshData,
-  refreshData
+  item /* used in LifeHelperApp */,
+  props /* used in LifeHelperApp */,
+  setParent /* used in LifeHelperApp */,
+  parent /* used in LifeHelperApp */,
+  setRefreshData /* used in LifeHelperApp */,
+  refreshData /* used in LifeHelperApp */
 ) {
   return (
     <li
@@ -30,11 +30,14 @@ export function itemFromImport(
         setRefreshData((refreshData() + 1) % 2);
       }}
     >
-      {props.type == "task" ? (
-        <input type="checkbox" class="toggle"></input>
-      ) : (
-        <input type="checkbox" class="toggle" disabled></input>
-      )}
+      <div class="toggle">
+        {props.type == "task" ? (
+          <input type="checkbox" class="toggle"></input>
+        ) : (
+          <input type="checkbox" class="toggle" disabled></input>
+        )}
+        <span class="hide">Start</span>
+      </div>
       <label>{item.item_name}</label>
       <button class="destroy" onClick={(e) => affectItem(e, "delete")} />
     </li>

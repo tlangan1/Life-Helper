@@ -46,19 +46,26 @@ header {
   gap: 10px;
 }
 
-.app .return::after {
+button.return::after {
   font-size: 30px;
   content: "\25B2";
   padding-inline-end: 10px;
 }
 
-.app .return {
+button.return {
   color: var(--primary-color);
   opacity: 0.5;
+  display: none;
 }
 
-.app .return:hover,
-.app .destroy:hover {
+button.return.visible {
+  color: var(--primary-color);
+  opacity: 0.5;
+  display: block;
+}
+
+button.return:hover,
+button.destroy:hover {
   opacity: 1;
 }
 
@@ -71,11 +78,8 @@ button {
   content: "×";
 }
 
-.item-list li .toggle {
-  accent-color: #2196f3;
-}
-
-input.toggle::before {
+/* *** using a pseudo-element to indicate the purpose of the "start" check box *** */
+/* input.toggle::before {
   content: "Start";
   position: relative;
   opacity: 0;
@@ -90,4 +94,24 @@ input.toggle:hover::before {
   font-size: 0.6rem;
   color: var(--primary-color);
   transition: all 2s;
+} */
+
+/* *** using a span element to indicate the purpose of the "start" check box *** */
+div.toggle {
+  position: relative;
+}
+
+div.toggle:hover > span.hide {
+  opacity: 1;
+  font-size: 0.8rem;
+  color: var(--primary-color);
+  transition: all 1s;
+}
+
+span.hide {
+  position: absolute;
+  opacity: 0;
+  color: white;
+  left: -1.5rem;
+  font-size: 0.2rem;
 }

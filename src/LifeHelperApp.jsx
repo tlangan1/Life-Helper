@@ -10,11 +10,7 @@ import {
 } from "solid-js";
 import { useGlobalState } from "./GlobalStateProvider";
 
-import { FindParentElement } from "./helperFunctions";
-
 function LifeHelperApp(props) {
-  //   var x = itemFromImport({ item_id: 5 });
-
   var [refreshData, setRefreshData] = createSignal(0);
   var [, , dataServer] = useGlobalState();
   // parent contains an array of at most two objects.
@@ -22,10 +18,11 @@ function LifeHelperApp(props) {
   // 2) If the current view is a list of goals, then the array contains
   //    one object that identifies the objective with which they are associated.
   // 3) If the current view is a list of tasks, then the array contains two objects.
-  //    The last object contains the goals to which they are associated
+  //    The last object contains the goal to which they are associated
   //    and the first object contains the objective to which the goal in the last object is associated.
   var [parent, setParent] = createSignal([]);
   var [pageTitle, setPageTitle] = createSignal("");
+  var [visibleClassValue, setVisibleClassValue] = createSignal("");
 
   createEffect(pageTitleEffect);
 
@@ -33,6 +30,7 @@ function LifeHelperApp(props) {
     switch (props.type) {
       case "objective":
         setPageTitle("Overall Objectives");
+        setVisibleClassValue("");
         break;
       case "goal":
         setPageTitle(
@@ -40,11 +38,14 @@ function LifeHelperApp(props) {
             parent()[parent().length - 1].item_name
           }"`
         );
+        setVisibleClassValue("visible");
         break;
       case "task":
         setPageTitle(
           `Tasks to achieve goal "${parent()[parent().length - 1].item_name}"`
         );
+        setVisibleClassValue("visible");
+
         break;
       default:
         setPageTitle("Unknown Page Item");
@@ -55,8 +56,8 @@ function LifeHelperApp(props) {
     // request options
 
     var item = {};
-    if (props.type == "objective") item.item_id = 0;
-    else item.item_id = parent()[parent().length - 1].item_id;
+    if (props.type != "objective")
+      item.item_id = parent()[parent().length - 1].item_id;
 
     const options = {
       method: "POST",
@@ -85,16 +86,17 @@ function LifeHelperApp(props) {
     switch (affectType) {
       case "add":
         item = {
+          parent_id: parent()[parent().length - 1].item_id,
           name: evt.target.value,
-          description: `This is a description of an ${props.type}`, // TODO create a description control
+          description: `This is a description of a ${props.type}`, // TODO create a description control
         };
-        item.item_id = parent()[parent().length - 1].item_id;
+        // item.item_id = parent()[parent().length - 1].item_id;
         break;
       case "update":
         item = {
           name: evt.target.value,
           item_id: evt.target.attributes.item_id.value,
-          description: `This is a description of an ${props.type}`, // TODO create a description control
+          description: `This is a description of a ${props.type}`, // TODO create a description control
         };
         break;
       case "delete":
@@ -154,7 +156,10 @@ function LifeHelperApp(props) {
       <header>
         <div class="header-title">
           <h1 class={`${props.type}_header`}>{pageTitle()}</h1>
-          <button class="return" onClick={returnToParent}></button>
+          <button
+            class={`return ${visibleClassValue()}`}
+            onClick={returnToParent}
+          ></button>
         </div>
         <input
           class="new-item"
