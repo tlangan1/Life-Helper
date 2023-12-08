@@ -54,21 +54,15 @@ function LifeHelperApp(props) {
   }
 
   const fetchItems = async () => {
-    // request options
-
-    var item = {};
+    var searchParams = "";
     if (props.type != "objective")
-      item.parent_id = parent()[parent().length - 1].item_id;
+      searchParams = JSON.stringify({
+        parent_id: parent()[parent().length - 1].item_id,
+      });
 
-    const options = {
-      method: "POST",
-      body: JSON.stringify(item),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    var response = await fetch(dataServer + `/get/${props.type}s`, options);
+    var response = await fetch(
+      dataServer + `/${props.type}s` + "?params=" + searchParams
+    );
     if (!response.ok) {
       alert(
         `Server Error: status is ${response.status} reason is ${response.statusText}`
