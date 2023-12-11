@@ -115,3 +115,18 @@ span.hide {
   left: -1.5rem;
   font-size: 0.2rem;
 }
+
+/* Experiment with using both class and classList attributes on the same element */
+.started {
+  font-weight: bold;
+}
+
+.completed {
+  background-color: turquoise;
+}
+/* End of experiment */
+
+footer {
+  display: flex;
+  flex-direction: column;
+}

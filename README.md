@@ -15,3 +15,13 @@
 1. See `Netflix Search Box` section of D:\Computer Science\Tutorials\Front End Masters\Abandoned\Frameworks\Asynchronous Programming with RxJS\Asynchronous Programming in JavaScript.docx.
 1. See VSCode stuff located in D:\Computer Science\NEED TO REVIEW\JavaScript\Observables 1
 1. See VSCode stuff located in D:\Computer Science\Tutorials\Front End Masters\Abandoned\JavaScript\Rethinking Asynchronous JavaScript. Specifically, `Exercises\Ex6`
+
+## Application Behavior
+
+1. A task can be started but it can only be `un-started` if the task is not completed and if the user provides an explanation.
+2. A task can be can only be `un-completed` if the user provides an explanation.
+3. A task can be paused only if it has been started and not completed.
+
+## Multi User Considerations
+
+1. For now I am going to gloss over multi-user considerations like preventing two users from starting the same task or pushing changes out from the database as they get posted so that all users are aware.

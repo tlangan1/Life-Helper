@@ -1,6 +1,10 @@
 import "./LifeHelperApp.css";
 import { itemFromImport } from "./objective-goal-task.jsx";
-import { affectItem } from "./helperFunctions";
+import {
+  affectItem,
+  startedButNotCompletedCount,
+  completedCount,
+} from "./helperFunctions";
 
 import {
   Show,
@@ -74,6 +78,12 @@ function LifeHelperApp(props) {
 
   const [items] = createResource(refreshData, fetchItems);
 
+  //   var startedCount = createMemo(
+  //     items().reduce((item, totalStarted) => {
+  //       if (item.started_dtm) totalStarted++;
+  //     })
+  //   );
+
   function returnToParent() {
     setParent(() => {
       parent().pop();
@@ -106,16 +116,15 @@ function LifeHelperApp(props) {
         <input
           class="new-item"
           onChange={(e) => {
-            if (
-              affectItem(
-                e,
-                "add",
-                parent()[parent().length - 1].item_id,
-                props.type,
-                dataServer
-              )
-            )
-              setRefreshData((refreshData() + 1) % 2);
+            affectItem(
+              e,
+              "add",
+              parent().length == 0 ? 0 : parent()[parent().length - 1].item_id,
+              props.type,
+              dataServer,
+              refreshData,
+              setRefreshData
+            );
           }}
           placeholder={`Enter ${props.type}`}
         />
@@ -133,13 +142,25 @@ function LifeHelperApp(props) {
                   setParent,
                   parent,
                   setRefreshData,
-                  refreshData
+                  refreshData,
+                  dataServer
                 )
               }
             </For>
           </ul>
         </Show>
       )}
+      <footer>
+        <span>{`Total items: ${
+          items.state == "ready" && items().length
+        }`}</span>
+        <span>{`Started but not completed items: ${
+          items.state == "ready" && startedButNotCompletedCount(items)
+        }`}</span>
+        <span>{`Completed items: ${
+          items.state == "ready" && completedCount(items)
+        }`}</span>
+      </footer>
     </section>
   );
 }

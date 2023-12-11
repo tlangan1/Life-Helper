@@ -1,4 +1,5 @@
 import { FindParentElement } from "./helperFunctions";
+import { affectItem } from "./helperFunctions";
 
 export function itemFromImport(
   item /* used in LifeHelperApp */,
@@ -6,8 +7,10 @@ export function itemFromImport(
   setParent /* used in LifeHelperApp */,
   parent /* used in LifeHelperApp */,
   setRefreshData /* used in LifeHelperApp */,
-  refreshData /* used in LifeHelperApp */
+  refreshData /* used in LifeHelperApp */,
+  dataServer /* used in LifeHelperApp */
 ) {
+  console.log(`In itemFromImport rendering item with name ${item.item_name}`);
   return (
     <li
       class="item"
@@ -32,13 +35,33 @@ export function itemFromImport(
     >
       <div class="toggle">
         {props.type == "task" ? (
-          <input type="checkbox" class="toggle"></input>
+          <input
+            type="checkbox"
+            class="toggle"
+            onClick={(e) =>
+              affectItem(
+                e,
+                "start",
+                item.item_id,
+                1,
+                dataServer,
+                refreshData,
+                setRefreshData
+              )
+            }
+            disabled={item.completed_dtm}
+            checked={item.started_dtm}
+          ></input>
         ) : (
           <input type="checkbox" class="toggle" disabled></input>
         )}
         <span class="hide">Start</span>
       </div>
-      <label>{item.item_name}</label>
+      <label
+        classList={{ completed: item.completed_dtm, started: item.started_dtm }}
+      >
+        {item.item_name}
+      </label>
       <button class="destroy" onClick={(e) => affectItem(e, "delete")} />
     </li>
   );
