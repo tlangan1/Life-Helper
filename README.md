@@ -22,6 +22,10 @@
 2. A task can be can only be `un-completed` if the user provides an explanation.
 3. A task can be paused only if it has been started and not completed.
 
+## https support:
+
+1. I enabled https support by adding the `basicSsl` plugin from "@vitejs/plugin-basic-ssl" to the Vite config file.
+
 ## Multi User Considerations
 
 1. For now I am going to gloss over multi-user considerations like preventing two users from starting the same task or pushing changes out from the database as they get posted so that all users are aware.
