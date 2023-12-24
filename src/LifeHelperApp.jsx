@@ -1,10 +1,4 @@
 import "./LifeHelperApp.css";
-import { itemFromImport } from "./objective-goal-task.jsx";
-import {
-  affectItem,
-  startedButNotCompletedCount,
-  completedCount,
-} from "./helperFunctions";
 
 import {
   Show,
@@ -13,7 +7,15 @@ import {
   createResource,
   createEffect,
 } from "solid-js";
+
 import { useGlobalState } from "./GlobalStateProvider";
+
+import { itemFromImport } from "./objective-goal-task.jsx";
+import {
+  affectItem,
+  startedButNotCompletedCount,
+  completedCount,
+} from "./helperFunctions";
 
 function LifeHelperApp(props) {
   var [refreshData, setRefreshData] = createSignal(0);
