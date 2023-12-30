@@ -1,5 +1,9 @@
 # Life Helper SolidJS Application
 
+## Notes
+
+1. Do not put an ampersand, `&`, in the name of a folder anywhere in the path within which `vite` is being used. It results in an error thrown by node.js saying that it cannot find vite. I did `NOT` try an uninstall and reinstall of `vite` to see if that may also be a solution.
+
 ## Basics
 
 1. To start this application run the following command.
@@ -22,9 +26,28 @@
 2. A task can be can only be `un-completed` if the user provides an explanation.
 3. A task can be paused only if it has been started and not completed.
 
-## https support:
+## Enable https in Vite:
 
-1. I enabled https support by adding the `basicSsl` plugin from "@vitejs/plugin-basic-ssl" to the Vite config file.
+1. First, install @vitejs/plugin-basic-ssl using the following command:
+   ```
+   npm i -D @vitejs/plugin-basic-ssl
+   ```
+   Note the -D option as this should never be used in production.
+2. Next add basicSsl() to the plugins array in the vite config file as shown below:
+
+   ```
+   plugins: [
+        /*
+        Uncomment the following line to enable solid-devtools.
+        For more info see https://github.com/thetarnav/solid-devtools/tree/main/packages/extension#readme
+        */
+        // devtools(),
+        solidPlugin(),
+        basicSsl(),
+   ],
+   ```
+
+3. I enabled https support by adding the `basicSsl` plugin from "@vitejs/plugin-basic-ssl" to the Vite config file.
 
 ## Multi User Considerations
 

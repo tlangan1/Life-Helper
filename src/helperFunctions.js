@@ -26,7 +26,28 @@ export async function affectItem(
         description: `This is a description of a ${item_type}`, // TODO create a description control
       };
       endPoint = `/${affectType}/${item_type}`;
-      // item.item_id = parent()[parent().length - 1].item_id;
+
+      //   const pushOptions = {
+      //     method: "POST",
+      //     body: JSON.stringify(item),
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //   };
+      //   // send POST request
+      //   var response = await fetch(
+      //     dataServer + "/send_notification",
+      //     pushOptions
+      //   );
+      //   if (!response.ok) {
+      //     alert(
+      //       `Server Error: status is ${response.status} reason is ${response.statusText}`
+      //     );
+      //   }
+
+      //   var message = await response.json();
+      //   console.log(message);
+
       break;
     case "start":
       item = {
