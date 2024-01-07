@@ -1,7 +1,15 @@
 import { defineConfig } from "vite";
 import solidPlugin from "vite-plugin-solid";
 // import devtools from 'solid-devtools/vite';
-import basicSsl from "@vitejs/plugin-basic-ssl";
+import dns from "dns";
+
+// import basicSsl from "@vitejs/plugin-basic-ssl";
+import mkcert from "vite-plugin-mkcert";
+
+// See https://vitejs.dev/config/server-options.html
+// I think this is necessary but not certain
+// TODO: Test this
+dns.setDefaultResultOrder("verbatim");
 
 export default defineConfig({
   plugins: [
@@ -11,7 +19,8 @@ export default defineConfig({
     */
     // devtools(),
     solidPlugin(),
-    basicSsl(),
+    // basicSsl(),
+    mkcert(),
   ],
   server: {
     port: 3000,
@@ -19,5 +28,4 @@ export default defineConfig({
   build: {
     target: "esnext",
   },
-  //   plugins: [basicSsl()],
 });

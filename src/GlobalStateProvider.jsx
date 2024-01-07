@@ -14,7 +14,7 @@ export function GlobalStateProvider(props) {
         setCount((c) => c - 1);
       },
     },
-    "https://127.0.0.1:3001",
+    "https://localhost:3001",
   ];
 
   return (

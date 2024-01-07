@@ -43,7 +43,7 @@ export function itemFromImport(
                 e,
                 "start",
                 item.item_id,
-                1,
+                props.type,
                 dataServer,
                 refreshData,
                 setRefreshData
@@ -62,7 +62,20 @@ export function itemFromImport(
       >
         {item.item_name}
       </label>
-      <button class="destroy" onClick={(e) => affectItem(e, "delete")} />
+      <button
+        class="destroy"
+        onClick={(e) =>
+          affectItem(
+            e,
+            "delete",
+            item.item_id,
+            props.type,
+            dataServer,
+            refreshData,
+            setRefreshData
+          )
+        }
+      />
     </li>
   );
 }
