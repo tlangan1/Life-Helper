@@ -32,9 +32,9 @@
 
 ```mermaid
   flowchart LR
-      inactive<-. start, unstart (with explanation) .->active
-      active-. aborted (with explanation) .->aborted
-      active<-. completed uncompleted (with explanation) .->completed
+      inactive<-. "start, unstart (with explanation)" .->active
+      active-. "aborted (with explanation)" .->aborted
+      active<-. "completed, uncompleted (with explanation)" .->completed
 ```
 
 ## Enable https in Vite:
