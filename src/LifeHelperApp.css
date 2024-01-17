@@ -17,8 +17,7 @@ h2,
 h3,
 h4,
 h5,
-h6,
-button {
+h6 {
   margin: 0;
   padding: 0;
 }
@@ -46,6 +45,18 @@ header {
   gap: 10px;
 }
 
+button {
+  background: none;
+  border: 0;
+}
+
+button.subscription-button {
+  background: rgb(240, 240, 240);
+  color: var(--primary-color);
+  border: solid black;
+  margin: 0.5rem;
+}
+
 button.return::after {
   font-size: 30px;
   content: "\25B2";
@@ -53,48 +64,29 @@ button.return::after {
 }
 
 button.return {
-  color: var(--primary-color);
-  opacity: 0.5;
   display: none;
 }
 
 button.return.visible {
   color: var(--primary-color);
-  opacity: 0.5;
+  opacity: 0.3;
   display: block;
+}
+
+button.destroy {
+  opacity: 0.3;
 }
 
 button.return:hover,
 button.destroy:hover {
   opacity: 1;
-}
-
-button {
-  background: none;
-  border: 0;
+  scale: 1.5;
+  transition: all 0.5s;
 }
 
 .item-list li .destroy::after {
-  content: "×";
+  content: "x";
 }
-
-/* *** using a pseudo-element to indicate the purpose of the "start" check box *** */
-/* input.toggle::before {
-  content: "Start";
-  position: relative;
-  opacity: 0;
-  color: white;
-  left: 1.5rem;
-  top: -0.7rem;
-  font-size: 0.2rem;
-}
-
-input.toggle:hover::before {
-  opacity: 1;
-  font-size: 0.6rem;
-  color: var(--primary-color);
-  transition: all 2s;
-} */
 
 /* *** using a span element to indicate the purpose of the "start" check box *** */
 div.toggle {

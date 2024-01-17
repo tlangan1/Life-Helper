@@ -1,14 +1,18 @@
-self.addEventListener("activate", async () => {
+var windowList = [];
+
+// skipWaiting is being called
+// and svcWorker is being set to navigator.serviceWorker.controller
+// and the service worker is claiming the clients in the activate event
+
+self.addEventListener("activate", async (event) => {
   // This will be called only once when the service worker is activated.
+  event.waitUntil(clients.claim());
   console.log("The Life Helper service worker was beginning activation.");
   try {
-    console.log("In try block");
     const applicationServerKey = urlB64ToUint8Array(
       "BExD80_HkFrtVmffpbNP-KzVCoL6Y1m7sTvP6Ai7vCGZsn-XDsjwCEbG5Hz0sE0K3_crP6-1Jqdw2a-tjHKEqHk"
     );
-    console.log("Before setting options");
     const options = { applicationServerKey, userVisibleOnly: true };
-    console.log("Before call subscribe");
     const subscription = await self.registration.pushManager.subscribe(options);
     console.log("Before calling saveSubscription");
     const response = await saveSubscription(subscription);
@@ -16,6 +20,11 @@ self.addEventListener("activate", async () => {
   } catch (err) {
     console.log("Error", err);
   }
+});
+
+self.addEventListener("install", async (event) => {
+  self.skipWaiting();
+  console.log("The Life Helper service worker was installed.");
 });
 
 self.addEventListener("message", (event) => {
@@ -26,7 +35,22 @@ self.addEventListener("message", (event) => {
 
 self.addEventListener("push", function (event) {
   if (event.data) {
-    console.log("Push event!! ", event.data.text());
+    console.log("Push event!! ", event.data.json());
+    // TODO: Send a message to the page to notify it that a push has been received
+    // This is where I think I am dropping the ball.
+    // What I should be doing is adding it to a cache to which the page is attached.
+    event.waitUntil(
+      self.clients.matchAll().then((clientList) => {
+        if (clientList.length > 0) {
+          for (let index = 0; index < clientList.length; ++index) {
+            clientList[index].postMessage({
+              type: "Push Notification",
+              data: event.data.json(),
+            });
+          }
+        }
+      })
+    );
   } else {
     console.log("Push event but no data");
   }

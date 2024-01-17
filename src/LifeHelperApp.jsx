@@ -110,10 +110,11 @@ function LifeHelperApp(props) {
     <section class="app">
       <header>
         <button
-          id="permission-btn"
+          //   id="permission-btn"
+          class="subscription-button"
           onClick={(e) => askPermissionAndRegisterServiceIfAppropriate(e)}
         >
-          Request Web Push Subscription
+          Request A Web Push Subscription
         </button>
         <div class="header-title">
           <h1 class={`${props.type}_header`}>{pageTitle()}</h1>
