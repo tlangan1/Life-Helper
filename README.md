@@ -17,11 +17,6 @@
 1. Log service worker changes and retiring previous service worker DB rows. Perhaps I should create a new entity web_push_subscription_version which maintains a history of service workers that all use the same capability url.s
 1. I should create a route using solidJS to give the appearance that the service worker file is at the root and move it to a more logical place in the file system. See <a href="#service-worker-in-root">item number 1</a> above
 
-## Github autoplay test
-
-<video src="images/Example-1.mp4" width="320" height="240" loop="true" autoplay="true"></video>
-<video src="images/Example-2.mp4" width="320" height="240" loop="true" autoplay="true"></video>
-
 ## Basics
 
 1. To start this application run the following command.
