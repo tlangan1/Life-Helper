@@ -4,9 +4,14 @@
   "description": "",
   "scripts": {
     "start": "vite",
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "serve": "vite preview"
+  },
+  "scripts-comments": {
+    "dev": "Starts Vite in development mode with HMR and --host exposes the dev server to your local network",
+    "build": "Compiles and minifies for production",
+    "serve": "Locally preview production build"
   },
   "license": "MIT",
   "devDependencies": {
