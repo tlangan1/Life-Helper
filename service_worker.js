@@ -1,8 +1,6 @@
-var windowList = [];
+"use strict";
 
-// skipWaiting is being called
-// and svcWorker is being set to navigator.serviceWorker.controller
-// and the service worker is claiming the clients in the activate event
+const version = 1;
 
 self.addEventListener("activate", async (event) => {
   // This will be called only once when the service worker is activated.

@@ -1,3 +1,5 @@
+"use strict";
+
 // This function simply finds a DOM parent of type parentType
 // It has nothing to do with the parent() signal in LifeHelperApp.jsx
 export function FindParentElement(currentElement, parentType) {

@@ -9,12 +9,18 @@
 
 <span id="service-worker-in-root"></span>
 
+1. Embed the data server routes in the SolidJS/Vite server so that the issue with the <a href="#phone-experience">data access</a> of the phone experience is resolved
 1. **When I moved server.js to the root, I was able to send messages to the client, that is, the web page itself.**
-2. **When I change the name of the service worker file the behavior is the same as changing its contents.**
-3. **Without skipWaiting called in the install event, the new service worker is not used until the page is closed and reopened.**
-4. **Enable service worker changes to activate without closing and reopening the app. To do this most effectively I needed to both issue a `skipWaiting()` in the install event as well as a `event.waitUntil(clients.claim())` in the activation event.**
-5. Log service worker changes and retiring previous service worker DB rows. Perhaps I should create a new entity web_push_subscription_version which maintains a history of service workers that all use the same capability url.s
-6. I should create a route using solidJS to give the appearance that the service worker file is at the root and move it to a more logical place in the file system. See <a href="#service-worker-in-root">item number 1</a> above
+1. **When I change the name of the service worker file the behavior is the same as changing its contents.**
+1. **Without skipWaiting called in the install event, the new service worker is not used until the page is closed and reopened.**
+1. **Enable service worker changes to activate without closing and reopening the app. To do this most effectively I needed to both issue a `skipWaiting()` in the install event as well as a `event.waitUntil(clients.claim())` in the activation event.**
+1. Log service worker changes and retiring previous service worker DB rows. Perhaps I should create a new entity web_push_subscription_version which maintains a history of service workers that all use the same capability url.s
+1. I should create a route using solidJS to give the appearance that the service worker file is at the root and move it to a more logical place in the file system. See <a href="#service-worker-in-root">item number 1</a> above
+
+## Github autoplay test
+
+<video src="images/Example-1.mp4" width="320" height="240" loop="true" autoplay="true"></video>
+<video src="images/Example-2.mp4" width="320" height="240" loop="true" autoplay="true"></video>
 
 ## Basics
 
@@ -24,6 +30,11 @@
    ```
 1. This application uses the `Express Server` application as the backend. It assumes it is listening on port 3001.
 1. Note that it is important that this application starts on port 3000 as the server overrides `CORS` for requests coming from this port.
+
+## Vite Build and Preview
+
+1. In both cases I need to manually put a copy of service_worker.js in the dist directory.
+2. There should be some way to automate this.
 
 ## Search Resources
 
@@ -49,9 +60,13 @@
       active<-. "completed uncompleted (with explanation)" .->completed
 ```
 
-## Enable https in Vite:
+## Enable https in Vite and self-signed SSL certificates:
 
-1. The use @vitejs/plugin-basic-ssl to enable https did not work; however, mkcert did. Using it resulted in the following SSL certificate with the "mkcert DESKTOP-..." issued by value in the certificates in the `Trusted Root Certification Authorities` in the Microsoft Management Console accessible using the `mmc` command.
+1. The use @vitejs/plugin-basic-ssl to enable https did not work; however, mkcert did. Using it resulted in the following SSL certificate with issuer `mkcert DESKTOP-4QSML4N\tomla@DESKTOP-4QSML4N (Thomas Langan)` issued to value `DESKTOP-4QSML4N\tomla@DESKTOP-4QSML4N (Thomas Langan)`. I then placed this SSL certificate in the certificates in the `Trusted Root Certification Authorities` node in the Microsoft Management Console accessible accessible using the `mmc` command. I saved a view in mmc called "Console1.mmc" to more easily navigate to the list of certificates where this certificate is stored.
+   <span id="phone-experience"></span>
+2. Since service workers require HTTPS (which is SSL now called TLS running over HTTP) and I cannot get my phone to install the self-signed SSL certificate mentioned above the same way I did on my laptop associated with the express server I am using to fetch and store data I cannot get the application to function on my phone in the local household network.
+3. I have a hunch that if I can embed the data server routes in the vite server than I will at least be able to experience the data access on my phone. Currently the site will load even though it does not trust the certificate but it throws an SSL error when I attempt to interact with the express server.
+4. Also, I figured out how to debug my phone's browser on my laptop. See [this](https://developer.chrome.com/docs/devtools/remote-debugging) for the instructions. Note that the biggest problem I ran into was that my phone's twitchy usb port kept disconnecting the session but when it was connected it worked as advertised. Perhaps I should figure out how to do this with bluetooth.
 
 ## Self-Signed Certificates and Service Workers
 

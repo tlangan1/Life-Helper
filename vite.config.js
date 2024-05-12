@@ -24,6 +24,7 @@ export default defineConfig({
   ],
   server: {
     port: 3000,
+    // headers: { referrer: "origin" },
   },
   build: {
     target: "esnext",
