@@ -13,7 +13,7 @@ export const askPermissionAndRegisterServiceIfAppropriate = async () => {
 };
 
 // eslint-disable-next-line no-unused-vars
-const unregisterServiceWorker = async () => {
+export const unregisterServiceWorker = async () => {
   if (swRegistration) {
     if (await swRegistration.unregister())
       console.log(
@@ -31,7 +31,7 @@ const unregisterServiceWorker = async () => {
 };
 
 // eslint-disable-next-line no-unused-vars
-function sendMessage() {
+export function sendMessage() {
   if (!navigator.serviceWorker.controller)
     alert("No service worker is currently active");
   else {

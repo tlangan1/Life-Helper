@@ -16,6 +16,7 @@
 1. **Enable service worker changes to activate without closing and reopening the app. To do this most effectively I needed to both issue a `skipWaiting()` in the install event as well as a `event.waitUntil(clients.claim())` in the activation event.**
 1. Log service worker changes and retiring previous service worker DB rows. Perhaps I should create a new entity web_push_subscription_version which maintains a history of service workers that all use the same capability url.s
 1. I should create a route using solidJS to give the appearance that the service worker file is at the root and move it to a more logical place in the file system. See <a href="#service-worker-in-root">item number 1</a> above
+1. All the data required by the interface should be cached. The service worker should update the cache when a push is received.
 
 ## Basics
 
@@ -66,6 +67,10 @@
 ## Self-Signed Certificates and Service Workers
 
 1. See [this](https://serviceworke.rs/) resource for all sorts of service worker implementations. Note that the UI design is a little weird and that the code associated with each of the `recipes` is accessible through the tiny links in the top right-hand corner. Also, if you click a code link that does not have code associated with it the interface does not inform you of that it just navigates to the page without the links which is really weird.
+
+## Service Workers:
+
+1. Remember that if you go to the Application tab of Chrome Dev Tools you can see the service worker associated with that tab. You can also do things like `Stop` it and `Unregister` it. Also available at the bottom of the service workers panel is a link to `See all registrations`.
 
 ## Multi User Considerations
 

@@ -1,5 +1,9 @@
 import "./LifeHelperApp.css";
-import { askPermissionAndRegisterServiceIfAppropriate } from "./index.js";
+import {
+  askPermissionAndRegisterServiceIfAppropriate,
+  unregisterServiceWorker,
+  sendMessage,
+} from "./index.js";
 
 import {
   Show,
@@ -110,11 +114,19 @@ function LifeHelperApp(props) {
     <section class="app">
       <header>
         <button
-          //   id="permission-btn"
           class="subscription-button"
           onClick={(e) => askPermissionAndRegisterServiceIfAppropriate(e)}
         >
           Request A Web Push Subscription
+        </button>
+        <button
+          class="subscription-button"
+          onClick={(e) => unregisterServiceWorker(e)}
+        >
+          Un-register Service Worker
+        </button>
+        <button class="subscription-button" onClick={(e) => sendMessage(e)}>
+          Send Message To Service Worker
         </button>
         <div class="header-title">
           <h1 class={`${props.type}_header`}>{pageTitle()}</h1>
