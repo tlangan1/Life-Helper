@@ -14,7 +14,9 @@ export function GlobalStateProvider(props) {
         setCount((c) => c - 1);
       },
     },
-    "https://localhost:3001",
+    // Only relevant change 7/21/2024
+    // "https://localhost:3001",
+    "https://192.168.1.10:3001",
   ];
 
   return (

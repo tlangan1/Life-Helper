@@ -70,7 +70,10 @@ const urlB64ToUint8Array = (base64String) => {
 };
 // saveSubscription saves the subscription to the backend
 const saveSubscription = async (subscription) => {
-  const SERVER_URL = "https://localhost:3001/add/web_push_subscription";
+  // Only relevant change 7/26/2024. This should have been changed on 7/21/2024 when
+  // the GlobalStateProvider was changed.
+  // const SERVER_URL = "https://localhost:3001/add/web_push_subscription";
+  const SERVER_URL = "https://192.168.1.10:3001/add/web_push_subscription";
   const response = await fetch(SERVER_URL, {
     method: "post",
     headers: {

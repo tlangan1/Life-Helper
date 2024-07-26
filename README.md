@@ -58,11 +58,21 @@
 
 ## Enable https in Vite and self-signed SSL certificates:
 
-1. The use @vitejs/plugin-basic-ssl to enable https did not work; however, mkcert did. Using it resulted in the following SSL certificate with issuer `mkcert DESKTOP-4QSML4N\tomla@DESKTOP-4QSML4N (Thomas Langan)` issued to value `DESKTOP-4QSML4N\tomla@DESKTOP-4QSML4N (Thomas Langan)`. I then placed this SSL certificate in the certificates in the `Trusted Root Certification Authorities` node in the Microsoft Management Console accessible accessible using the `mmc` command. I saved a view in mmc called "Console1.mmc" to more easily navigate to the list of certificates where this certificate is stored.
+1. Get a USB-c backup device so that I can backup and restore my phones data in the event that I break something. To navigate to the backup capability go to Settings->Accounts and backup->External storage transfer.
+2. The use @vitejs/plugin-basic-ssl to enable https did not work; however, mkcert did. Using it resulted in the following SSL certificate with issuer `mkcert DESKTOP-4QSML4N\tomla@DESKTOP-4QSML4N (Thomas Langan)` issued to value `DESKTOP-4QSML4N\tomla@DESKTOP-4QSML4N (Thomas Langan)`. I then placed this SSL certificate in the certificates in the `Trusted Root Certification Authorities` node in the Microsoft Management Console accessible accessible using the `mmc` command. I saved a view in mmc called "Console1.mmc" to more easily navigate to the list of certificates where this certificate is stored.
    <span id="phone-experience"></span>
-2. Since service workers require HTTPS (which is SSL now called TLS running over HTTP) and I cannot get my phone to install the self-signed SSL certificate mentioned above the same way I did on my laptop associated with the express server I am using to fetch and store data I cannot get the application to function on my phone in the local household network.
-3. I have a hunch that if I can embed the data server routes in the vite server than I will at least be able to experience the data access on my phone. Currently the site will load even though it does not trust the certificate but it throws an SSL error when I attempt to interact with the express server.
-4. Also, I figured out how to debug my phone's browser on my laptop. See [this](https://developer.chrome.com/docs/devtools/remote-debugging) for the instructions. Note that the biggest problem I ran into was that my phone's twitchy usb port kept disconnecting the session but when it was connected it worked as advertised. Perhaps I should figure out how to do this with bluetooth.
+3. Since service workers require HTTPS (which is SSL now called TLS running over HTTP) and I cannot get my phone to install the self-signed SSL certificate mentioned above the same way I did on my laptop associated with the express server I am using to fetch and store data I cannot get the application to function on my phone on my local network.
+4. I need to have chrome on my phone trust the security certificate. If I view the certificate on my phone using the `Certificate viewer` it shows that it covers the following domains:
+   1. localhost
+   2. 192.168.1.10
+   3. 127.0.0.1
+   4. 172.17.192.1
+   5. 172.20.144.1
+5. Here are some relevant resources:
+   1. [This](https://stackoverflow.com/questions/57565665/one-self-signed-cert-to-rule-them-all-chrome-android-and-ios) looks very promising. I should implement it but I may want to wait until I get the USB-c drive. However, I am not convinced the backup to USB-c will include the security certificates...I should ensure this.
+   2. [Here](https://www.openssl.org/docs/man3.0/man1/openssl.html) is the documentation for openssl command.
+6. I THINK THIS IS A COP OUT: I have a hunch that if I can embed the data server routes in the vite server than I will at least be able to experience the data access on my phone. Currently the site will load even though it does not trust the certificate but it throws an SSL error when I attempt to interact with the express server.
+7. Also, I figured out how to debug my phone's browser on my laptop. See [this](https://developer.chrome.com/docs/devtools/remote-debugging) for the instructions.
 
 ## Self-Signed Certificates and Service Workers
 
@@ -71,6 +81,13 @@
 ## Service Workers:
 
 1. Remember that if you go to the Application tab of Chrome Dev Tools you can see the service worker associated with that tab. You can also do things like `Stop` it and `Unregister` it. Also available at the bottom of the service workers panel is a link to `See all registrations`.
+2. To reset the permissions for the service worker do the following:
+   1. Open the browser settings
+   2. Click on `Privacy and Security`
+   3. Click on `Site Settings`
+   4. Scroll to the appropriate URL, for example, https://127.0.0.1:3000 or https://localhost:3000 or both
+   5. Click the right-pointing triangle
+   6. Change Notifications from "Allow" to "Ask"
 
 ## Multi User Considerations
 
