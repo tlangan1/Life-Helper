@@ -1,7 +1,8 @@
 import "./LifeHelperApp.css";
 import {
   askPermissionAndRegisterServiceIfAppropriate,
-  unregisterServiceWorker,
+  /* *** Commented out 7/31/2024 *** */
+  //   unregisterServiceWorker,
   sendMessage,
 } from "./index.js";
 
@@ -119,12 +120,13 @@ function LifeHelperApp(props) {
         >
           Request A Web Push Subscription
         </button>
-        <button
+        {/* Commented out 7/31/2024 */}
+        {/* <button
           class="subscription-button"
           onClick={(e) => unregisterServiceWorker(e)}
         >
           Un-register Service Worker
-        </button>
+        </button> */}
         <button class="subscription-button" onClick={(e) => sendMessage(e)}>
           Send Message To Service Worker
         </button>
@@ -149,6 +151,7 @@ function LifeHelperApp(props) {
             );
           }}
           placeholder={`Enter ${props.type}`}
+          autofocus={true}
         />
       </header>
       <span>{items.loading && "Loading..."}</span>

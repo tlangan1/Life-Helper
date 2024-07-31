@@ -1,7 +1,8 @@
 "use strict";
 
-var swRegistration;
-var svcWorker;
+/* *** Commented out 7/31/2024 *** */
+// var swRegistration;
+// var svcWorker;
 
 // eslint-disable-next-line no-unused-vars
 export const askPermissionAndRegisterServiceIfAppropriate = async () => {
@@ -13,22 +14,23 @@ export const askPermissionAndRegisterServiceIfAppropriate = async () => {
 };
 
 // eslint-disable-next-line no-unused-vars
-export const unregisterServiceWorker = async () => {
-  if (swRegistration) {
-    if (await swRegistration.unregister())
-      console.log(
-        "The Life Helper service worker was successfully unregistered."
-      );
-    else
-      console.log(
-        "The Life Helper service worker was NOT successfully unregistered!"
-      );
-  } else {
-    console.log(
-      `The Life Helper service worker is not currently registered, so it cannot be unregistered.`
-    );
-  }
-};
+/* *** This code is not currently used and probably never will be. *** */
+// export const unregisterServiceWorker = async () => {
+//   if (swRegistration) {
+//     if (await swRegistration.unregister())
+//       console.log(
+//         "The Life Helper service worker was successfully unregistered."
+//       );
+//     else
+//       console.log(
+//         "The Life Helper service worker was NOT successfully unregistered!"
+//       );
+//   } else {
+//     console.log(
+//       `The Life Helper service worker is not currently registered, so it cannot be unregistered.`
+//     );
+//   }
+// };
 
 // eslint-disable-next-line no-unused-vars
 export function sendMessage() {
@@ -62,21 +64,26 @@ const registerServiceWorker = async () => {
     }
   );
 
-  svcWorker =
-    swRegistration.installing ||
-    swRegistration.waiting ||
-    swRegistration.active;
+  /* *** Commented out 7/31/2024 *** */
+  //   svcWorker =
+  //     swRegistration.installing ||
+  //     swRegistration.waiting ||
+  //     swRegistration.active;
 };
 
 navigator.serviceWorker.addEventListener(
   "controllerchange",
   function onControllerChange(event) {
-    svcWorker = navigator.serviceWorker.controller;
+    /* *** Commented out 7/31/2024 *** */
+    // svcWorker = navigator.serviceWorker.controller;
     console.log("Controller changed");
   }
 );
 
 async function requestNotificationPermission() {
+  /* *** At some point I should test *** */
+  //   const x = new Notification("Hello!");
+  //   const y = await Notification.requestPermission();
   const permission = await window.Notification.requestPermission();
   // value of permission can be 'granted', 'default', 'denied'
   // granted: user has accepted the request

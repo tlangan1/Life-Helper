@@ -15,8 +15,8 @@ export function GlobalStateProvider(props) {
       },
     },
     // Only relevant change 7/21/2024
-    // "https://localhost:3001",
-    "https://192.168.1.10:3001",
+    // "https://192.168.1.10:3001",
+    "https://192.168.1.159:3001",
   ];
 
   return (

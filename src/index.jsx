@@ -1,7 +1,6 @@
 /* @refresh reload */
 import { render } from "solid-js/web";
 
-// import "./index.css";
 import LifeHelperApp from "./LifeHelperApp";
 
 const root = document.getElementById("root");
