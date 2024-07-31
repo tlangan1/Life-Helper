@@ -16,6 +16,8 @@ import {
 
 import { useGlobalState } from "./GlobalStateProvider";
 
+import { AddItem } from "./AddItem";
+
 import { itemFromImport } from "./objective-goal-task.jsx";
 import {
   affectItem,
@@ -137,21 +139,12 @@ function LifeHelperApp(props) {
             onClick={returnToParent}
           ></button>
         </div>
-        <input
-          class="new-item"
-          onChange={(e) => {
-            affectItem(
-              e,
-              "add",
-              parent().length == 0 ? 0 : parent()[parent().length - 1].item_id,
-              props.type,
-              dataServer,
-              refreshData,
-              setRefreshData
-            );
-          }}
-          placeholder={`Enter ${props.type}`}
-          autofocus={true}
+        <AddItem
+          parent={parent}
+          type={props.type}
+          dataServer={dataServer /* used in LifeHelperApp */}
+          refreshData={refreshData /* used in LifeHelperApp */}
+          setRefreshData={setRefreshData /* used in LifeHelperApp */}
         />
       </header>
       <span>{items.loading && "Loading..."}</span>
