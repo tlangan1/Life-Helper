@@ -1,6 +1,7 @@
 "use strict";
 
 /* *** Commented out 7/31/2024 *** */
+/* *** By Tom *** */
 // var swRegistration;
 // var svcWorker;
 
@@ -57,12 +58,11 @@ function BrowserSupports() {
   return true;
 }
 const registerServiceWorker = async () => {
-  swRegistration = await navigator.serviceWorker.register(
-    "/service_worker.js",
-    {
-      updateViaCache: "none",
-    }
-  );
+  await navigator.serviceWorker.register("/service_worker.js", {
+    updateViaCache: "none",
+  });
+
+  console.log("Service Worker registered");
 
   /* *** Commented out 7/31/2024 *** */
   //   svcWorker =

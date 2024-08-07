@@ -1,6 +1,6 @@
 "use strict";
 
-const version = 2;
+const version = 3;
 
 // *** Service Worker Event Listeners ***
 
@@ -16,7 +16,10 @@ self.addEventListener("activate", async (event) => {
     const options = { applicationServerKey, userVisibleOnly: true };
     const subscription = await self.registration.pushManager.subscribe(options);
     console.log("Before calling saveSubscription");
-    const response = await saveSubscription(subscription);
+    const response = await saveSubscription(
+      subscription,
+      event.target.registration.scope
+    );
     console.log(response);
   } catch (err) {
     console.log("Error", err);
@@ -30,7 +33,10 @@ self.addEventListener("install", async (event) => {
 
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "MESSAGE_IDENTIFIER") {
-    console.log("Got the message");
+    console.log(
+      "Got the message and the host name is " +
+        event.source.url.substring(0, event.source.url.length - 6)
+    );
   }
 });
 
@@ -133,11 +139,15 @@ const urlB64ToUint8Array = (base64String) => {
   return outputArray;
 };
 // saveSubscription saves the subscription to the backend
-const saveSubscription = async (subscription) => {
+const saveSubscription = async (subscription, url) => {
   // Only relevant change 7/26/2024. This should have been changed on 7/21/2024 when
   // the GlobalStateProvider was changed.
-  // const SERVER_URL = "https://localhost:3001/add/web_push_subscription";
-  const SERVER_URL = "https://192.168.1.159:3001/add/web_push_subscription";
+  // const SERVER_URL = "https://192.168.1.10:3001/add/web_push_subscription";
+  // const SERVER_URL = "https://192.168.1.159:3001/add/web_push_subscription";
+  const SERVER_URL = `${url.substring(
+    0,
+    url.length - 6
+  )}:3001/add/web_push_subscription`;
   const response = await fetch(SERVER_URL, {
     method: "post",
     headers: {
