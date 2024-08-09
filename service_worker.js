@@ -12,6 +12,7 @@ self.addEventListener("activate", async (event) => {
     const applicationServerKey = urlB64ToUint8Array(
       // cSpell:disable
       "BExD80_HkFrtVmffpbNP-KzVCoL6Y1m7sTvP6Ai7vCGZsn-XDsjwCEbG5Hz0sE0K3_crP6-1Jqdw2a-tjHKEqHk"
+      // cSpell:enable
     );
     const options = { applicationServerKey, userVisibleOnly: true };
     const subscription = await self.registration.pushManager.subscribe(options);
@@ -66,7 +67,9 @@ self.addEventListener("push", function (event) {
 self.addEventListener("pushsubscriptionchange", function (event) {
   console.log("Push Subscription Change event!! ", event);
   /* *** ******************************************************* *** */
+  // cSpell:disable
   /* *** This is pushpad's code and below is MDN's code *** */
+  // cSpell:disable
   /* *** ******************************************************* *** */
   //   event.waitUntil(
   //     fetch("https://pushpad.xyz/pushsubscriptionchange", {

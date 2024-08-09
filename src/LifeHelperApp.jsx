@@ -1,8 +1,6 @@
 import "./LifeHelperApp.css";
 import {
   askPermissionAndRegisterServiceIfAppropriate,
-  /* *** Commented out 7/31/2024 *** */
-  //   unregisterServiceWorker,
   sendMessage,
 } from "./index.js";
 
@@ -24,109 +22,44 @@ import {
 } from "./helperFunctions";
 
 function LifeHelperApp(props) {
-  var [refreshData, setRefreshData] = createSignal(0);
+  // *** dataServer is the URL of the server that provides the data.
   var [, , dataServer] = useGlobalState();
-  // parent contains an array of at most two objects.
-  // 1) If the current view is the list of objectives then the array is empty.
-  // 2) If the current view is a list of goals, then the array contains
-  //    one object that identifies the objective with which they are associated.
-  // 3) If the current view is a list of tasks, then the array contains two objects.
-  //    The last object contains the goal to which they are associated
-  //    and the first object contains the objective to which the goal in the last object is associated.
-  var [parent, setParent] = createSignal([]);
-  var [pageTitle, setPageTitle] = createSignal("");
-  var [visibleClassValue, setVisibleClassValue] = createSignal("");
 
-  createEffect(pageTitleEffect);
-
-  function pageTitleEffect() {
-    switch (props.type) {
-      case "objective":
-        setPageTitle("Overall Objectives");
-        setVisibleClassValue("");
-        break;
-      case "goal":
-        setPageTitle(
-          `Goals to achieve objective "${
-            parent()[parent().length - 1].item_name
-          }"`
-        );
-        setVisibleClassValue("visible");
-        break;
-      case "task":
-        setPageTitle(
-          `Tasks to achieve goal "${parent()[parent().length - 1].item_name}"`
-        );
-        setVisibleClassValue("visible");
-
-        break;
-      default:
-        setPageTitle("Unknown Page Item");
-    }
-  }
-
-  const fetchItems = async () => {
-    var searchParams = "";
-    if (props.type != "objective")
-      searchParams = JSON.stringify({
-        parent_id: parent()[parent().length - 1].item_id,
-      });
-
-    var response = await fetch(
-      dataServer + `/${props.type}s` + "?params=" + searchParams
-    );
-    if (!response.ok) {
-      alert(
-        `Server Error: status is ${response.status} reason is ${response.statusText}`
-      );
-    } else {
-      return await response.json();
-    }
-  };
-
+  // *** refreshData is a signal that is used to initiate a data refresh
+  // *** using the function fetchItems.
+  // *** setRefreshData is used to toggle refreshData between 0 and 1.
+  var [refreshData, setRefreshData] = createSignal(0);
   const [items] = createResource(refreshData, fetchItems);
 
-  //   var startedCount = createMemo(
-  //     items().reduce((item, totalStarted) => {
-  //       if (item.started_dtm) totalStarted++;
-  //     })
-  //   );
+  // *** parent contains an array of at most two objects.
+  // *** Each object contains two properties: item_id and item_name.
+  // *** 1) If the current view is the list of objectives then the array is empty.
+  // *** 2) If the current view is a list of goals, then the array contains
+  // ***    one object that identifies the objective with which the goals are associated.
+  // *** 3) If the current view is a list of tasks, then the array contains two objects.
+  // ***    The second object contains the goal to which the tasks are associated
+  // ***    and the first object contains the objective to which that goal is associated.
+  var [parent, setParent] = createSignal([]);
 
-  function returnToParent() {
-    setParent(() => {
-      parent().pop();
-      return parent();
-    });
-    switch (props.type) {
-      case "objective":
-        break;
-      case "goal":
-        props.setter("objective");
-        setRefreshData((refreshData() + 1) % 2);
-        break;
-      case "task":
-        props.setter("goal");
-        setRefreshData((refreshData() + 1) % 2);
-        break;
-    }
-  }
+  // *** pageTitleEffect is a signal that is used to set the page title and
+  // *** is triggered by changes to props.type.
+  createEffect(pageTitleEffect);
+  var [pageTitle, setPageTitle] = createSignal("");
+
+  // *** visibleClassValue is a signal that is used to toggle the visibility of the return button.
+  var [visibleClassValue, setVisibleClassValue] = createSignal("");
 
   return (
     <section class="app">
       <header>
+        <p>refreshData() is {refreshData()}</p>
+        <p>props.type is {props.type}</p>
         <button
           class="subscription-button"
           onClick={(e) => askPermissionAndRegisterServiceIfAppropriate(e)}
         >
           Request A Web Push Subscription
         </button>
-        {/* Commented out 7/31/2024 */}
-        {/* <button
-          class="subscription-button"
-          onClick={(e) => unregisterServiceWorker(e)}
-        >
-          Un-register Service Worker
-        </button> */}
         <button class="subscription-button" onClick={(e) => sendMessage(e)}>
           Send Message To Service Worker
         </button>
@@ -188,6 +121,71 @@ function LifeHelperApp(props) {
       </footer>
     </section>
   );
+
+  // *** Helper functions for the code above
+  async function fetchItems() {
+    var searchParams = "";
+    if (props.type != "objective")
+      searchParams = JSON.stringify({
+        parent_id: parent()[parent().length - 1].item_id,
+      });
+
+    var response = await fetch(
+      dataServer + `/${props.type}s` + "?params=" + searchParams
+    );
+    if (!response.ok) {
+      alert(
+        `Server Error: status is ${response.status} reason is ${response.statusText}`
+      );
+    } else {
+      return await response.json();
+    }
+  }
+
+  function returnToParent() {
+    setParent(() => {
+      parent().pop();
+      return parent();
+    });
+    switch (props.type) {
+      case "objective":
+        break;
+      case "goal":
+        props.setter("objective");
+        setRefreshData((refreshData() + 1) % 2);
+        break;
+      case "task":
+        props.setter("goal");
+        setRefreshData((refreshData() + 1) % 2);
+        break;
+    }
+  }
+
+  function pageTitleEffect() {
+    switch (props.type) {
+      case "objective":
+        setPageTitle("Overall Objectives");
+        setVisibleClassValue("");
+        break;
+      case "goal":
+        setPageTitle(
+          `Goals to achieve objective "${
+            parent()[parent().length - 1].item_name
+          }"`
+        );
+        setVisibleClassValue("visible");
+        break;
+      case "task":
+        setPageTitle(
+          `Tasks to achieve goal "${parent()[parent().length - 1].item_name}"`
+        );
+        setVisibleClassValue("visible");
+
+        break;
+      default:
+        setPageTitle("Unknown Page Item");
+    }
+  }
 }
 
 export default LifeHelperApp;
