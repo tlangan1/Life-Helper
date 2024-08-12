@@ -7,15 +7,7 @@ export function FindParentElement(currentElement, parentType) {
   else return FindParentElement(currentElement.parentElement, parentType);
 }
 
-export async function affectItem(
-  evt,
-  affectType,
-  item_id,
-  item_type,
-  dataServer,
-  refreshData,
-  setRefreshData
-) {
+export async function affectItem(evt, affectType, item_type, data, dataServer) {
   // body data
   var item;
   var endPoint;
@@ -23,21 +15,24 @@ export async function affectItem(
   switch (affectType) {
     case "add":
       item = {
-        parent_id: item_id,
-        name: evt.target.value,
-        description: `This is a description of a ${item_type}`, // TODO create a description control
+        parent_id: data.parent_id,
+        // TODO: replace evt with data
+        name: data.item_name,
+        description: data.item_description, // TODO create a description control
       };
       endPoint = `/${affectType}/${item_type}`;
       break;
     case "start":
       item = {
-        task_id: item_id,
+        task_id: data.item_id,
       };
       endPoint = `/${affectType}`;
       break;
     case "update":
       item = {
+        // TODO: replace evt with data
         name: evt.target.value,
+        // TODO: replace evt with data
         item_id: evt.target.attributes.item_id.value,
         description: `This is a description of a ${item_type}`, // TODO create a description control
       };
@@ -45,7 +40,7 @@ export async function affectItem(
     case "delete":
       var parentLi = FindParentElement(evt.target, "li");
       item = {
-        item_id: parentLi.attributes.item_id.value,
+        item_id: parentLi.attributes["data-item_id"].value,
       };
       endPoint = `/${affectType}/${item_type}`;
       break;
@@ -69,8 +64,9 @@ export async function affectItem(
     );
     return false;
   } else {
+    // TODO: replace evt with data
     evt.target.value = "";
-    setRefreshData((refreshData() + 1) % 2);
+    // setRefreshData((refreshData() + 1) % 2);
     return true;
   }
 }

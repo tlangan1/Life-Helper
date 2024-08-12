@@ -14,24 +14,21 @@ import {
 
 import { useGlobalState } from "./GlobalStateProvider";
 
-import { itemFromImport } from "./objective-goal-task.jsx";
-import {
-  affectItem,
-  startedButNotCompletedCount,
-  completedCount,
-} from "./helperFunctions";
+import { ProjectItem } from "./ProjectItem.jsx";
+import { AddItem } from "./AddItem.jsx";
+
+import { startedButNotCompletedCount, completedCount } from "./helperFunctions";
 
 function LifeHelperApp(props) {
   // *** dataServer is the URL of the server that provides the data.
-  var [, , dataServer] = useGlobalState();
+  var [, , refreshData, toggleRefreshData, dataServer] = useGlobalState();
 
-  // *** refreshData is a signal that is used to initiate a data refresh
-  // *** using the function fetchItems.
-  // *** setRefreshData is used to toggle refreshData between 0 and 1.
-  var [refreshData, setRefreshData] = createSignal(0);
+  // *** The SolidJS resource items is used to store the objectives, goals or tasks
+  // *** retrieved from the server depending on the context.
   const [items] = createResource(refreshData, fetchItems);
 
   // *** parent contains an array of at most two objects.
+  // *** It is essentially a stack that is used to navigate the hierarchy of objectives, goals and tasks.
   // *** Each object contains two properties: item_id and item_name.
   // *** 1) If the current view is the list of objectives then the array is empty.
   // *** 2) If the current view is a list of goals, then the array contains
@@ -52,8 +49,8 @@ function LifeHelperApp(props) {
   return (
     <section class="app">
       <header>
-        <p>refreshData() is {refreshData()}</p>
-        <p>props.type is {props.type}</p>
+        {/* <p>refreshData() is {refreshData()}</p> */}
+        {/* <p>props.type is {props.type}</p> */}
         <button
           class="subscription-button"
           onClick={(e) => askPermissionAndRegisterServiceIfAppropriate(e)}
@@ -64,27 +61,18 @@ function LifeHelperApp(props) {
           Send Message To Service Worker
         </button>
         <div class="header-title">
-          <h1 class={`${props.type}_header`}>{pageTitle()}</h1>
+          <h1 class={`${props.itemType}_header`}>{pageTitle()}</h1>
           <button
             class={`return ${visibleClassValue()}`}
             onClick={returnToParent}
           ></button>
         </div>
-        <input
-          class="new-item"
-          onChange={(e) => {
-            affectItem(
-              e,
-              "add",
-              parent().length == 0 ? 0 : parent()[parent().length - 1].item_id,
-              props.type,
-              dataServer,
-              refreshData,
-              setRefreshData
-            );
-          }}
-          placeholder={`Enter ${props.type}`}
-          autofocus={true}
+        <AddItem
+          parent_id={
+            parent().length == 0 ? 0 : parent()[parent().length - 1].item_id
+          }
+          item_type={props.itemType}
+          dataServer={dataServer}
         />
       </header>
       <span>{items.loading && "Loading..."}</span>
@@ -93,17 +81,7 @@ function LifeHelperApp(props) {
         <Show when={items().length > 0}>
           <ul class="item-list">
             <For each={items()}>
-              {(item) =>
-                itemFromImport(
-                  item,
-                  props,
-                  setParent,
-                  parent,
-                  setRefreshData,
-                  refreshData,
-                  dataServer
-                )
-              }
+              {(item) => ProjectItem(props, item, setParent, parent)}
             </For>
           </ul>
         </Show>
@@ -125,13 +103,13 @@ function LifeHelperApp(props) {
   // *** Helper functions for the code above
   async function fetchItems() {
     var searchParams = "";
-    if (props.type != "objective")
+    if (props.itemType != "objective")
       searchParams = JSON.stringify({
         parent_id: parent()[parent().length - 1].item_id,
       });
 
     var response = await fetch(
-      dataServer + `/${props.type}s` + "?params=" + searchParams
+      dataServer + `/${props.itemType}s` + "?params=" + searchParams
     );
     if (!response.ok) {
       alert(
@@ -147,22 +125,22 @@ function LifeHelperApp(props) {
       parent().pop();
       return parent();
     });
-    switch (props.type) {
+    switch (props.itemType) {
       case "objective":
         break;
       case "goal":
-        props.setter("objective");
-        setRefreshData((refreshData() + 1) % 2);
+        props.setItemType("objective");
+        toggleRefreshData();
         break;
       case "task":
-        props.setter("goal");
-        setRefreshData((refreshData() + 1) % 2);
+        props.setItemType("goal");
+        toggleRefreshData();
         break;
     }
   }
 
   function pageTitleEffect() {
-    switch (props.type) {
+    switch (props.itemType) {
       case "objective":
         setPageTitle("Overall Objectives");
         setVisibleClassValue("");

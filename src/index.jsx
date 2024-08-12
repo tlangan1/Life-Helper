@@ -20,7 +20,7 @@ render(() => {
   var [itemType, setItemType] = createSignal("objective");
   return (
     <GlobalStateProvider>
-      <LifeHelperApp type={itemType()} setter={setItemType} />
+      <LifeHelperApp itemType={itemType()} setItemType={setItemType} />
     </GlobalStateProvider>
   );
 }, root);

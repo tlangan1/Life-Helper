@@ -5,18 +5,38 @@
 1. About time 3:45 into the `Register & Install a Service Worker` subsection of the `Service Worker Project` section of the `Exploring Service Workers` [tutorial](https://frontendmasters.com/courses/service-workers/register-install-a-service-worker/) by Kyle Simpson he explains the `file system scope` of a service worker and how he obfuscates the physical location with a server route. It makes me think that there is a way in Vite that I can accomplish the same thing.
 1. Do not put an ampersand, `&`, in the name of a folder anywhere in the path within which `vite` is being used. It results in an error thrown by node.js saying that it cannot find vite. I did `NOT` try an uninstall and reinstall of `vite` to see if that may also be a solution.
 
-## TODOs 1/15/2024
+## TODOs
+
+### Completed
 
 <span id="service-worker-in-root"></span>
 
-1. Embed the data server routes in the SolidJS/Vite server so that the issue with the <a href="#phone-experience">data access</a> of the phone experience is resolved
 1. **When I moved server.js to the root, I was able to send messages to the client, that is, the web page itself.**
 1. **When I change the name of the service worker file the behavior is the same as changing its contents.**
 1. **Without skipWaiting called in the install event, the new service worker is not used until the page is closed and reopened.**
 1. **Enable service worker changes to activate without closing and reopening the app. To do this most effectively I needed to both issue a `skipWaiting()` in the install event as well as a `event.waitUntil(clients.claim())` in the activation event.**
+
+### In Progress
+
+- [ ] Replace the item text box with an "Add [a/an] [Objective/Goal/Task]" label/link".
+  - [x] Change the function affectItem in helperFunctions.js in the following way before creating the AddItem component. Currently, affectItem is passed the signal refreshData and its setter setRefreshData. This should no longer be the case. Refactor these parameters out of this function and place the onus to refresh the data on the caller.
+    - [x] start
+    - [x] delete
+    - [x] add
+  - Make this a component and call it AddItem.
+  - It should be responsible for adding a row to either the objective, goal or task tables and nothing more. To do this it will need the type of its parent as well as the id of its parent. Remember, in the case of objectives there is no parent.
+  - affectItem is the function that wraps data actions. It is currently used to do three things.
+    - In LifeHelper.jsx it is used to `add` an item but that is what we are changing in this TODO. we are moving that call to a new component called AddItem.
+    - In objective-goal-task.jsx which contains the itemFromImport component it is used to `start` or `delete` an item.
+  - Focus no longer makes sense.
+  - See the "Add a comment" link [here](https://ux.stackexchange.com/questions/149929/text-box-max-character-limit-best-practice) as well as the question and associated answer for design considerations concerning limitations on the length of text entry.
+  - Create a modal solution which provides the user with two input controls. One to enter the item label and one to enter the item description. See the docs for the SolidJS [Portal component](https://docs.solidjs.com/reference/components/portal#lessportalgreater).
+
+### Yet To Do
+
 1. Log service worker changes and retiring previous service worker DB rows. Perhaps I should create a new entity web_push_subscription_version which maintains a history of service workers that all use the same capability url.s
 1. I should create a route using solidJS to give the appearance that the service worker file is at the root and move it to a more logical place in the file system. See <a href="#service-worker-in-root">item number 1</a> above
-1. All the data required by the interface should be cached. The service worker should update the cache when a push is received.
+1. All the data required by the interface should be cached. The service worker should update the cache when a push is received. Pushes should be restricted to time sensitive data changes like the starting of a task. If a user goes offline they should not be allowed to start a new task. If this were allowed then it could be the case that several users start the same task which should not be allowed.
 
 ## Basics
 
@@ -60,19 +80,17 @@
 
 1. Get a USB-c backup device so that I can backup and restore my phones data in the event that I break something. To navigate to the backup capability go to Settings->Accounts and backup->External storage transfer.
 2. The use @vitejs/plugin-basic-ssl to enable https did not work; however, mkcert did. Using it resulted in the following SSL certificate with issuer `mkcert DESKTOP-4QSML4N\tomla@DESKTOP-4QSML4N (Thomas Langan)` issued to value `DESKTOP-4QSML4N\tomla@DESKTOP-4QSML4N (Thomas Langan)`. I then placed this SSL certificate in the certificates in the `Trusted Root Certification Authorities` node in the Microsoft Management Console accessible accessible using the `mmc` command. I saved a view in mmc called "Console1.mmc" to more easily navigate to the list of certificates where this certificate is stored.
-   <span id="phone-experience"></span>
-3. Since service workers require HTTPS (which is SSL now called TLS running over HTTP) and I cannot get my phone to install the self-signed SSL certificate mentioned above the same way I did on my laptop associated with the express server I am using to fetch and store data I cannot get the application to function on my phone on my local network.
-4. I need to have chrome on my phone trust the security certificate. If I view the certificate on my phone using the `Certificate viewer` it shows that it covers the following domains:
+3. I need to have chrome on my phone trust the security certificate. If I view the certificate on my phone using the `Certificate viewer` it shows that it covers the following domains:
    1. localhost
    2. 192.168.1.10
    3. 127.0.0.1
    4. 172.17.192.1
    5. 172.20.144.1
-5. Here are some relevant resources:
+4. Here are some relevant resources:
    1. [This](https://stackoverflow.com/questions/57565665/one-self-signed-cert-to-rule-them-all-chrome-android-and-ios) looks very promising. I should implement it but I may want to wait until I get the USB-c drive. However, I am not convinced the backup to USB-c will include the security certificates...I should ensure this.
    2. [Here](https://www.openssl.org/docs/man3.0/man1/openssl.html) is the documentation for openssl command.
-6. I THINK THIS IS A COP OUT: I have a hunch that if I can embed the data server routes in the vite server than I will at least be able to experience the data access on my phone. Currently the site will load even though it does not trust the certificate but it throws an SSL error when I attempt to interact with the express server.
-7. Also, I figured out how to debug my phone's browser on my laptop. See [this](https://developer.chrome.com/docs/devtools/remote-debugging) for the instructions.
+5. I THINK THIS IS A COP OUT: I have a hunch that if I can embed the data server routes in the vite server than I will at least be able to experience the data access on my phone. Currently the site will load even though it does not trust the certificate but it throws an SSL error when I attempt to interact with the express server.
+6. Also, I figured out how to debug my phone's browser on my laptop. See [this](https://developer.chrome.com/docs/devtools/remote-debugging) for the instructions.
 
 ## Self-Signed Certificates and Service Workers
 
