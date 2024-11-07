@@ -34,7 +34,7 @@ export const askPermissionAndRegisterServiceIfAppropriate = async () => {
 // };
 
 // eslint-disable-next-line no-unused-vars
-export function sendMessage() {
+export function sendMessage(e) {
   if (!navigator.serviceWorker.controller)
     alert("No service worker is currently active");
   else {
@@ -97,5 +97,7 @@ navigator.serviceWorker.addEventListener("message", (event) => {
   console.log("Got message from service worker!!!");
   if (event.data && event.data.type === "Push Notification") {
     document.title = event.data.data.name;
+    // I am going to use the strategy of forcing a data refresh from the
+    // database to give the visual effect of updating cache (for now).
   }
 });
