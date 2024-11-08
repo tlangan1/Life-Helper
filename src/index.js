@@ -5,44 +5,57 @@
 // var swRegistration;
 // var svcWorker;
 
-// eslint-disable-next-line no-unused-vars
-export const askPermissionAndRegisterServiceIfAppropriate = async () => {
+export const askWebPushPermission = async (message) => {
+  await requestNotificationPermission(message);
+};
+
+export const registerServiceWorker = async () => {
+  console.log("starting registerServiceWorker");
   if (BrowserSupports()) {
-    if (await requestNotificationPermission()) {
-      await registerServiceWorker();
-    }
+    console.log("starting registerServiceWorker");
+    await navigator.serviceWorker.register("/service_worker.js", {
+      updateViaCache: "none",
+    });
+
+    console.log("Service Worker registered");
+  } else {
+    console.log("Service workers not supported by this browser");
   }
 };
 
-// eslint-disable-next-line no-unused-vars
-/* *** This code is not currently used and probably never will be. *** */
-// export const unregisterServiceWorker = async () => {
-//   if (swRegistration) {
-//     if (await swRegistration.unregister())
-//       console.log(
-//         "The Life Helper service worker was successfully unregistered."
-//       );
-//     else
-//       console.log(
-//         "The Life Helper service worker was NOT successfully unregistered!"
-//       );
-//   } else {
-//     console.log(
-//       `The Life Helper service worker is not currently registered, so it cannot be unregistered.`
-//     );
-//   }
-// };
-
-// eslint-disable-next-line no-unused-vars
-export function sendMessage(e) {
+export function sendMessage(msg) {
+  console.log("starting sendMessage");
   if (!navigator.serviceWorker.controller)
     alert("No service worker is currently active");
   else {
     navigator.serviceWorker.controller.postMessage({
-      type: "MESSAGE_IDENTIFIER",
+      message: msg,
     });
   }
 }
+
+/* *** Event Listeners *** */
+navigator.serviceWorker.addEventListener(
+  "controllerchange",
+  function onControllerChange(event) {
+    /* *** Commented out 7/31/2024 *** */
+    // svcWorker = navigator.serviceWorker.controller;
+    console.log("Controller changed");
+  }
+);
+
+navigator.serviceWorker.addEventListener("message", (event) => {
+  console.log("Got message from service worker!!!");
+  if (event.data && event.data.type === "Push Notification") {
+    document.title = event.data.data.name;
+    // I am going to use the strategy of forcing a data refresh from the
+    // database to give the visual effect of updating cache (for now).
+  }
+  if (event.data && event.data.type === "Service Worker Activated") {
+    document.title = "Activated";
+    document.querySelector(".subscription-button").disabled = false;
+  }
+});
 
 /* *** Helper Functions *** */
 function BrowserSupports() {
@@ -57,47 +70,19 @@ function BrowserSupports() {
 
   return true;
 }
-const registerServiceWorker = async () => {
-  await navigator.serviceWorker.register("/service_worker.js", {
-    updateViaCache: "none",
-  });
 
-  console.log("Service Worker registered");
-
-  /* *** Commented out 7/31/2024 *** */
-  //   svcWorker =
-  //     swRegistration.installing ||
-  //     swRegistration.waiting ||
-  //     swRegistration.active;
-};
-
-navigator.serviceWorker.addEventListener(
-  "controllerchange",
-  function onControllerChange(event) {
-    /* *** Commented out 7/31/2024 *** */
-    // svcWorker = navigator.serviceWorker.controller;
-    console.log("Controller changed");
-  }
-);
-
-async function requestNotificationPermission() {
-  /* *** At some point I should test *** */
-  //   const x = new Notification("Hello!");
-  //   const y = await Notification.requestPermission();
+async function requestNotificationPermission(msg) {
+  console.log("starting requestNotificationPermission");
   const permission = await window.Notification.requestPermission();
   // value of permission can be 'granted', 'default', 'denied'
   // granted: user has accepted the request
   // default: user has dismissed the notification permission popup by clicking on x
   // denied: user has denied the request.
-  if (permission == "granted") return true;
-  else return false;
-}
 
-navigator.serviceWorker.addEventListener("message", (event) => {
-  console.log("Got message from service worker!!!");
-  if (event.data && event.data.type === "Push Notification") {
-    document.title = event.data.data.name;
-    // I am going to use the strategy of forcing a data refresh from the
-    // database to give the visual effect of updating cache (for now).
-  }
-});
+  // I am sending this message to the service worker to provide the url
+  // to use for the backend server. The service worker needs this to
+  // send the push subscription to the database. I chose to not hard code
+  // this url in both the web site and in the service worker and used this
+  // strategy instead
+  if (permission == "granted") sendMessage(msg);
+}
