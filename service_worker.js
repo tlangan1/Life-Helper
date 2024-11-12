@@ -1,43 +1,43 @@
 "use strict";
 
-const version = 3;
+const version = 1.04;
+var backendURL;
 
 // *** Service Worker Event Listeners ***
-
-self.addEventListener("activate", async (event) => {
-  // This will be called only once when the service worker is activated.
-  event.waitUntil(clients.claim());
-  console.log("The Life Helper service worker was beginning activation.");
-  try {
-    const applicationServerKey = urlB64ToUint8Array(
-      // cSpell:disable
-      "BExD80_HkFrtVmffpbNP-KzVCoL6Y1m7sTvP6Ai7vCGZsn-XDsjwCEbG5Hz0sE0K3_crP6-1Jqdw2a-tjHKEqHk"
-      // cSpell:enable
-    );
-    const options = { applicationServerKey, userVisibleOnly: true };
-    const subscription = await self.registration.pushManager.subscribe(options);
-    console.log("Before calling saveSubscription");
-    const response = await saveSubscription(
-      subscription,
-      event.target.registration.scope
-    );
-    console.log(response);
-  } catch (err) {
-    console.log("Error", err);
-  }
-});
 
 self.addEventListener("install", async (event) => {
   self.skipWaiting();
   console.log("The Life Helper service worker was installed.");
 });
 
+self.addEventListener("activate", async (event) => {
+  // This will be called only once when the service worker is activated.
+  event.waitUntil(clients.claim());
+  console.log("The Life Helper service worker was beginning activation.");
+
+  self.clients.matchAll().then((clientList) => {
+    if (clientList.length > 0) {
+      for (let index = 0; index < clientList.length; ++index) {
+        clientList[index].postMessage({
+          type: "Service Worker Activated",
+        });
+      }
+    }
+  });
+});
+
 self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "MESSAGE_IDENTIFIER") {
+  if (event.data) {
     console.log(
-      "Got the message and the host name is " +
-        event.source.url.substring(0, event.source.url.length - 6)
+      `Got this message from the host, ${event.source.url.substring(
+        0,
+        event.source.url.length - 6
+      )}`
     );
+    if (event.data.message.type == "Backend Server URL") {
+      backendURL = event.data.message.backend_server_url;
+      obtainPushSubscription();
+    }
   }
 });
 
@@ -125,7 +125,28 @@ self.addEventListener("pushsubscriptionchange", function (event) {
   // );
 });
 
-// *** Helper Functions ***
+/* *** Helper Functions *** */
+
+async function obtainPushSubscription() {
+  try {
+    const applicationServerKey = urlB64ToUint8Array(
+      // cSpell:disable
+      "BExD80_HkFrtVmffpbNP-KzVCoL6Y1m7sTvP6Ai7vCGZsn-XDsjwCEbG5Hz0sE0K3_crP6-1Jqdw2a-tjHKEqHk"
+      // cSpell:enable
+    );
+    const options = { applicationServerKey, userVisibleOnly: true };
+    const subscription = await self.registration.pushManager.subscribe(options);
+    console.log("Before calling saveSubscription");
+    const response = await saveSubscription(
+      subscription,
+      // event.target.registration.scope
+      backendURL
+    );
+    console.log(response);
+  } catch (err) {
+    console.log("Error", err);
+  }
+}
 
 // urlB64ToUint8Array is a magic function that will encode the base64 public key
 // to Array buffer which is needed by the subscription option
@@ -141,16 +162,13 @@ const urlB64ToUint8Array = (base64String) => {
   }
   return outputArray;
 };
+
 // saveSubscription saves the subscription to the backend
 const saveSubscription = async (subscription, url) => {
-  // Only relevant change 7/26/2024. This should have been changed on 7/21/2024 when
-  // the GlobalStateProvider was changed.
-  // const SERVER_URL = "https://192.168.1.10:3001/add/web_push_subscription";
-  // const SERVER_URL = "https://192.168.1.159:3001/add/web_push_subscription";
-  const SERVER_URL = `${url.substring(
-    0,
-    url.length - 6
-  )}:3001/add/web_push_subscription`;
+  const SERVER_URL = `${url}/add/web_push_subscription`;
+  console.log(
+    `Before fetch call to save the web push subscription: SERVER_URL is ${SERVER_URL}`
+  );
   const response = await fetch(SERVER_URL, {
     method: "post",
     headers: {

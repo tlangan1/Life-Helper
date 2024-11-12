@@ -23,10 +23,6 @@ export function GlobalStateProvider(props) {
     function toggleRefreshData() {
       setRefreshData((refreshData() + 1) % 2);
     },
-    // Only relevant change 7/21/2024
-    // "https://192.168.1.10:3001",
-    // "https://192.168.1.159:3001",
-    // `${window.location.protocol}//${window.location.hostname}:3001`,
     "https://192.168.1.10:3001",
   ];
 
