@@ -7,6 +7,9 @@ export function FindParentElement(currentElement, parentType) {
   else return FindParentElement(currentElement.parentElement, parentType);
 }
 
+export function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 export async function affectItem(evt, affectType, item_type, data, dataServer) {
   // body data
   var item;

@@ -1,8 +1,43 @@
-.popup {
-  background-color: aqua;
+.popup-wrapper {
   position: absolute;
-  top: 25vh;
-  right: 50vw;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(240, 255, 255, 0.7);
+}
+
+.popup {
+  align-self: center;
+  background-color: aqua;
   border-radius: 1rem;
   padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.popup .buttons {
+  padding-top: 1rem;
+  display: flex;
+  justify-content: space-around;
+}
+
+.popup textarea {
+  resize: none;
+  min-width: 350px;
+  min-height: 5rem;
+  margin-bottom: 1rem;
+}
+
+button.action-button {
+  background: rgb(240, 240, 240);
+  color: black;
+  border: solid black;
+  margin: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+input[type="text"] ~ span {
+  margin-bottom: 0.5rem;
 }

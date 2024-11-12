@@ -3,7 +3,7 @@ import { Portal, Show } from "solid-js/web";
 import { createSignal } from "solid-js";
 import { useGlobalState } from "./GlobalStateProvider";
 
-import { affectItem } from "./helperFunctions";
+import { affectItem, capitalizeFirstLetter } from "./helperFunctions";
 
 // <input
 //   class="new-item"
@@ -30,53 +30,74 @@ export function AddItem(props) {
 
   return (
     <>
-      <a
+      <button
+        class="action-button"
         title={`Click here to add ${indefiniteArticle()} ${props.item_type}`}
         onClick={toggleAddItem}
       >
         {`Add ${indefiniteArticle()} ${props.item_type}`}
-      </a>
+      </button>
       <Show when={AddItem()}>
         <Portal mount={document.querySelector("body")}>
-          <div class="popup">
-            <p>
-              {`parent_id is ${props.parent_id}`}
-              <br />
-              {`item_type is ${props.item_type}`}
-              <br />
-              {`dataServer is ${props.dataServer}`}
-            </p>
-            <label htmlFor="item_label"></label>
-            <input
-              ref={itemName}
-              type="text"
-              name="item_label"
-              id="item_label"
-            />
-            <label htmlFor="item_description"></label>
-            <textarea
-              ref={itemDescription}
-              name="item_description"
-              id="item_description"
-            ></textarea>
-            <a
-              title="Click to save this item"
-              onClick={(e) =>
-                saveItem(
-                  e,
-                  "add",
-                  props.item_type,
-                  {
-                    parent_id: props.parent_id,
-                    item_name: itemName.value,
-                    item_description: itemDescription.value,
-                  },
-                  dataServer
-                )
-              }
-            >
-              Save this item
-            </a>
+          <div class="popup-wrapper">
+            <div class="popup">
+              <p>
+                {`parent_id is ${props.parent_id}`}
+                <br />
+                {`item_type is ${props.item_type}`}
+                <br />
+                {`dataServer is ${props.dataServer}`}
+              </p>
+              <label htmlFor="item_label">
+                {capitalizeFirstLetter(props.item_type)} Name:
+              </label>
+              <input
+                ref={itemName}
+                type="text"
+                name="item_label"
+                id="item_label"
+                minLength="10"
+                maxLength="25"
+                onKeyUp={updateCharacterCount}
+              />
+              <span>10 to 25 characters required:</span>
+              <label htmlFor="item_description">
+                {capitalizeFirstLetter(props.item_type)} Description:
+              </label>
+              <textarea
+                ref={itemDescription}
+                name="item_description"
+                id="item_description"
+              ></textarea>
+              <div class="buttons">
+                <button
+                  class="action-button"
+                  title="Click to save this item"
+                  onClick={(e) =>
+                    saveItem(
+                      e,
+                      "add",
+                      props.item_type,
+                      {
+                        parent_id: props.parent_id,
+                        item_name: itemName.value,
+                        item_description: itemDescription.value,
+                      },
+                      dataServer
+                    )
+                  }
+                >
+                  Save this item
+                </button>
+                <button
+                  class="action-button"
+                  title="Click to cancel adding this item"
+                  onClick={toggleAddItem}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
           </div>
         </Portal>
       </Show>
@@ -106,5 +127,23 @@ export function AddItem(props) {
   async function affectItemCaller(e, operation, item_type, data, dataServer) {
     await affectItem(e, operation, item_type, data, dataServer);
     toggleRefreshData();
+  }
+
+  function updateCharacterCount(e) {
+    var itemValue = e.target.value;
+    var itemSpan = e.target.nextElementSibling;
+    var originalColor = window.getComputedStyle(itemSpan)["color"];
+
+    if (itemValue.length < e.target.minLength) {
+      itemSpan.style.color = "red";
+      itemSpan.innerText = `${
+        e.target.minLength - itemValue.length
+      } more characters required`;
+    } else {
+      itemSpan.style.color = "";
+      itemSpan.innerText = `${
+        e.target.maxLength - itemValue.length
+      } characters left`;
+    }
   }
 }

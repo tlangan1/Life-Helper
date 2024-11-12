@@ -2,72 +2,33 @@
 
 ## Notes
 
-1. About time 3:45 into the `Register & Install a Service Worker` subsection of the `Service Worker Project` section of the `Exploring Service Workers` [tutorial](https://frontendmasters.com/courses/service-workers/register-install-a-service-worker/) by Kyle Simpson he explains the `file system scope` of a service worker and how he obfuscates the physical location with a server route. It makes me think that there is a way in Vite that I can accomplish the same thing.
-1. Do not put an ampersand, `&`, in the name of a folder anywhere in the path within which `vite` is being used. It results in an error thrown by node.js saying that it cannot find vite. I did `NOT` try an uninstall and reinstall of `vite` to see if that may also be a solution.
-
-## TODOs
-
-### Completed
-
-<span id="service-worker-in-root"></span>
-
-1. **When I moved server.js to the root, I was able to send messages to the client, that is, the web page itself.**
-1. **When I change the name of the service worker file the behavior is the same as changing its contents.**
-1. **Without skipWaiting called in the install event, the new service worker is not used until the page is closed and reopened.**
-1. **Enable service worker changes to activate without closing and reopening the app. To do this most effectively I needed to both issue a `skipWaiting()` in the install event as well as a `event.waitUntil(clients.claim())` in the activation event.**
-
-### In Progress
-
-- [ ] Replace the item text box with an "Add [a/an] [Objective/Goal/Task]" label/link".
-  - [x] Change the function affectItem in helperFunctions.js in the following way before creating the AddItem component. Currently, affectItem is passed the signal refreshData and its setter setRefreshData. This should no longer be the case. Refactor these parameters out of this function and place the onus to refresh the data on the caller.
-    - [x] start
-    - [x] delete
-    - [x] add
-  - Make this a component and call it AddItem.
-  - It should be responsible for adding a row to either the objective, goal or task tables and nothing more. To do this it will need the type of its parent as well as the id of its parent. Remember, in the case of objectives there is no parent.
-  - affectItem is the function that wraps data actions. It is currently used to do three things.
-    - In LifeHelper.jsx it is used to `add` an item but that is what we are changing in this TODO. we are moving that call to a new component called AddItem.
-    - In objective-goal-task.jsx which contains the itemFromImport component it is used to `start` or `delete` an item.
-  - Focus no longer makes sense.
-  - See the "Add a comment" link [here](https://ux.stackexchange.com/questions/149929/text-box-max-character-limit-best-practice) as well as the question and associated answer for design considerations concerning limitations on the length of text entry.
-  - Create a modal solution which provides the user with two input controls. One to enter the item label and one to enter the item description. See the docs for the SolidJS [Portal component](https://docs.solidjs.com/reference/components/portal#lessportalgreater).
-
-### Yet To Do
-
-1. Log service worker changes and retiring previous service worker DB rows. Perhaps I should create a new entity web_push_subscription_version which maintains a history of service workers that all use the same capability url.s
-1. I should create a route using solidJS to give the appearance that the service worker file is at the root and move it to a more logical place in the file system. See <a href="#service-worker-in-root">item number 1</a> above
-1. All the data required by the interface should be cached. The service worker should update the cache when a push is received. Pushes should be restricted to time sensitive data changes like the starting of a task. If a user goes offline they should not be allowed to start a new task. If this were allowed then it could be the case that several users start the same task which should not be allowed.
+- About time 3:45 into the `Register & Install a Service Worker` subsection of the `Service Worker Project` section of the `Exploring Service Workers` [tutorial](https://frontendmasters.com/courses/service-workers/register-install-a-service-worker/) by Kyle Simpson he explains the `file system scope` of a service worker and how he obfuscates the physical location with a server route. It makes me think that there is a way in Vite that I can accomplish the same thing.
+- Do not put an ampersand, `&`, in the name of a folder anywhere in the path within which `vite` is being used. It results in an error thrown by node.js saying that it cannot find vite. I did `NOT` try an uninstall and reinstall of `vite` to see if that may also be a solution.
+- I think I used [this](https://redketchup.io/favicon-generator) site to create the icon.
+- See [this](https://serviceworke.rs/) resource for all sorts of service worker implementations. Note that the UI design is a little weird and that the code associated with each of the `recipes` is accessible through the tiny links in the top right-hand corner. Also, if you click a code link that does not have code associated with it the interface does not inform you of that it just navigates to the page without the links which is really weird.
 
 ## Basics
 
-1. To start this application run the following command.
-   ```
-   npm run dev
-   ```
-1. This application uses the `Express Server` application as the backend. It assumes it is listening on port 3001.
-1. Note that it is important that this application starts on port 3000 as the server overrides `CORS` for requests coming from this port.
+- To start this application run the following command.
+  ```bash
+  npm run dev
+  ```
+- This application uses the `Express Server` application as the backend for data access and the domain, that is the IP address and port, are in `GlobalStateProvider.jsx` in this application. Whenever the Express Server is launched make sure that the domain IP address and port it is listening on are accurately reflected in GlobalStateProvider.jsx
 
 ## Vite Build and Preview
 
-1. In both cases I need to manually put a copy of service_worker.js in the dist directory.
-2. There should be some way to automate this.
-
-## Search Resources
-
-1. See VSCode stuff located in D:\Computer Science\NEED TO REVIEW\JavaScript\Orchestrate Asynchronicity
-1. See `Netflix Search Box` section of D:\Computer Science\Tutorials\Front End Masters\Abandoned\Frameworks\Asynchronous Programming with RxJS\Asynchronous Programming in JavaScript.docx.
-1. See VSCode stuff located in D:\Computer Science\NEED TO REVIEW\JavaScript\Observables 1
-1. See VSCode stuff located in D:\Computer Science\Tutorials\Front End Masters\Abandoned\JavaScript\Rethinking Asynchronous JavaScript. Specifically, `Exercises\Ex6`
+- In both cases I need to manually put a copy of service_worker.js in the dist directory.
+- There should be some way to automate this.
 
 ## Application Behavior
 
-1. a task is `active` if it is started but not completed.
-2. a task is `inactive` if it is not `active, completed or aborted`.`
-3. A task cen be deleted only if it is not active, that is, has been started.
-4. A task can be aborted only if it has been started and not completed and the user provides an explanation.
-5. A task can be started but it can only be `un-started` if the task is not completed and if the user provides an explanation.
-6. A task can be can only be `un-completed` if the user provides an explanation.
-7. A task can be paused only if it has been started and not completed.
+- a task is `active` if it is started but not completed.
+- a task is `inactive` if it is not `active, completed or aborted`.`
+- A task cen be deleted only if it is not active, that is, has been started.
+- A task can be aborted only if it has been started and not completed and the user provides an explanation.
+- A task can be started but it can only be `un-started` if the task is not completed and if the user provides an explanation.
+- A task can be can only be `un-completed` if the user provides an explanation.
+- A task can be paused only if it has been started and not completed.
 
 ```mermaid
   flowchart LR
@@ -76,43 +37,20 @@
       active<-. "completed uncompleted (with explanation)" .->completed
 ```
 
-## Enable https in Vite and self-signed SSL certificates:
+## Enable https self-signed SSL certificates:
 
-1. Get a USB-c backup device so that I can backup and restore my phones data in the event that I break something. To navigate to the backup capability go to Settings->Accounts and backup->External storage transfer.
-2. The use @vitejs/plugin-basic-ssl to enable https did not work; however, mkcert did. Using it resulted in the following SSL certificate with issuer `mkcert DESKTOP-4QSML4N\tomla@DESKTOP-4QSML4N (Thomas Langan)` issued to value `DESKTOP-4QSML4N\tomla@DESKTOP-4QSML4N (Thomas Langan)`. I then placed this SSL certificate in the certificates in the `Trusted Root Certification Authorities` node in the Microsoft Management Console accessible accessible using the `mmc` command. I saved a view in mmc called "Console1.mmc" to more easily navigate to the list of certificates where this certificate is stored.
-3. I need to have chrome on my phone trust the security certificate. If I view the certificate on my phone using the `Certificate viewer` it shows that it covers the following domains:
-   1. localhost
-   2. 192.168.1.10
-   3. 127.0.0.1
-   4. 172.17.192.1
-   5. 172.20.144.1
-4. Here are some relevant resources:
-   1. [This](https://stackoverflow.com/questions/57565665/one-self-signed-cert-to-rule-them-all-chrome-android-and-ios) looks very promising. I should implement it but I may want to wait until I get the USB-c drive. However, I am not convinced the backup to USB-c will include the security certificates...I should ensure this.
-   2. [Here](https://www.openssl.org/docs/man3.0/man1/openssl.html) is the documentation for openssl command.
-5. I THINK THIS IS A COP OUT: I have a hunch that if I can embed the data server routes in the vite server than I will at least be able to experience the data access on my phone. Currently the site will load even though it does not trust the certificate but it throws an SSL error when I attempt to interact with the express server.
-6. Also, I figured out how to debug my phone's browser on my laptop. See [this](https://developer.chrome.com/docs/devtools/remote-debugging) for the instructions.
-
-## Self-Signed Certificates and Service Workers
-
-1. See [this](https://serviceworke.rs/) resource for all sorts of service worker implementations. Note that the UI design is a little weird and that the code associated with each of the `recipes` is accessible through the tiny links in the top right-hand corner. Also, if you click a code link that does not have code associated with it the interface does not inform you of that it just navigates to the page without the links which is really weird.
+- Service workers will only work with https.
+- I used the plugin vite-plugin-mkcert to enable https in Vite which is running the front-end web server. That is, no actual certificate needs to be created as this plugin handles all of that.
+- I used `mkcert to create root certificate authority certificates` for both the windows laptop and the linux laptop. On the windows machine in the certificate manager I believe the two important certificates are the ones that `begin with mkcert`. I then placed this SSL certificate in the certificates in the `Trusted Root Certification Authorities` node in the Microsoft Management Console accessible accessible using the `mmc` command. I saved a view in mmc called "Console1.mmc" to more easily navigate to the list of certificates where this certificate is stored. There is another on with the name DESKTOP-4QSML4N\tomla@DESKTOP-4QSML4N (Thomas Langan) but I don't think that is directly relevant.
 
 ## Service Workers:
 
-1. Remember that if you go to the Application tab of Chrome Dev Tools you can see the service worker associated with that tab. You can also do things like `Stop` it and `Unregister` it. Also available at the bottom of the service workers panel is a link to `See all registrations`.
-2. To reset the permissions for the service worker do the following:
-   1. Open the browser settings
-   2. Click on `Privacy and Security`
-   3. Click on `Site Settings`
-   4. Scroll to the appropriate URL, for example, https://127.0.0.1:3000 or https://localhost:3000 or both
-   5. Click the right-pointing triangle
-   6. Change Notifications from "Allow" to "Ask"
-
-## Multi User Considerations
-
-### Working On Line
-
-1. Prevent two users from starting the same task.
-
-### Working Off Line
-
-1. Do not allow a user to start a task but do allow them to work on it and complete it.
+- Remember that if you go to the Application tab of Chrome Dev Tools you can see the service worker associated with that tab. You can also do things like `Stop` it and `Unregister` it. Also available at the bottom of the service workers panel is a link to `See all registrations`.
+- To reset the permissions for the service worker do the following:
+  - Open the browser settings
+  - Click on `Privacy and Security`
+  - Click on `Site Settings`
+  - Scroll to the appropriate URL, for example, https://127.0.0.1:3000 or https://localhost:3000 or both
+  - Click the right-pointing triangle
+  - Change Notifications from "Allow" to "Ask"
+- You do not need to reset the permissions to release a new version of a service worker. You would do so to test the web push subscription process.
