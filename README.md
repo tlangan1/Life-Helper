@@ -102,6 +102,7 @@
   })
   ```
 
-```
+### Enable caching using vite-plugin-pwa without PWA capabilities
 
-```
+- At this point I am not actually doing the caching, but I am responding to all the fetches, logging them to the console and passing them through to the server and passing the response back to the browser.
+- I also created a function that runs on activation which will clear any caches that have the same prefix but are of a different version. The name of this function is clearCaches.

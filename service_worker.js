@@ -1,6 +1,8 @@
 "use strict";
 
-const version = 1.04;
+const version = 1.07;
+var cachePrefix = "life-helper";
+var cacheName = `${cachePrefix}-${version}`;
 var backendURL;
 
 // *** Service Worker Event Listeners ***
@@ -12,8 +14,10 @@ self.addEventListener("install", async (event) => {
 
 self.addEventListener("activate", async (event) => {
   // This will be called only once when the service worker is activated.
-  event.waitUntil(clients.claim());
   console.log("The Life Helper service worker was beginning activation.");
+
+  event.waitUntil(clients.claim());
+  clearCaches(cachePrefix);
 
   self.clients.matchAll().then((clientList) => {
     if (clientList.length > 0) {
@@ -39,6 +43,36 @@ self.addEventListener("message", (event) => {
       obtainPushSubscription();
     }
   }
+});
+
+self.addEventListener("fetch", (event) => {
+  var now = new Date();
+  console.log(`${now}: Handling fetch event for ${event.request.url}`);
+  var cache = caches.open(cacheName);
+
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      if (response) {
+        console.log("Found response in cache:", response);
+
+        return response;
+      }
+      console.log("No response found in cache. About to fetch from network…");
+
+      return fetch(event.request)
+        .then((response) => {
+          console.log("Response from network is:", response);
+
+          // return cache.put(event.request, response);
+          return response;
+        })
+        .catch((error) => {
+          console.error("Fetching failed:", error);
+
+          throw error;
+        });
+    })
+  );
 });
 
 self.addEventListener("push", function (event) {
@@ -127,6 +161,7 @@ self.addEventListener("pushsubscriptionchange", function (event) {
 
 /* *** Helper Functions *** */
 
+/* *** Push subscription helper functions *** */
 async function obtainPushSubscription() {
   try {
     const applicationServerKey = urlB64ToUint8Array(
@@ -178,3 +213,23 @@ const saveSubscription = async (subscription, url) => {
   });
   return response;
 };
+
+/* *** Cache helper functions *** */
+
+async function clearCaches(cachePrefix) {
+  var regexp = new RegExp(`^${cachePrefix}-(\\d+\\.\\d*)$`);
+  var cacheNames = await caches.keys();
+  var oldCacheNames = cacheNames.filter(function matchOldCache(cacheName) {
+    var [, cacheNameVersion] = cacheName.match(regexp) || [];
+    cacheNameVersion =
+      cacheNameVersion != null ? Number(cacheNameVersion) : cacheNameVersion;
+    return cacheNameVersion > 0 && version !== cacheNameVersion;
+  });
+
+  console.log(`${cachePrefix}`);
+  await Promise.all(
+    oldCacheNames.map(function deleteCache(cacheName) {
+      return caches.delete(cacheName);
+    })
+  );
+}
