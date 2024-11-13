@@ -21,7 +21,7 @@ import { AddItem } from "./AddItem.jsx";
 import { startedButNotCompletedCount, completedCount } from "./helperFunctions";
 
 function LifeHelperApp(props) {
-  registerServiceWorker();
+  // registerServiceWorker();
   // *** dataServer is the URL of the server that provides the data.
   var [, , refreshData, toggleRefreshData, dataServer] = useGlobalState();
 
@@ -56,7 +56,12 @@ function LifeHelperApp(props) {
         <button
           class="subscription-button"
           disabled
-          onClick={(e) => askWebPushPermission({type: "Backend Server URL", backend_server_url: dataServer})}
+          onClick={(e) =>
+            askWebPushPermission({
+              type: "Backend Server URL",
+              backend_server_url: dataServer,
+            })
+          }
         >
           Request A Web Push Subscription
         </button>

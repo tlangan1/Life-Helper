@@ -4,6 +4,7 @@ import solidPlugin from "vite-plugin-solid";
 import dns from "dns";
 
 import mkcert from "vite-plugin-mkcert";
+import { VitePWA } from "vite-plugin-pwa";
 
 // See https://vitejs.dev/config/server-options.html
 // This DOES NOT appear to be doing anything relevant so I commented it out.
@@ -18,6 +19,12 @@ export default defineConfig({
     // devtools(),
     solidPlugin(),
     mkcert(),
+    VitePWA({
+      registerType: "autoUpdate",
+      devOptions: {
+        enabled: true,
+      },
+    }),
   ],
   server: {
     port: 3000,

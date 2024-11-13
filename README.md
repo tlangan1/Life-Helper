@@ -45,6 +45,9 @@
 
 ## Service Workers:
 
+- In order to enable service workers within the Vite environment I am going to experiment with two approaches:
+  - See the routes that Vite exposes and try to work with that without the plugin. The first two routes are `/@vite/client` and `/src/index.jsx`
+  - Use a plugin called vite-plugin-pwa. This is probably the correct way to approach this. See [this](https://vite-pwa-org.netlify.app/guide/) for the instructions on how to do this.
 - Remember that if you go to the Application tab of Chrome Dev Tools you can see the service worker associated with that tab. You can also do things like `Stop` it and `Unregister` it. Also available at the bottom of the service workers panel is a link to `See all registrations`.
 - To reset the permissions for the service worker do the following:
   - Open the browser settings
@@ -54,3 +57,45 @@
   - Click the right-pointing triangle
   - Change Notifications from "Allow" to "Ask"
 - You do not need to reset the permissions to release a new version of a service worker. You would do so to test the web push subscription process.
+
+### Enable vite-plugin-pwa
+
+- I executed the following commands:
+  ```
+  npm install -D vite-plugin-pwa
+  ```
+- Then I added it to the vite config file vite.config.js
+  ```
+  import { VitePWA } from 'vite-plugin-pwa'
+  ```
+- The I added it to the plugins node of the vite config file
+  ```
+  VitePWA({
+    registerType: 'autoUpdate' },
+      devOptions: {
+      enabled: true
+    }),
+  ```
+- Next I commented this line out in LifeHelperApp.jsx so there would not be two service workers in the mix
+  ```
+  // registerServiceWorker();
+  ```
+- At this point I was able to launch the application and a service worker called dev-sw.js was created with some default functionality including some cache entries.
+- I am going to create a commit here, create another branch and then experiment with the next option called `Service Worker without PWA capabilities` in the guide.
+- I chose to experiment with the [Service Worker without PWA capabilities](https://vite-pwa-org.netlify.app/guide/service-worker-without-pwa-capabilities.html) first to I used the following configuration
+  ```
+  VitePWA({
+    srcDir: "src",
+    filename: "service-worker.js",
+    strategies: "injectManifest",
+    injectRegister: false,
+    manifest: false,
+    injectManifest: {
+      injectionPoint: undefined,
+    },
+  })
+  ```
+
+```
+
+```

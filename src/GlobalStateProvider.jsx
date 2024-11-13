@@ -23,7 +23,7 @@ export function GlobalStateProvider(props) {
     function toggleRefreshData() {
       setRefreshData((refreshData() + 1) % 2);
     },
-    "https://192.168.1.10:3001",
+    "https://192.168.1.159:3001",
   ];
 
   return (
