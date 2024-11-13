@@ -82,16 +82,22 @@
   ```
 - At this point I was able to launch the application and a service worker called dev-sw.js was created with some default functionality including some cache entries.
 - I am going to create a commit here, create another branch and then experiment with the next option called `Service Worker without PWA capabilities` in the guide.
+
+### Enable vite-plugin-pwa without PWA capabilities
+
 - I chose to experiment with the [Service Worker without PWA capabilities](https://vite-pwa-org.netlify.app/guide/service-worker-without-pwa-capabilities.html) first to I used the following configuration
   ```
   VitePWA({
     srcDir: "src",
-    filename: "service-worker.js",
+    filename: "service_worker.js",
     strategies: "injectManifest",
     injectRegister: false,
     manifest: false,
     injectManifest: {
       injectionPoint: undefined,
+    },
+    devOptions: {
+      enabled: true,
     },
   })
   ```

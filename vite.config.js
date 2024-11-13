@@ -20,7 +20,14 @@ export default defineConfig({
     solidPlugin(),
     mkcert(),
     VitePWA({
-      registerType: "autoUpdate",
+      srcDir: "src",
+      filename: "service_worker.js",
+      strategies: "injectManifest",
+      injectRegister: false,
+      manifest: false,
+      injectManifest: {
+        injectionPoint: undefined,
+      },
       devOptions: {
         enabled: true,
       },

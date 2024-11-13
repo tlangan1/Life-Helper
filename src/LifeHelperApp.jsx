@@ -21,7 +21,7 @@ import { AddItem } from "./AddItem.jsx";
 import { startedButNotCompletedCount, completedCount } from "./helperFunctions";
 
 function LifeHelperApp(props) {
-  // registerServiceWorker();
+  registerServiceWorker();
   // *** dataServer is the URL of the server that provides the data.
   var [, , refreshData, toggleRefreshData, dataServer] = useGlobalState();
 
