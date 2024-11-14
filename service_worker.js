@@ -1,6 +1,6 @@
 "use strict";
 
-const version = 1.07;
+const version = 1.17;
 var cachePrefix = "life-helper";
 var cacheName = `${cachePrefix}-${version}`;
 var backendURL;
@@ -48,31 +48,59 @@ self.addEventListener("message", (event) => {
 self.addEventListener("fetch", (event) => {
   var now = new Date();
   console.log(`${now}: Handling fetch event for ${event.request.url}`);
-  var cache = caches.open(cacheName);
 
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      if (response) {
-        console.log("Found response in cache:", response);
+  if (event.request.method != "GET") {
+    console.log(`This is a ${event.request.method} so skip it`);
+    return;
+  }
 
-        return response;
-      }
-      console.log("No response found in cache. About to fetch from network…");
+  var shouldBeResponse = respondToFetch(event);
 
-      return fetch(event.request)
-        .then((response) => {
-          console.log("Response from network is:", response);
+  console.log(`shouldBeResponse is ${shouldBeResponse}`);
 
-          // return cache.put(event.request, response);
-          return response;
-        })
-        .catch((error) => {
-          console.error("Fetching failed:", error);
+  event.respondWith(shouldBeResponse);
 
-          throw error;
-        });
-    })
-  );
+  async function respondToFetch(event) {
+    var cache = await caches.open(cacheName);
+
+    var response = await cache.match(event.request);
+    if (response) {
+      console.log("Found response in cache:", response);
+
+      return response;
+    }
+    console.log("No response found in cache. About to fetch from network…");
+
+    var options = {
+      method: "GET",
+      cache: "no-cache",
+      credentials: "omit",
+    };
+
+    try {
+      response = await fetch(event.request, options);
+
+      console.log("Response from network is:", response);
+      if (response.ok) return cache.put(event.request, response.clone());
+      else console.log("The response is not OK and, hence, will not be cached");
+    } catch (error) {
+      console.error("Fetching failed:", error);
+
+      throw error;
+    }
+    // return fetch(event.request, options)
+    //   .then((response) => {
+    //     console.log("Response from network is:", response);
+    //     if (response.ok) return cache.put(event.request, response.clone());
+    //     else
+    //       console.log("The response is not OK and, hence, will not be cached");
+    //   })
+    //   .catch((error) => {
+    //     console.error("Fetching failed:", error);
+
+    //     throw error;
+    //   });
+  }
 });
 
 self.addEventListener("push", function (event) {
@@ -217,6 +245,10 @@ const saveSubscription = async (subscription, url) => {
 /* *** Cache helper functions *** */
 
 async function clearCaches(cachePrefix) {
+  console.log(
+    `Clearing cache for any named caches that are prefixed with ${cachePrefix} but are not version ${version}`
+  );
+
   var regexp = new RegExp(`^${cachePrefix}-(\\d+\\.\\d*)$`);
   var cacheNames = await caches.keys();
   var oldCacheNames = cacheNames.filter(function matchOldCache(cacheName) {
@@ -226,7 +258,6 @@ async function clearCaches(cachePrefix) {
     return cacheNameVersion > 0 && version !== cacheNameVersion;
   });
 
-  console.log(`${cachePrefix}`);
   await Promise.all(
     oldCacheNames.map(function deleteCache(cacheName) {
       return caches.delete(cacheName);
