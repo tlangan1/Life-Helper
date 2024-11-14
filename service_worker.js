@@ -1,23 +1,33 @@
 "use strict";
 
-const version = 1.17;
+const version = 1.55;
 var cachePrefix = "life-helper";
 var cacheName = `${cachePrefix}-${version}`;
 var backendURL;
 
 // *** Service Worker Event Listeners ***
 
-self.addEventListener("install", async (event) => {
-  self.skipWaiting();
-  console.log("The Life Helper service worker was installed.");
-});
+self.addEventListener("install", onInstall);
+self.addEventListener("activate", onActivate);
+self.addEventListener("message", onMessage);
+self.addEventListener("fetch", onFetch);
 
-self.addEventListener("activate", async (event) => {
+async function main() {
+  console.log("main");
+}
+
+async function onInstall(event) {
+  self.skipWaiting();
+  console.log(`Life Helper service worker installing version ${version}`);
+}
+
+async function onActivate(event) {
   // This will be called only once when the service worker is activated.
-  console.log("The Life Helper service worker was beginning activation.");
+  console.log(`Life Helper service worker activating version ${version}.`);
+  clearCaches(cachePrefix);
+  loadCache();
 
   event.waitUntil(clients.claim());
-  clearCaches(cachePrefix);
 
   self.clients.matchAll().then((clientList) => {
     if (clientList.length > 0) {
@@ -28,9 +38,9 @@ self.addEventListener("activate", async (event) => {
       }
     }
   });
-});
+}
 
-self.addEventListener("message", (event) => {
+async function onMessage(event) {
   if (event.data) {
     console.log(
       `Got this message from the host, ${event.source.url.substring(
@@ -43,65 +53,30 @@ self.addEventListener("message", (event) => {
       obtainPushSubscription();
     }
   }
-});
+}
 
-self.addEventListener("fetch", (event) => {
-  var now = new Date();
-  console.log(`${now}: Handling fetch event for ${event.request.url}`);
-
-  if (event.request.method != "GET") {
-    console.log(`This is a ${event.request.method} so skip it`);
-    return;
-  }
-
-  var shouldBeResponse = respondToFetch(event);
-
-  console.log(`shouldBeResponse is ${shouldBeResponse}`);
-
-  event.respondWith(shouldBeResponse);
-
-  async function respondToFetch(event) {
-    var cache = await caches.open(cacheName);
-
-    var response = await cache.match(event.request);
-    if (response) {
-      console.log("Found response in cache:", response);
-
-      return response;
-    }
-    console.log("No response found in cache. About to fetch from network…");
-
-    var options = {
-      method: "GET",
-      cache: "no-cache",
-      credentials: "omit",
-    };
-
-    try {
-      response = await fetch(event.request, options);
-
-      console.log("Response from network is:", response);
-      if (response.ok) return cache.put(event.request, response.clone());
-      else console.log("The response is not OK and, hence, will not be cached");
-    } catch (error) {
-      console.error("Fetching failed:", error);
-
-      throw error;
-    }
-    // return fetch(event.request, options)
-    //   .then((response) => {
-    //     console.log("Response from network is:", response);
-    //     if (response.ok) return cache.put(event.request, response.clone());
-    //     else
-    //       console.log("The response is not OK and, hence, will not be cached");
-    //   })
-    //   .catch((error) => {
-    //     console.error("Fetching failed:", error);
-
-    //     throw error;
-    //   });
-  }
-});
+function onFetch(event) {
+  // Prevent the default, and handle the request ourselves.
+  event.respondWith(
+    (async () => {
+      var now = new Date();
+      console.log(`${now}: Handling fetch event for ${event.request.url}`);
+      // Try to get the response from a cache.
+      // const cachedResponse = await caches.match(event.request);
+      var cache = await caches.open(cacheName);
+      var cachedResponse = await cache.match(event.request);
+      // Return it if we found one.
+      if (cachedResponse) {
+        console.log(`use cached response for ${event.request.url}`);
+        return cachedResponse;
+      }
+      // If we didn't find a match in the cache, use the network.
+      var response = await fetch(event.request);
+      console.log(`use network response for ${event.request.url}`);
+      return response.clone();
+    })()
+  );
+}
 
 self.addEventListener("push", function (event) {
   if (event.data) {
@@ -243,6 +218,55 @@ const saveSubscription = async (subscription, url) => {
 };
 
 /* *** Cache helper functions *** */
+
+async function loadCache() {
+  var cache = await caches.open(cacheName);
+
+  var urlsToCache = {
+    isLoggedOut: [
+      "/src/assets/android-chrome-192x192.png",
+      "/src/assets/favicon-16x16.png",
+      "/src/assets/favicon-32x32.png",
+      "/src/assets/site.webmanifest",
+    ],
+  };
+
+  var options = {
+    method: "GET",
+    cache: "no-cache",
+    credentials: "omit",
+  };
+
+  urlsToCache.isLoggedOut.map((url) => loadCacheItem(url, options, cache));
+}
+
+async function loadCacheItem(url, options, cache) {
+  var response = await cache.match(url);
+  if (response) {
+    console.log("Found response in cache:", response);
+
+    return response;
+  }
+  console.log("No response found in cache. About to fetch from network…");
+
+  try {
+    response = await fetchURL(url, options);
+
+    cache.put(url, response);
+  } catch {
+    console.log("Unable to cache item...request failed.");
+  }
+}
+
+async function fetchURL(url, options) {
+  var response = await fetch(url, options);
+
+  if (response.ok) {
+    return response;
+  } else {
+    throw new Error("The response was not ok");
+  }
+}
 
 async function clearCaches(cachePrefix) {
   console.log(

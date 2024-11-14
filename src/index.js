@@ -10,7 +10,6 @@ export const askWebPushPermission = async (message) => {
 };
 
 export const registerServiceWorker = async () => {
-  console.log("starting registerServiceWorker");
   if (BrowserSupports()) {
     console.log("starting registerServiceWorker");
     await navigator.serviceWorker.register("/service_worker.js", {
