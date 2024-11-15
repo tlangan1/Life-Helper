@@ -1,6 +1,6 @@
 "use strict";
 
-const version = 1.55;
+const version = 1.59;
 var cachePrefix = "life-helper";
 var cacheName = `${cachePrefix}-${version}`;
 var backendURL;
@@ -72,8 +72,12 @@ function onFetch(event) {
       }
       // If we didn't find a match in the cache, use the network.
       var response = await fetch(event.request);
-      console.log(`use network response for ${event.request.url}`);
-      return response.clone();
+      // console.log(`use network response for ${event.request.url}`);
+      console.log(
+        `use network response for ${event.request.url} and put it in cache now`
+      );
+      cache.put(event.request, response.clone());
+      return response;
     })()
   );
 }
