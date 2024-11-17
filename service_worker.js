@@ -1,19 +1,46 @@
 "use strict";
 
-const version = 1.04;
+const version = 1.65;
+var cachePrefix = "life-helper";
+var cacheName = `${cachePrefix}-${version}`;
 var backendURL;
 
 // *** Service Worker Event Listeners ***
 
-self.addEventListener("install", async (event) => {
-  self.skipWaiting();
-  console.log("The Life Helper service worker was installed.");
-});
+self.addEventListener("install", onInstall);
+self.addEventListener("activate", onActivate);
+self.addEventListener("message", onMessage);
+self.addEventListener("fetch", onFetch);
 
-self.addEventListener("activate", async (event) => {
+// It is important to catch the error here as main is asynchronous and, hence,
+// if an error occurs in main it will be silent.
+main().catch(console.error);
+
+// This function will run every time the service worker is started whether
+// or not it has already been installed and activated.
+async function main() {
+  console.log(
+    `main: Life Helper service worker version (${version}) is starting...`
+  );
+  localStorage.setItem("name", "Tom Langan");
+}
+
+async function onInstall(event) {
+  console.log(
+    `Life Helper service worker version ${version} is installed..."install" event beginning to run.`
+  );
+  self.skipWaiting();
+}
+
+async function onActivate(event) {
   // This will be called only once when the service worker is activated.
+  console.log(
+    `Life Helper service worker version ${version} is activated..."activate" event beginning to run.`
+  );
+  clearCaches(cachePrefix);
+  loadCache();
+
   event.waitUntil(clients.claim());
-  console.log("The Life Helper service worker was beginning activation.");
 
   self.clients.matchAll().then((clientList) => {
     if (clientList.length > 0) {
@@ -24,9 +51,9 @@ self.addEventListener("activate", async (event) => {
       }
     }
   });
-});
+}
 
-self.addEventListener("message", (event) => {
+async function onMessage(event) {
   if (event.data) {
     console.log(
       `Got this message from the host, ${event.source.url.substring(
@@ -39,7 +66,62 @@ self.addEventListener("message", (event) => {
       obtainPushSubscription();
     }
   }
-});
+}
+
+/* *** using cache.put *** */
+// function onFetch(event) {
+//   // Prevent the default, and handle the request ourselves.
+//   event.respondWith(
+//     (async () => {
+//       var now = new Date();
+//       console.log(`${now}: Handling fetch event for ${event.request.url}`);
+//       // Try to get the response from a cache.
+//       // const cachedResponse = await caches.match(event.request);
+//       var cache = await caches.open(cacheName);
+//       var cachedResponse = await cache.match(event.request);
+//       // Return it if we found one.
+//       if (cachedResponse) {
+//         console.log(`use cached response for ${event.request.url}`);
+//         return cachedResponse;
+//       }
+//       // If we didn't find a match in the cache, use the network.
+//       var response = await fetch(event.request);
+//       // console.log(`use network response for ${event.request.url}`);
+//       console.log(
+//         `use network response for ${event.request.url} and put it in cache now`
+//       );
+//       cache.put(event.request, response.clone());
+//       return response;
+//     })()
+//   );
+// }
+
+/* *** using cache.add *** */
+function onFetch(event) {
+  // Prevent the default, and handle the request ourselves.
+  event.respondWith(
+    (async () => {
+      var now = new Date();
+      console.log(`${now}: Handling fetch event for ${event.request.url}`);
+      // Try to get the response from a cache.
+      // const cachedResponse = await caches.match(event.request);
+      var cache = await caches.open(cacheName);
+      var cachedResponse = await cache.match(event.request);
+      // Return it if we found one.
+      if (cachedResponse) {
+        console.log(`use cached response for ${event.request.url}`);
+        return cachedResponse;
+      }
+      // If we didn't find a match in the cache, use the network.
+      var response = await fetch(event.request);
+      console.log(
+        `use network response for ${event.request.url} and put it in cache now`
+      );
+      cache.add(event.request, response.clone());
+      return response;
+    })()
+  );
+}
 
 self.addEventListener("push", function (event) {
   if (event.data) {
@@ -127,6 +209,7 @@ self.addEventListener("pushsubscriptionchange", function (event) {
 
 /* *** Helper Functions *** */
 
+/* *** Push subscription helper functions *** */
 async function obtainPushSubscription() {
   try {
     const applicationServerKey = urlB64ToUint8Array(
@@ -178,3 +261,75 @@ const saveSubscription = async (subscription, url) => {
   });
   return response;
 };
+
+/* *** Cache helper functions *** */
+
+async function loadCache() {
+  var cache = await caches.open(cacheName);
+
+  var urlsToCache = {
+    isLoggedOut: [
+      "/src/assets/android-chrome-192x192.png",
+      "/src/assets/favicon-16x16.png",
+      "/src/assets/favicon-32x32.png",
+      "/src/assets/site.webmanifest",
+    ],
+  };
+
+  var options = {
+    method: "GET",
+    cache: "no-cache",
+    credentials: "omit",
+  };
+
+  urlsToCache.isLoggedOut.map((url) => loadCacheItem(url, options, cache));
+}
+
+async function loadCacheItem(url, options, cache) {
+  var response = await cache.match(url);
+  if (response) {
+    console.log("Found response in cache:", response);
+
+    return response;
+  }
+  console.log("No response found in cache. About to fetch from network…");
+
+  try {
+    response = await fetchURL(url, options);
+
+    cache.put(url, response);
+  } catch {
+    console.log("Unable to cache item...request failed.");
+  }
+}
+
+async function fetchURL(url, options) {
+  var response = await fetch(url, options);
+
+  if (response.ok) {
+    return response;
+  } else {
+    throw new Error("The response was not ok");
+  }
+}
+
+async function clearCaches(cachePrefix) {
+  console.log(
+    `Clearing cache for any named caches that are prefixed with ${cachePrefix} but are not version ${version}`
+  );
+
+  var regexp = new RegExp(`^${cachePrefix}-(\\d+\\.\\d*)$`);
+  var cacheNames = await caches.keys();
+  var oldCacheNames = cacheNames.filter(function matchOldCache(cacheName) {
+    var [, cacheNameVersion] = cacheName.match(regexp) || [];
+    cacheNameVersion =
+      cacheNameVersion != null ? Number(cacheNameVersion) : cacheNameVersion;
+    return cacheNameVersion > 0 && version !== cacheNameVersion;
+  });
+
+  await Promise.all(
+    oldCacheNames.map(function deleteCache(cacheName) {
+      return caches.delete(cacheName);
+    })
+  );
+}
