@@ -13,7 +13,8 @@
   ```bash
   npm run dev
   ```
-- This application uses the `Express Server` application as the backend for data access and the domain, that is the IP address and port, are in `GlobalStateProvider.jsx` in this application. Whenever the Express Server is launched make sure that the domain IP address and port it is listening on are accurately reflected in GlobalStateProvider.jsx
+- This application uses the `Express Server` application as the backend for data access. The domain, that is the IP address and port, of this server is in `GlobalStateProvider.jsx` in this application. Whenever the Express Server is launched make sure that the domain IP address and port it is listening on are accurately reflected in GlobalStateProvider.jsx
+- See the Documentation README for details.
 
 ## Vite Build and Preview
 
@@ -41,14 +42,12 @@
 
 - Service workers will only work with https.
 - I used the plugin vite-plugin-mkcert to enable https in Vite which is running the front-end web server. That is, no actual certificate needs to be created as this plugin handles all of that.
-- I used `mkcert to create root certificate authority certificates` for both the windows laptop and the linux laptop. On the windows machine in the certificate manager I believe the two important certificates are the ones that `begin with mkcert`. I then placed this SSL certificate in the certificates in the `Trusted Root Certification Authorities` node in the Microsoft Management Console accessible accessible using the `mmc` command. I saved a view in mmc called "Console1.mmc" to more easily navigate to the list of certificates where this certificate is stored. There is another on with the name DESKTOP-4QSML4N\tomla@DESKTOP-4QSML4N (Thomas Langan) but I don't think that is directly relevant.
+- I used `mkcert to create root certificate authority certificates` for both the windows laptop and the linux laptop.
+- See the Documentation README for details.
 
 ## Service Workers:
 
-- In order to enable service workers within the Vite environment I am going to experiment with two approaches:
-  - See the routes that Vite exposes and try to work with that without the plugin. The first two routes are `/@vite/client` and `/src/index.jsx`
-  - Use a plugin called vite-plugin-pwa. This is probably the correct way to approach this. See [this](https://vite-pwa-org.netlify.app/guide/) for the instructions on how to do this.
-- Remember that if you go to the Application tab of Chrome Dev Tools you can see the service worker associated with that tab. You can also do things like `Stop` it and `Unregister` it. Also available at the bottom of the service workers panel is a link to `See all registrations`.
+- Remember that if you go to the Application tab of Chrome Dev Tools you can see the service worker associated with that tab. You can also do things like `Stop` it and `Unregister` it.
 - To reset the permissions for the service worker do the following:
   - Open the browser settings
   - Click on `Privacy and Security`
@@ -56,53 +55,4 @@
   - Scroll to the appropriate URL, for example, https://127.0.0.1:3000 or https://localhost:3000 or both
   - Click the right-pointing triangle
   - Change Notifications from "Allow" to "Ask"
-- You do not need to reset the permissions to release a new version of a service worker. You would do so to test the web push subscription process.
-
-### Enable vite-plugin-pwa
-
-- I executed the following commands:
-  ```
-  npm install -D vite-plugin-pwa
-  ```
-- Then I added it to the vite config file vite.config.js
-  ```
-  import { VitePWA } from 'vite-plugin-pwa'
-  ```
-- The I added it to the plugins node of the vite config file
-  ```
-  VitePWA({
-    registerType: 'autoUpdate' },
-      devOptions: {
-      enabled: true
-    }),
-  ```
-- Next I commented this line out in LifeHelperApp.jsx so there would not be two service workers in the mix
-  ```
-  // registerServiceWorker();
-  ```
-- At this point I was able to launch the application and a service worker called dev-sw.js was created with some default functionality including some cache entries.
-- I am going to create a commit here, create another branch and then experiment with the next option called `Service Worker without PWA capabilities` in the guide.
-
-### Enable vite-plugin-pwa without PWA capabilities
-
-- I chose to experiment with the [Service Worker without PWA capabilities](https://vite-pwa-org.netlify.app/guide/service-worker-without-pwa-capabilities.html) first to I used the following configuration
-  ```
-  VitePWA({
-    srcDir: "src",
-    filename: "service_worker.js",
-    strategies: "injectManifest",
-    injectRegister: false,
-    manifest: false,
-    injectManifest: {
-      injectionPoint: undefined,
-    },
-    devOptions: {
-      enabled: true,
-    },
-  })
-  ```
-
-### Enable caching using vite-plugin-pwa without PWA capabilities
-
-- At this point I am not actually doing the caching, but I am responding to all the fetches, logging them to the console and passing them through to the server and passing the response back to the browser.
-- I also created a function that runs on activation which will clear any caches that have the same prefix but are of a different version. The name of this function is clearCaches.
+- You do not need to reset the permissions to release a new version of a service worker. You would only do this to test the web push subscription process.
