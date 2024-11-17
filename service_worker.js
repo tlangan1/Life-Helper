@@ -1,6 +1,6 @@
 "use strict";
 
-const version = 1.59;
+const version = 1.65;
 var cachePrefix = "life-helper";
 var cacheName = `${cachePrefix}-${version}`;
 var backendURL;
@@ -12,18 +12,31 @@ self.addEventListener("activate", onActivate);
 self.addEventListener("message", onMessage);
 self.addEventListener("fetch", onFetch);
 
+// It is important to catch the error here as main is asynchronous and, hence,
+// if an error occurs in main it will be silent.
+main().catch(console.error);
+
+// This function will run every time the service worker is started whether
+// or not it has already been installed and activated.
 async function main() {
-  console.log("main");
+  console.log(
+    `main: Life Helper service worker version (${version}) is starting...`
+  );
+  localStorage.setItem("name", "Tom Langan");
 }
 
 async function onInstall(event) {
+  console.log(
+    `Life Helper service worker version ${version} is installed..."install" event beginning to run.`
+  );
   self.skipWaiting();
-  console.log(`Life Helper service worker installing version ${version}`);
 }
 
 async function onActivate(event) {
   // This will be called only once when the service worker is activated.
-  console.log(`Life Helper service worker activating version ${version}.`);
+  console.log(
+    `Life Helper service worker version ${version} is activated..."activate" event beginning to run.`
+  );
   clearCaches(cachePrefix);
   loadCache();
 
@@ -55,6 +68,35 @@ async function onMessage(event) {
   }
 }
 
+/* *** using cache.put *** */
+// function onFetch(event) {
+//   // Prevent the default, and handle the request ourselves.
+//   event.respondWith(
+//     (async () => {
+//       var now = new Date();
+//       console.log(`${now}: Handling fetch event for ${event.request.url}`);
+//       // Try to get the response from a cache.
+//       // const cachedResponse = await caches.match(event.request);
+//       var cache = await caches.open(cacheName);
+//       var cachedResponse = await cache.match(event.request);
+//       // Return it if we found one.
+//       if (cachedResponse) {
+//         console.log(`use cached response for ${event.request.url}`);
+//         return cachedResponse;
+//       }
+//       // If we didn't find a match in the cache, use the network.
+//       var response = await fetch(event.request);
+//       // console.log(`use network response for ${event.request.url}`);
+//       console.log(
+//         `use network response for ${event.request.url} and put it in cache now`
+//       );
+//       cache.put(event.request, response.clone());
+//       return response;
+//     })()
+//   );
+// }
+
+/* *** using cache.add *** */
 function onFetch(event) {
   // Prevent the default, and handle the request ourselves.
   event.respondWith(
@@ -72,11 +114,10 @@ function onFetch(event) {
       }
       // If we didn't find a match in the cache, use the network.
       var response = await fetch(event.request);
-      // console.log(`use network response for ${event.request.url}`);
       console.log(
         `use network response for ${event.request.url} and put it in cache now`
       );
-      cache.put(event.request, response.clone());
+      cache.add(event.request, response.clone());
       return response;
     })()
   );
