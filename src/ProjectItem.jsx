@@ -1,3 +1,4 @@
+import "./ProjectItem.css";
 import { FindParentElement } from "./helperFunctions";
 import { affectItem } from "./helperFunctions";
 
@@ -14,14 +15,13 @@ export function ProjectItem(
 
   console.log(`In ProjectItem rendering item with name ${item.item_name}`);
   return (
-    <li
-      class="item"
+    <div
       data-item_id={item.item_id}
       data-item_name={item.item_name}
       onDblClick={(e) => {
         if (props.itemType == "task") return;
 
-        var parentLi = FindParentElement(e.target, "li");
+        var parentLi = FindParentElement(e.target, "div");
         setParent(() => {
           parent().push({
             item_id: parentLi.attributes["data-item_id"].value,
@@ -35,46 +35,12 @@ export function ProjectItem(
         toggleRefreshData();
       }}
     >
-      <div class="toggle">
-        {props.itemType == "task" ? (
-          <input
-            type="checkbox"
-            class="toggle"
-            onClick={(e) => {
-              affectItemCaller(
-                e,
-                "start",
-                props.itemType,
-                { item_id: item.item_id },
-                dataServer
-              );
-            }}
-            disabled={item.completed_dtm}
-            checked={item.started_dtm}
-          ></input>
-        ) : (
-          <input type="checkbox" class="toggle" disabled></input>
-        )}
-        <span class="hide">Start</span>
-      </div>
       <label
         classList={{ completed: item.completed_dtm, started: item.started_dtm }}
       >
         {item.item_name}
       </label>
-      <button
-        class="destroy"
-        onClick={(e) => {
-          affectItemCaller(
-            e,
-            "delete",
-            props.itemType,
-            { item_id: item.item_id },
-            dataServer
-          );
-        }}
-      />
-    </li>
+    </div>
   );
 
   // helper functions for the code above

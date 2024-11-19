@@ -87,11 +87,11 @@ function LifeHelperApp(props) {
       <span>{items.error && "Error"}</span>
       {items.state == "ready" && (
         <Show when={items().length > 0}>
-          <ul class="item-list">
+          <div class="item-list">
             <For each={items()}>
               {(item) => ProjectItem(props, item, setParent, parent)}
             </For>
-          </ul>
+          </div>
         </Show>
       )}
       <footer>

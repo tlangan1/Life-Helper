@@ -39,12 +39,6 @@ header {
   display: flex;
 }
 
-.item {
-  display: grid;
-  grid-template-columns: 0.2fr 1fr 0.2fr;
-  gap: 10px;
-}
-
 button {
   background: none;
   border: 0;
@@ -58,8 +52,7 @@ button.subscription-button {
   margin-top: 1rem;
 }
 
-button.subscription-button:hover
-{
+button.subscription-button:hover {
   border: 1px solid #0099cc;
   background-color: #00aacc;
   color: #ffffff;
@@ -71,7 +64,6 @@ button.subscription-button:disabled {
   background-color: #cccccc;
   color: #666666;
 }
-
 
 button.return::after {
   font-size: 30px;
@@ -89,19 +81,19 @@ button.return.visible {
   display: block;
 }
 
-button.destroy {
-  opacity: 0.3;
-}
-
-button.return:hover,
-button.destroy:hover {
+button.return:hover {
   opacity: 1;
   scale: 1.5;
   transition: all 0.5s;
 }
 
-.item-list li .destroy::after {
-  content: "x";
+.item-list > div {
+  list-style: none;
+  border: solid;
+}
+
+.item-list > div > input[type="checkbox"] {
+  display: none;
 }
 
 /* *** using a span element to indicate the purpose of the "start" check box *** */
@@ -115,24 +107,6 @@ div.toggle:hover > span.hide {
   color: var(--primary-color);
   transition: all 1s;
 }
-
-span.hide {
-  position: absolute;
-  opacity: 0;
-  color: white;
-  left: -1.5rem;
-  font-size: 0.2rem;
-}
-
-/* Experiment with using both class and classList attributes on the same element */
-.started {
-  font-weight: bold;
-}
-
-.completed {
-  background-color: turquoise;
-}
-/* End of experiment */
 
 footer {
   display: flex;

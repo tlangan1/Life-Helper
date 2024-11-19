@@ -1,0 +1,18 @@
+/* May or may need be useful */
+span.hide {
+  position: absolute;
+  opacity: 0;
+  color: white;
+  left: -1.5rem;
+  font-size: 0.2rem;
+}
+
+/* This is useful */
+/* see the code "classList={{ completed: item.completed_dtm, started: item.started_dtm }}" is ProjectItem.jsx */
+.started {
+  font-weight: bold;
+}
+
+.completed {
+  background-color: turquoise;
+}

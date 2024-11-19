@@ -1,6 +1,6 @@
 "use strict";
 
-const version = 1.65;
+const version = 1.68;
 var cachePrefix = "life-helper";
 var cacheName = `${cachePrefix}-${version}`;
 var backendURL;
@@ -22,7 +22,6 @@ async function main() {
   console.log(
     `main: Life Helper service worker version (${version}) is starting...`
   );
-  localStorage.setItem("name", "Tom Langan");
 }
 
 async function onInstall(event) {
@@ -98,6 +97,8 @@ async function onMessage(event) {
 
 /* *** using cache.add *** */
 function onFetch(event) {
+  return;
+  if (event.request.method != "GET") return;
   // Prevent the default, and handle the request ourselves.
   event.respondWith(
     (async () => {

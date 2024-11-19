@@ -56,3 +56,34 @@
   - Click the right-pointing triangle
   - Change Notifications from "Allow" to "Ask"
 - You do not need to reset the permissions to release a new version of a service worker. You would only do this to test the web push subscription process.
+
+### Enable vite-plugin-pwa
+
+- I executed the following commands:
+  ```
+  npm install -D vite-plugin-pwa
+  ```
+- Then I added it to the vite config file vite.config.js
+  ```
+  import { VitePWA } from 'vite-plugin-pwa'
+  ```
+- Then I added it to the plugins node of the vite config file. I chose to experiment with the [Service Worker without PWA capabilities](https://vite-pwa-org.netlify.app/guide/service-worker-without-pwa-capabilities.html) first to I used the following configuration
+  ```
+  VitePWA({
+    srcDir: "src",
+    filename: "service_worker.js",
+    strategies: "injectManifest",
+    injectRegister: false,
+    manifest: false,
+    injectManifest: {
+        injectionPoint: undefined,
+    },
+    devOptions: {
+        enabled: true,
+    },
+  })
+  ```
+
+### Enable caching using vite-plugin-pwa without PWA capabilities
+
+- The service worker is now selectively caching a few things in the service worker activation event. It is also aggressively caching everything in the fetch event that is not already cached and aggressively using cached items when available.
