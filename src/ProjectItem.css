@@ -1,11 +1,37 @@
-/* May or may need be useful */
-span.hide {
-  position: absolute;
-  opacity: 0;
-  color: white;
-  left: -1.5rem;
-  font-size: 0.2rem;
+.item-list > div {
+  border: solid;
+  width: min(700px, 90vw);
 }
+
+.item-list > div > input[type="checkbox"] {
+  display: none;
+}
+
+div.item-list > div > div {
+  padding-left: 1rem;
+}
+
+div.item-list > div > label + div {
+  display: none;
+}
+
+div.item-list > div > input[type="checkbox"]:checked + label + div {
+  display: block;
+}
+
+div.item-list > div > label::before {
+  content: "\25b8\0020";
+}
+
+div.item-list > div > input[type="checkbox"]:checked + label::before {
+  /* this is the down arrow */
+  content: "\25bE\0020";
+}
+
+/* div.item-list > div > label {
+  display: inline-block;
+  width: 100%;
+} */
 
 /* This is useful */
 /* see the code "classList={{ completed: item.completed_dtm, started: item.started_dtm }}" is ProjectItem.jsx */

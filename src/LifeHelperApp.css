@@ -87,15 +87,6 @@ button.return:hover {
   transition: all 0.5s;
 }
 
-.item-list > div {
-  list-style: none;
-  border: solid;
-}
-
-.item-list > div > input[type="checkbox"] {
-  display: none;
-}
-
 /* *** using a span element to indicate the purpose of the "start" check box *** */
 div.toggle {
   position: relative;

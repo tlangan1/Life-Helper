@@ -3,6 +3,7 @@ import { FindParentElement } from "./helperFunctions";
 import { affectItem } from "./helperFunctions";
 
 import { useGlobalState } from "./GlobalStateProvider";
+import { ProjectItemDetail } from "./ProjectItemDetail";
 
 export function ProjectItem(
   props /* used in LifeHelperApp */,
@@ -35,11 +36,14 @@ export function ProjectItem(
         toggleRefreshData();
       }}
     >
+      <input type="checkbox" name={item.item_id} id={item.item_id} />
       <label
+        for={item.item_id}
         classList={{ completed: item.completed_dtm, started: item.started_dtm }}
       >
         {item.item_name}
       </label>
+      <ProjectItemDetail detail_id={item.item_id + "_detail"} />
     </div>
   );
 
