@@ -43,7 +43,7 @@ export function ProjectItem(
       >
         {item.item_name}
       </label>
-      <ProjectItemDetail detail_id={item.item_id + "_detail"} />
+      <ProjectItemDetail itemType={props.itemType} item_id={item.item_id} />
     </div>
   );
 
