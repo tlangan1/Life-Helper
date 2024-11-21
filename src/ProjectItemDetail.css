@@ -1,0 +1,7 @@
+.project-item-detail {
+  padding: 0.5rem;
+}
+.item-controls {
+  display: flex;
+  justify-content: space-between;
+}

@@ -40,33 +40,80 @@
 //   </div>;
 // }
 
+import "./ProjectItemDetail.css";
+
 import { displayObjectKeysAndValues } from "./diagnostic";
 
 import { useGlobalState } from "./GlobalStateProvider";
 import { createResource, createSignal } from "solid-js";
+import { affectItem } from "./helperFunctions";
 
 export function ProjectItemDetail(props) {
   // *** The SolidJS resource item_details is used to store the details of the item
   // *** retrieved from the server depending on the type and id.
-  console.log(
-    `In ProjectItemDetail rendering props ${displayObjectKeysAndValues(props)}`
-  );
+  displayObjectKeysAndValues("ProjectItemDetail", props);
   // *** dataServer is the URL of the server that provides the data.
   var [, , refreshData, toggleRefreshData, dataServer] = useGlobalState();
-  const [refreshDetailData, setRefreshDetailData] = createSignal(0);
-  const [itemDetails] = createResource(refreshDetailData, fetchItemDetails);
+  const [itemDetails] = createResource(props.readData, fetchItemDetails);
   //   setRefreshDetailData(1);
 
   return (
-    <div id={props.item_id}>
-      <h3>
+    <div id={props.item_id} class="project-item-detail">
+      {/* <h3>
         Product Item Detail for {props.item_type}
         with id = {props.item_id}
-      </h3>
+      </h3> */}
+      <div class="item-controls">
+        {props.itemType == "task" ? (
+          <div class="non-cancel-item-controls">
+            <input
+              type="checkbox"
+              id={`start_task_${props.item_id}`}
+              onClick={(event) =>
+                affectItemCaller(
+                  event,
+                  "start",
+                  props.itemType,
+                  { item_id: props.item_id },
+                  dataServer
+                )
+              }
+              //   disabled={item.completed_dtm}
+              //   checked={item.started_dtm}
+            ></input>
+            <label for={`start_task_${props.item_id}`}>Start</label>
+            <input type="checkbox" id={`pause_task_${props.item_id}`}></input>
+            <label for={`pause_task_${props.item_id}`}>Pause</label>
+            <input type="checkbox" id={`finish_task_${props.item_id}`}></input>
+            <label for={`finish_task_${props.item_id}`}>Finish</label>
+          </div>
+        ) : (
+          <div class="non-cancel-item-controls">
+            <input
+              type="checkbox"
+              id={`start_task_${props.item_id}`}
+              disabled
+            ></input>
+            <label for={`started_item_${props.item_id}`}>Started</label>
+            <input
+              type="checkbox"
+              id={`finish_task_${props.item_id}`}
+              disabled
+            ></input>
+            <label for={`finished_item_${props.item_id}`}>Finished</label>
+          </div>
+        )}
+        <div class="cancel-item-control">
+          <label for={`cancel_delete_task_${props.item_id}`}>
+            Cancel/Delete
+          </label>
+          <input type="checkbox" id={`cancel_task_${props.item_id}`}></input>
+        </div>
+      </div>
       <span>{itemDetails.loading && "Loading..."}</span>
       <span>{itemDetails.error && "Error"}</span>
       {itemDetails.state == "ready" && (
-        <p>Description: {itemDetails()[0].item_description}</p>
+        <div>Description: {itemDetails()[0].item_description}</div>
       )}
     </div>
   );
@@ -88,5 +135,11 @@ export function ProjectItemDetail(props) {
       var data = await response.json();
       return data;
     }
+  }
+
+  /* *** Helper functions *** */
+  async function affectItemCaller(e, operation, item_type, data, dataServer) {
+    await affectItem(e, operation, item_type, data, dataServer);
+    // toggleRefreshData();
   }
 }
