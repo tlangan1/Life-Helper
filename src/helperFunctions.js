@@ -87,3 +87,9 @@ export function completedCount(items) {
     else return totalStarted;
   }, 0);
 }
+
+export function childItemType(parentType) {
+  if (parentType == "objective") return "goal";
+  else if (parentType == "goal") return "task";
+  else return "task";
+}

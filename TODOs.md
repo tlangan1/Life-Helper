@@ -10,7 +10,13 @@
 
 - [ ] Enhance the ProjectItemDetail component.
   - [x] Populate it with data about the objectives/goals/tasks...currently just the description.
-  - [ ] Include functionality to start tasks.
+  - [x] Populate detail data when the item is expanded the first time
+  - [x] Enable navigation to the item's children.
+  - [x] Log the issue of \n in in string breaking stored procedure call...see `Issues` subsection of the `main documentation README`.
+    - [x] Before I do this enhance the logging of database errors so that they are well documented and can be tracked and fixed in the future.v
+  - [x] Include functionality to start tasks.
   - [ ] Include functionality to delete all three item types.
 
 ### Yet to be Completed TODOs
+
+- [ ] Create a clear cache button/menu option to experiment with caching.

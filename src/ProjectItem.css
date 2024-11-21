@@ -7,31 +7,51 @@
   display: none;
 }
 
-div.item-list > div > div {
+.item-list > div > .item-header + div {
   padding-left: 1rem;
 }
 
-div.item-list > div > label + div {
+/* .item-list > div > .item-header > label + div {
+  display: none;
+} */
+
+.item-list > div > .item-header + div {
   display: none;
 }
 
-div.item-list > div > input[type="checkbox"]:checked + label + div {
+.item-list > div > input[type="checkbox"]:checked + .item-header + div {
   display: block;
+  background-color: #f0f0f0;
 }
 
-div.item-list > div > label::before {
+.item-list > div > .item-header > label::before {
   content: "\25b8\0020";
 }
 
-div.item-list > div > input[type="checkbox"]:checked + label::before {
+.item-list
+  > div
+  > input[type="checkbox"]:checked
+  + .item-header
+  > label::before {
   /* this is the down arrow */
   content: "\25bE\0020";
 }
 
-/* div.item-list > div > label {
+.children::after {
+  content: "\25b8\0020";
+}
+
+/* .item-list > div  > .item-header > label {
   display: inline-block;
   width: 100%;
 } */
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+}
 
 /* This is useful */
 /* see the code "classList={{ completed: item.completed_dtm, started: item.started_dtm }}" is ProjectItem.jsx */
