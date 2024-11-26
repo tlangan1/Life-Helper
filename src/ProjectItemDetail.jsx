@@ -58,7 +58,7 @@ export function ProjectItemDetail(props) {
   //   setRefreshDetailData(1);
 
   return (
-    <div id={props.item_id} class="project-item-detail">
+    <div class="project-item-detail">
       {/* <h3>
         Product Item Detail for {props.item_type}
         with id = {props.item_id}

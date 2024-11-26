@@ -44,13 +44,17 @@ navigator.serviceWorker.addEventListener(
 );
 
 navigator.serviceWorker.addEventListener("message", (event) => {
-  console.log("Got message from service worker!!!");
+  console.log("Got a message from the service worker!!!");
   if (event.data && event.data.type === "Push Notification") {
+    console.log("Push Notification received");
     document.title = event.data.data.name;
     // I am going to use the strategy of forcing a data refresh from the
     // database to give the visual effect of updating cache (for now).
   }
   if (event.data && event.data.type === "Service Worker Activated") {
+    console.log(
+      "The service worker is notifying the page that it is activated."
+    );
     document.title = "Activated";
     document.querySelector(".subscription-button").disabled = false;
   }

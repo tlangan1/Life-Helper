@@ -1,4 +1,4 @@
-import "./LifeHelperApp.css";
+/** @jsxImportSource solid-js */ import "./LifeHelperApp.css";
 import {
   askWebPushPermission,
   sendMessage,

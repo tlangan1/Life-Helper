@@ -6,6 +6,7 @@
 - Do not put an ampersand, `&`, in the name of a folder anywhere in the path within which `vite` is being used. It results in an error thrown by node.js saying that it cannot find vite. I did `NOT` try an uninstall and reinstall of `vite` to see if that may also be a solution.
 - I think I used [this](https://redketchup.io/favicon-generator) site to create the icon.
 - See [this](https://serviceworke.rs/) resource for all sorts of service worker implementations. Note that the UI design is a little weird and that the code associated with each of the `recipes` is accessible through the tiny links in the top right-hand corner. Also, if you click a code link that does not have code associated with it the interface does not inform you of that it just navigates to the page without the links which is really weird.
+- I added `/** @jsxImportSource solid-js */` to the top of index.JSX, GlobalStateProvider.jsx and LifeHelperApp.jsx to get rid of the TypeScript errors in index.jsx.
 
 ## Basics
 

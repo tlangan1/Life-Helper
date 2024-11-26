@@ -55,7 +55,7 @@ async function onActivate(event) {
 async function onMessage(event) {
   if (event.data) {
     console.log(
-      `Got this message from the host, ${event.source.url.substring(
+      `Got this message from the client page, ${event.source.url.substring(
         0,
         event.source.url.length - 6
       )}`

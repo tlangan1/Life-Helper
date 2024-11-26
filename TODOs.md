@@ -20,3 +20,7 @@
 ### Yet to be Completed TODOs
 
 - [ ] Create a clear cache button/menu option to experiment with caching.
+- [ ] Add network status event listeners to the web page and the service worker. Perhaps one or the other should be the source of truth instead of bot independently discovering the network status.
+  - [ ] See [this](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/onLine) documentation for the web page.
+  - [ ] See [this](https://developer.mozilla.org/en-US/docs/Web/API/WorkerNavigator/onLine) documentation for the service worker.
+  - [ ] Note that a web app can be online but the server may be down. This is a separate situation to deal with. Web sockets might be the way to detect this situation.

@@ -1,3 +1,4 @@
+/** @jsxImportSource solid-js */
 import { createSignal, createContext, useContext } from "solid-js";
 
 const GlobalStateContext = createContext();
