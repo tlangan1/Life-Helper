@@ -18,7 +18,7 @@ export function ProjectItem(
   parent /* used in LifeHelperApp */
 ) {
   // *** dataServer is the URL of the server that provides the data.
-  var [, , , toggleRefreshData, dataServer] = useGlobalState();
+  var { itemType, setItemType, toggleRefreshData } = useGlobalState();
 
   var [populateDetail, setPopulateDetail] = createSignal(false);
 
@@ -44,16 +44,16 @@ export function ProjectItem(
           {item.item_name}
         </label>
 
-        {props.itemType != "task" ? (
+        {itemType() != "task" ? (
           <button
             class="children"
             onClick={openChildren}
-          >{`${capitalizeFirstLetter(childItemType(props.itemType))}s`}</button>
+          >{`${capitalizeFirstLetter(childItemType(itemType()))}s`}</button>
         ) : null}
       </div>
       <ProjectItemDetail
         readData={populateDetail}
-        itemType={props.itemType}
+        itemType={itemType}
         item_id={item.item_id}
       />
     </div>
@@ -67,7 +67,7 @@ export function ProjectItem(
   }
 
   function openChildren(event) {
-    if (props.itemType == "task") return;
+    if (itemType() == "task") return;
 
     setParent(() => {
       parent().push({
@@ -79,7 +79,7 @@ export function ProjectItem(
     });
 
     // Before we refresh the data, we need to set the itemType to the next level.
-    props.setItemType(childItemType(props.itemType));
+    setItemType(childItemType(itemType()));
     toggleRefreshData();
   }
 }

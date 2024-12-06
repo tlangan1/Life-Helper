@@ -1,9 +1,15 @@
 /** @jsxImportSource solid-js */
 /* @refresh reload */
+import "./index.css";
+
 import { render } from "solid-js/web";
 import { MetaProvider, Meta } from "@solidjs/meta";
+import { Router, Route } from "@solidjs/router";
 
 import LifeHelperApp from "./LifeHelperApp";
+import { Header } from "./Header";
+import { Login } from "./Login";
+import { NotFound } from "./NotFound";
 
 const root = document.getElementById("root");
 
@@ -19,13 +25,25 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
+const Other = (props) => (
+  <>
+    <h1>The other page</h1>
+    {props.children}
+  </>
+);
+
 render(() => {
   var [itemType, setItemType] = createSignal("objective");
   return (
     <MetaProvider>
       <Meta name="description" content="Life Helper Objective Tracker" />
       <GlobalStateProvider>
-        <LifeHelperApp itemType={itemType()} setItemType={setItemType} />
+        <Router root={Header}>
+          <Route path="/" />
+          <Route path="/account" component={Login} />
+          <Route path="/life" component={LifeHelperApp} />
+          <Route path="*" component={NotFound} />
+        </Router>
       </GlobalStateProvider>
     </MetaProvider>
   );

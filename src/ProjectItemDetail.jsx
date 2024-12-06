@@ -51,9 +51,9 @@ import { affectItem } from "./helperFunctions";
 export function ProjectItemDetail(props) {
   // *** The SolidJS resource item_details is used to store the details of the item
   // *** retrieved from the server depending on the type and id.
-  displayObjectKeysAndValues("ProjectItemDetail", props);
+  //   displayObjectKeysAndValues("ProjectItemDetail", props);
   // *** dataServer is the URL of the server that provides the data.
-  var [, , refreshData, toggleRefreshData, dataServer] = useGlobalState();
+  var { itemType, dataServer } = useGlobalState();
   const [itemDetails] = createResource(props.readData, fetchItemDetails);
   //   setRefreshDetailData(1);
 
@@ -125,7 +125,7 @@ export function ProjectItemDetail(props) {
     });
 
     var response = await fetch(
-      dataServer + `/${props.itemType}s` + "?params=" + searchParams
+      dataServer + `/${itemType()}s` + "?params=" + searchParams
     );
     if (!response.ok) {
       alert(
