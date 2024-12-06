@@ -41,3 +41,8 @@ button.action-button {
 input[type="text"] ~ span {
   margin-bottom: 0.5rem;
 }
+
+.add-item-buttons {
+  display: flex;
+  flex-direction: row;
+}

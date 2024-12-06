@@ -24,19 +24,31 @@ export function AddItem(props) {
   var itemName;
   var itemDescription;
   var [AddItem, setAddItem] = createSignal(false);
-  var indefiniteArticle = setAppropriateIndefiniteArticle;
+  var [AddExistingItem, setAddExistingItem] = createSignal(false);
+  //   var indefiniteArticle = setAppropriateIndefiniteArticle;
   // *** dataServer is the URL of the server that provides the data.
-  var [, , , toggleRefreshData, dataServer] = useGlobalState();
+  var { toggleRefreshData, dataServer } = useGlobalState();
 
   return (
     <>
-      <button
-        class="action-button"
-        title={`Click here to add ${indefiniteArticle()} ${props.item_type}`}
-        onClick={toggleAddItem}
-      >
-        {`Add ${indefiniteArticle()} ${props.item_type}`}
-      </button>
+      <div class="add-item-buttons">
+        <button
+          class="action-button inline"
+          title={`Click here to add a new ${props.item_type}`}
+          onClick={toggleAddItem}
+        >
+          {`Add a new ${props.item_type}`}
+        </button>
+        <Show when={props.item_type != "objective"}>
+          <button
+            class="action-button inline"
+            title={`Click here to add an existing ${props.item_type}`}
+            onClick={toggleAddExistingItem}
+          >
+            {`Add an existing ${props.item_type}`}
+          </button>
+        </Show>
+      </div>
       <Show when={AddItem()}>
         <Portal mount={document.querySelector("body")}>
           <div class="popup-wrapper">
@@ -101,6 +113,16 @@ export function AddItem(props) {
           </div>
         </Portal>
       </Show>
+      <Show when={AddExistingItem()}>
+        <p>Existing Item Popup</p>
+        <button
+          class="action-button"
+          title="Click to cancel adding this item"
+          onClick={toggleAddExistingItem}
+        >
+          Cancel
+        </button>
+      </Show>
     </>
   );
 
@@ -109,15 +131,19 @@ export function AddItem(props) {
   function toggleAddItem() {
     setAddItem(!AddItem());
   }
-
-  function setAppropriateIndefiniteArticle() {
-    // Cspell:ignore aeiou
-    if (props.item_type[0].match(/[aeiou]/)) {
-      return "an";
-    } else {
-      return "a";
-    }
+  function toggleAddExistingItem() {
+    setAddExistingItem(!AddExistingItem());
   }
+
+  // not used since I added the capability of linking to an existing goal/task
+  //   function setAppropriateIndefiniteArticle() {
+  //     // Cspell:ignore aeiou
+  //     if (props.item_type[0].match(/[aeiou]/)) {
+  //       return "an";
+  //     } else {
+  //       return "a";
+  //     }
+  //   }
 
   function saveItem(e, operation, item_type, data, dataServer) {
     affectItemCaller(e, operation, item_type, data, dataServer);

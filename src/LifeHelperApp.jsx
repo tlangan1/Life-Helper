@@ -1,4 +1,6 @@
-/** @jsxImportSource solid-js */ import "./LifeHelperApp.css";
+/** @jsxImportSource solid-js */
+
+import "./LifeHelperApp.css";
 import {
   askWebPushPermission,
   sendMessage,
@@ -23,7 +25,8 @@ import { startedButNotCompletedCount, completedCount } from "./helperFunctions";
 function LifeHelperApp(props) {
   registerServiceWorker();
   // *** dataServer is the URL of the server that provides the data.
-  var [, , refreshData, toggleRefreshData, dataServer] = useGlobalState();
+  var { itemType, setItemType, refreshData, toggleRefreshData, dataServer } =
+    useGlobalState();
 
   // *** The SolidJS resource items is used to store the objectives, goals or tasks
   // *** retrieved from the server depending on the context.
@@ -49,8 +52,8 @@ function LifeHelperApp(props) {
   var [visibleClassValue, setVisibleClassValue] = createSignal("");
 
   return (
-    <section class="app">
-      <header>
+    <section class="life-helper-route">
+      <header class="life-helper-header">
         {/* <p>refreshData() is {refreshData()}</p> */}
         {/* <p>props.type is {props.type}</p> */}
         <button
@@ -69,7 +72,7 @@ function LifeHelperApp(props) {
           Send Message To Service Worker
         </button>
         <div class="header-title">
-          <h1 class={`${props.itemType}_header`}>{pageTitle()}</h1>
+          <h1 class={`${itemType()}_header`}>{pageTitle()}</h1>
           <button
             class={`return ${visibleClassValue()}`}
             onClick={returnToParent}
@@ -79,7 +82,7 @@ function LifeHelperApp(props) {
           parent_id={
             parent().length == 0 ? 0 : parent()[parent().length - 1].item_id
           }
-          item_type={props.itemType}
+          item_type={itemType()}
           dataServer={dataServer}
         />
       </header>
@@ -111,13 +114,13 @@ function LifeHelperApp(props) {
   // *** Helper functions for the code above
   async function fetchItems() {
     var searchParams = "";
-    if (props.itemType != "objective")
+    if (itemType() != "objective")
       searchParams = JSON.stringify({
         parent_id: parent()[parent().length - 1].item_id,
       });
 
     var response = await fetch(
-      dataServer + `/${props.itemType}s` + "?params=" + searchParams
+      dataServer + `/${itemType()}s` + "?params=" + searchParams
     );
     if (!response.ok) {
       alert(
@@ -133,22 +136,22 @@ function LifeHelperApp(props) {
       parent().pop();
       return parent();
     });
-    switch (props.itemType) {
+    switch (itemType()) {
       case "objective":
         break;
       case "goal":
-        props.setItemType("objective");
+        setItemType("objective");
         toggleRefreshData();
         break;
       case "task":
-        props.setItemType("goal");
+        setItemType("goal");
         toggleRefreshData();
         break;
     }
   }
 
   function pageTitleEffect() {
-    switch (props.itemType) {
+    switch (itemType()) {
       case "objective":
         setPageTitle("Overall Objectives");
         setVisibleClassValue("");
