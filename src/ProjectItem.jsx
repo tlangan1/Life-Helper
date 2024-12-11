@@ -52,9 +52,10 @@ export function ProjectItem(
         ) : null}
       </div>
       <ProjectItemDetail
-        readData={populateDetail}
+        populateDetail={populateDetail}
+        setPopulateDetail={setPopulateDetail}
         itemType={itemType}
-        item_id={item.item_id}
+        item={item}
       />
     </div>
   );

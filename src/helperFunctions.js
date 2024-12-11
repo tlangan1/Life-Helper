@@ -63,13 +63,11 @@ export async function affectItem(evt, affectType, item_type, data, dataServer) {
 
   if (!response.ok) {
     alert(
-      `Server Error: status is ${response.status} reason is ${response.statusText}`
+      `An error occurred with this request. Please try again. If the problem persists, contact the system administrator. The response status code is ${response.status}. ${response.statusText}`
     );
     return false;
   } else {
-    // TODO: replace evt with data
     evt.target.value = "";
-    // setRefreshData((refreshData() + 1) % 2);
     return true;
   }
 }

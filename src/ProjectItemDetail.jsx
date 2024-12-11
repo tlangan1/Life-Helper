@@ -45,17 +45,18 @@ import "./ProjectItemDetail.css";
 import { displayObjectKeysAndValues } from "./diagnostic";
 
 import { useGlobalState } from "./GlobalStateProvider";
-import { createResource, createSignal } from "solid-js";
+import { createResource, createSignal, createEffect } from "solid-js";
 import { affectItem } from "./helperFunctions";
 
 export function ProjectItemDetail(props) {
-  // *** The SolidJS resource item_details is used to store the details of the item
-  // *** retrieved from the server depending on the type and id.
-  //   displayObjectKeysAndValues("ProjectItemDetail", props);
-  // *** dataServer is the URL of the server that provides the data.
   var { itemType, dataServer } = useGlobalState();
-  const [itemDetails] = createResource(props.readData, fetchItemDetails);
-  //   setRefreshDetailData(1);
+  const [itemDetails] = createResource(props.populateDetail, fetchItemDetails);
+  var [contentEditable, setContentEditable] = createSignal(false);
+  createEffect(() => {
+    if (!contentEditable()) {
+      console.log("contentEditable is false");
+    }
+  });
 
   return (
     <div class="project-item-detail">
@@ -64,56 +65,72 @@ export function ProjectItemDetail(props) {
         with id = {props.item_id}
       </h3> */}
       <div class="item-controls">
-        {props.itemType == "task" ? (
+        {props.itemType() == "task" ? (
           <div class="non-cancel-item-controls">
             <input
               type="checkbox"
-              id={`start_task_${props.item_id}`}
+              id={`start_task_${props.item.item_id}`}
               onClick={(event) =>
                 affectItemCaller(
                   event,
                   "start",
-                  props.itemType,
-                  { item_id: props.item_id },
+                  props.itemType(),
+                  { item_id: props.item.item_id },
                   dataServer
                 )
               }
-              //   disabled={item.completed_dtm}
-              //   checked={item.started_dtm}
+              disabled={props.item.completed_dtm}
+              checked={props.item.started_dtm}
             ></input>
-            <label for={`start_task_${props.item_id}`}>Start</label>
-            <input type="checkbox" id={`pause_task_${props.item_id}`}></input>
-            <label for={`pause_task_${props.item_id}`}>Pause</label>
-            <input type="checkbox" id={`finish_task_${props.item_id}`}></input>
-            <label for={`finish_task_${props.item_id}`}>Finish</label>
+            <label for={`start_task_${props.item.item_id}`}>Start</label>
+            <input
+              type="checkbox"
+              id={`pause_task_${props.item.item_id}`}
+            ></input>
+            <label for={`pause_task_${props.item.item_id}`}>Pause</label>
+            <input
+              type="checkbox"
+              id={`finish_task_${props.item.item_id}`}
+            ></input>
+            <label for={`finish_task_${props.item.item_id}`}>Finish</label>
           </div>
         ) : (
           <div class="non-cancel-item-controls">
             <input
               type="checkbox"
-              id={`start_task_${props.item_id}`}
+              id={`start_task_${props.item.item_id}`}
               disabled
             ></input>
-            <label for={`started_item_${props.item_id}`}>Started</label>
+            <label for={`started_item_${props.item.item_id}`}>Started</label>
             <input
               type="checkbox"
-              id={`finish_task_${props.item_id}`}
+              id={`finish_task_${props.item.item_id}`}
               disabled
             ></input>
-            <label for={`finished_item_${props.item_id}`}>Finished</label>
+            <label for={`finished_item_${props.item.item_id}`}>Finished</label>
           </div>
         )}
         <div class="cancel-item-control">
-          <label for={`cancel_delete_task_${props.item_id}`}>
+          <label for={`cancel_delete_task_${props.item.item_id}`}>
             Cancel/Delete
           </label>
-          <input type="checkbox" id={`cancel_task_${props.item_id}`}></input>
+          <input
+            type="checkbox"
+            id={`cancel_task_${props.item.item_id}`}
+          ></input>
         </div>
       </div>
       <span>{itemDetails.loading && "Loading..."}</span>
       <span>{itemDetails.error && "Error"}</span>
       {itemDetails.state == "ready" && (
-        <div>Description: {itemDetails()[0].item_description}</div>
+        <div class="description">
+          <button class="editable" onClick={toggleContentEditable}></button>
+          Description:{" "}
+          <span contentEditable={contentEditable()}>
+            {" "}
+            {itemDetails()[0].item_description}
+          </span>
+        </div>
       )}
     </div>
   );
@@ -121,7 +138,7 @@ export function ProjectItemDetail(props) {
   // *** Helper functions for the code above
   async function fetchItemDetails() {
     var searchParams = JSON.stringify({
-      item_id: props.item_id,
+      item_id: props.item.item_id,
     });
 
     var response = await fetch(
@@ -137,9 +154,17 @@ export function ProjectItemDetail(props) {
     }
   }
 
-  /* *** Helper functions *** */
   async function affectItemCaller(e, operation, item_type, data, dataServer) {
     await affectItem(e, operation, item_type, data, dataServer);
-    // toggleRefreshData();
+    props.setPopulateDetail(!props.populateDetail());
+  }
+
+  function toggleContentEditable() {
+    setContentEditable(!contentEditable());
+    document
+      .querySelector(
+        `div[data-item_id="${props.item.item_id}"] button.editable`
+      )
+      .classList.toggle("editing");
   }
 }

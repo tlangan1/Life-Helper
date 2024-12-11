@@ -20,17 +20,13 @@ import { useGlobalState } from "./GlobalStateProvider";
 import { ProjectItem } from "./ProjectItem.jsx";
 import { AddItem } from "./AddItem.jsx";
 
-import { startedButNotCompletedCount, completedCount } from "./helperFunctions";
+import { ListItems } from "./ListItems.jsx";
 
 function LifeHelperApp(props) {
   registerServiceWorker();
   // *** dataServer is the URL of the server that provides the data.
   var { itemType, setItemType, refreshData, toggleRefreshData, dataServer } =
     useGlobalState();
-
-  // *** The SolidJS resource items is used to store the objectives, goals or tasks
-  // *** retrieved from the server depending on the context.
-  const [items] = createResource(refreshData, fetchItems);
 
   // *** parent contains an array of at most two objects.
   // *** It is essentially a stack that is used to navigate the hierarchy of objectives, goals and tasks.
@@ -79,58 +75,19 @@ function LifeHelperApp(props) {
           ></button>
         </div>
         <AddItem
-          parent_id={
-            parent().length == 0 ? 0 : parent()[parent().length - 1].item_id
-          }
+          //   parent_id={
+          //     parent().length == 0 ? 0 : parent()[parent().length - 1].item_id
+          //   }
+          parent={parent}
           item_type={itemType()}
           dataServer={dataServer}
         />
       </header>
-      <span>{items.loading && "Loading..."}</span>
-      <span>{items.error && "Error"}</span>
-      {items.state == "ready" && (
-        <Show when={items().length > 0}>
-          <div class="item-list">
-            <For each={items()}>
-              {(item) => ProjectItem(props, item, setParent, parent)}
-            </For>
-          </div>
-        </Show>
-      )}
-      <footer>
-        <span>{`Total items: ${
-          items.state == "ready" && items().length
-        }`}</span>
-        <span>{`Started but not completed items: ${
-          items.state == "ready" && startedButNotCompletedCount(items)
-        }`}</span>
-        <span>{`Completed items: ${
-          items.state == "ready" && completedCount(items)
-        }`}</span>
-      </footer>
+      <ListItems setParent={setParent} parent={parent} />
     </section>
   );
 
   // *** Helper functions for the code above
-  async function fetchItems() {
-    var searchParams = "";
-    if (itemType() != "objective")
-      searchParams = JSON.stringify({
-        parent_id: parent()[parent().length - 1].item_id,
-      });
-
-    var response = await fetch(
-      dataServer + `/${itemType()}s` + "?params=" + searchParams
-    );
-    if (!response.ok) {
-      alert(
-        `Server Error: status is ${response.status} reason is ${response.statusText}`
-      );
-    } else {
-      return await response.json();
-    }
-  }
-
   function returnToParent() {
     setParent(() => {
       parent().pop();

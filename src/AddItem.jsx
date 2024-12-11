@@ -28,6 +28,8 @@ export function AddItem(props) {
   //   var indefiniteArticle = setAppropriateIndefiniteArticle;
   // *** dataServer is the URL of the server that provides the data.
   var { toggleRefreshData, dataServer } = useGlobalState();
+  var minTitleLength = 10;
+  var maxTitleLength = 50;
 
   return (
     <>
@@ -54,7 +56,7 @@ export function AddItem(props) {
           <div class="popup-wrapper">
             <div class="popup">
               <p>
-                {`parent_id is ${props.parent_id}`}
+                {`parent_id is ${parentID()}`}
                 <br />
                 {`item_type is ${props.item_type}`}
                 <br />
@@ -68,11 +70,13 @@ export function AddItem(props) {
                 type="text"
                 name="item_label"
                 id="item_label"
-                minLength="10"
-                maxLength="25"
+                minLength={minTitleLength}
+                maxLength={maxTitleLength}
                 onKeyUp={updateCharacterCount}
               />
-              <span>10 to 25 characters required:</span>
+              <span>
+                {minTitleLength} to {maxTitleLength} characters required:
+              </span>
               <label htmlFor="item_description">
                 {capitalizeFirstLetter(props.item_type)} Description:
               </label>
@@ -91,7 +95,7 @@ export function AddItem(props) {
                       "add",
                       props.item_type,
                       {
-                        parent_id: props.parent_id,
+                        parent_id: parentID(),
                         item_name: itemName.value,
                         item_description: itemDescription.value,
                       },
@@ -130,6 +134,9 @@ export function AddItem(props) {
 
   function toggleAddItem() {
     setAddItem(!AddItem());
+    if (AddItem()) {
+      item_label.focus();
+    }
   }
   function toggleAddExistingItem() {
     setAddExistingItem(!AddExistingItem());
@@ -171,5 +178,11 @@ export function AddItem(props) {
         e.target.maxLength - itemValue.length
       } characters left`;
     }
+  }
+
+  function parentID() {
+    return props.parent().length == 0
+      ? 0
+      : props.parent()[props.parent().length - 1].item_id;
   }
 }
