@@ -49,6 +49,7 @@ export function ListItems(props) {
           newItems.sort((a, b) => a.item_id - b.item_id);
           mutate(newItems);
           refetch(newItems);
+          //   A comment
         }}
       >
         Sort
