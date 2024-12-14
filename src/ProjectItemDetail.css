@@ -1,7 +1,33 @@
 .project-item-detail {
   padding: 0.5rem;
 }
+
 .item-controls {
   display: flex;
   justify-content: space-between;
+}
+
+button.editable::before {
+  /* These are the actual two 4-byte hex codes that create the pencil */
+  /* content: "\270F\FE0F"; */
+  content: "✏️";
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+
+button.editable.editing::before {
+  /* content: "\2705"; */
+  content: "\1f4be";
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+
+span {
+  display: inline-block;
+  min-width: 1rem;
+  padding: 0.25rem;
+}
+
+span[contenteditable="true"] {
+  background-color: white;
 }

@@ -26,6 +26,7 @@
 
 .item-list > div > .item-header > label::before {
   content: "\25b8\0020";
+  cursor: pointer;
 }
 
 .item-list
@@ -41,6 +42,10 @@
   content: "\25b8\0020";
 }
 
+button.children:hover {
+  cursor: pointer;
+}
+
 /* .item-list > div  > .item-header > label {
   display: inline-block;
   width: 100%;
@@ -54,11 +59,16 @@
 }
 
 /* This is useful */
-/* see the code "classList={{ completed: item.completed_dtm, started: item.started_dtm }}" is ProjectItem.jsx */
+/* If the item.started_dtm is true, then the class "started" is added to the div */
+/* and the main label is bolded */
 .started {
   font-weight: bold;
 }
 
+/* If the item.completed_dtm is true, then the class "completed" is added to the div */
+/* and the main label has a turquoise background */
+/* Now, since everything that was completed must have been started then both the */
+/* label will be bolded and have a turquoise background */
 .completed {
   background-color: turquoise;
 }
