@@ -49,7 +49,7 @@ import { createResource, createSignal, createEffect } from "solid-js";
 import { affectItem } from "./helperFunctions";
 
 export function ProjectItemDetail(props) {
-  var { itemType, dataServer } = useGlobalState();
+  var { itemType, dataServer, toggleRefreshData } = useGlobalState();
   const [itemDetails] = createResource(props.populateDetail, fetchItemDetails);
   var [contentEditable, setContentEditable] = createSignal(false);
   createEffect(() => {
@@ -90,9 +90,18 @@ export function ProjectItemDetail(props) {
             <label for={`pause_task_${props.item.item_id}`}>Pause</label>
             <input
               type="checkbox"
-              id={`finish_task_${props.item.item_id}`}
+              id={`complete_task_${props.item.item_id}`}
+              onClick={(event) =>
+                affectItemCaller(
+                  event,
+                  "complete",
+                  props.itemType(),
+                  { item_id: props.item.item_id },
+                  dataServer
+                )
+              }
             ></input>
-            <label for={`finish_task_${props.item.item_id}`}>Finish</label>
+            <label for={`complete_task_${props.item.item_id}`}>complete</label>
           </div>
         ) : (
           <div class="non-cancel-item-controls">
@@ -104,10 +113,12 @@ export function ProjectItemDetail(props) {
             <label for={`started_item_${props.item.item_id}`}>Started</label>
             <input
               type="checkbox"
-              id={`finish_task_${props.item.item_id}`}
+              id={`complete_task_${props.item.item_id}`}
               disabled
             ></input>
-            <label for={`finished_item_${props.item.item_id}`}>Finished</label>
+            <label for={`completed_item_${props.item.item_id}`}>
+              completed
+            </label>
           </div>
         )}
         <div class="cancel-item-control">
@@ -117,6 +128,15 @@ export function ProjectItemDetail(props) {
           <input
             type="checkbox"
             id={`cancel_task_${props.item.item_id}`}
+            onClick={(event) =>
+              affectItemCaller(
+                event,
+                "cancel_delete",
+                props.itemType(),
+                { item_id: props.item.item_id },
+                dataServer
+              )
+            }
           ></input>
         </div>
       </div>
@@ -155,7 +175,19 @@ export function ProjectItemDetail(props) {
   }
 
   async function affectItemCaller(e, operation, item_type, data, dataServer) {
-    await affectItem(e, operation, item_type, data, dataServer);
+    var success = await affectItem(e, operation, item_type, data, dataServer);
+    // TODO 1: instead of returning the success or failure I should
+    // read the item and replace the array entry for just that item.
+    // Get rid of everything from here to TODO 1 End:
+    if (success) {
+      // TODO: Replace this with a granular update design.
+      toggleRefreshData();
+    } else {
+      // TODO: make sure the checkbox is unchecked.
+      e.target.checked = false;
+    }
+    // TODO 1 End:
+    // TODO 2: Get rid of this signal. Refetch the detail every time it is expanded.
     props.setPopulateDetail(!props.populateDetail());
   }
 
