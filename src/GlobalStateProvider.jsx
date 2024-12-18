@@ -21,7 +21,7 @@ export function GlobalStateProvider(props) {
     toggleRefreshData: function toggleRefreshData() {
       setRefreshData((refreshData() + 1) % 2);
     },
-    dataServer: "https://192.168.1.10:3001",
+    dataServer: "https://192.168.1.159:3001",
     filters: filters,
     setFilters: setFilters,
   };

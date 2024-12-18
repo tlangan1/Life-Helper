@@ -9,12 +9,8 @@ export function ListItems(props) {
 
   // *** The SolidJS resource items is used to store the objectives, goals or tasks
   // *** retrieved from the server depending on the context.
-  var { itemType, toggleRefreshData, refreshData, dataServer, filters } =
-    useGlobalState();
+  var { itemType, refreshData, dataServer, filters } = useGlobalState();
   const [items, { mutate, refetch }] = createResource(refreshData, fetchItems);
-  //   var fetchCount = 0;
-
-  // TODO 1: Figure out how to allow for granular update of individual items
 
   return (
     <div>
@@ -72,6 +68,10 @@ export function ListItems(props) {
     if (itemType() != "objective")
       searchParams = JSON.stringify({
         parent_id: props.parent()[props.parent().length - 1].item_id,
+        include_completed: filters().include_completed_items,
+      });
+    else
+      searchParams = JSON.stringify({
         include_completed: filters().include_completed_items,
       });
 

@@ -34,7 +34,6 @@ const Other = (props) => (
 );
 
 render(() => {
-  var [itemType, setItemType] = createSignal("objective");
   return (
     <MetaProvider>
       <Meta name="description" content="Life Helper Objective Tracker" />

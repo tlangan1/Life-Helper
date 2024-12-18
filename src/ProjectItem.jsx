@@ -1,6 +1,6 @@
 import "./ProjectItem.css";
 
-import { createSignal } from "solid-js";
+import { createSignal, createMemo } from "solid-js";
 
 import {
   affectItem,
@@ -14,7 +14,7 @@ import { ProjectItemDetail } from "./ProjectItemDetail";
 export function ProjectItem(props) {
   // *** dataServer is the URL of the server that provides the data.
   var { mode, itemType, setItemType, toggleRefreshData } = useGlobalState();
-  var [item, setItem] = createSignal(props.item);
+  var [item, setItem] = createSignal(Object.assign({}, props.item));
 
   var [populateDetail, setPopulateDetail] = createSignal(false);
 
@@ -34,7 +34,7 @@ export function ProjectItem(props) {
           for={item().item_id}
           classList={{
             completed: item().completed_dtm,
-            started: setStartedClass(item),
+            started: item().started_dtm,
           }}
         >
           {item().item_name} ({mode == "dev" ? item().item_id : ""})
@@ -54,19 +54,12 @@ export function ProjectItem(props) {
         item={item}
         setItem={setItem}
         items={props.items}
-        mutate={props.mutate}
-        refetch={props.refetch}
+        parent={props.parent}
       />
     </div>
   );
 
   // helper functions for the code above
-
-  async function affectItemCaller(e, operation, item_type, data, dataServer) {
-    await affectItem(e, operation, item_type, data, dataServer);
-    toggleRefreshData();
-  }
-
   function openChildren(event) {
     if (itemType() == "task") return;
 
@@ -82,13 +75,5 @@ export function ProjectItem(props) {
     // Before we refresh the data, we need to set the itemType to the next level.
     setItemType(childItemType(itemType()));
     toggleRefreshData();
-  }
-
-  function setStartedClass(item) {
-    console.log(`item_id is ${item().item_id}`);
-    // item().started_dtm = "1/1/2021";
-    // uncomment the line above and then check out props.items()[0].started_dtm
-    // in the browser console and you will see that "item" is a signal into the items in ListItems.
-    return item().started_dtm;
   }
 }
