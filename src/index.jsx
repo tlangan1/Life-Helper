@@ -6,7 +6,8 @@ import { render } from "solid-js/web";
 import { MetaProvider, Meta } from "@solidjs/meta";
 import { Router, Route } from "@solidjs/router";
 
-import LifeHelperApp from "./LifeHelperApp";
+import { LifeHelperApp } from "./LifeHelperApp";
+import { Filters } from "./Filters";
 import { Header } from "./Header";
 import { Login } from "./Login";
 import { NotFound } from "./NotFound";
@@ -39,9 +40,9 @@ render(() => {
       <Meta name="description" content="Life Helper Objective Tracker" />
       <GlobalStateProvider>
         <Router root={Header}>
-          <Route path="/" />
+          <Route path="/" component={LifeHelperApp} />
           <Route path="/account" component={Login} />
-          <Route path="/life" component={LifeHelperApp} />
+          <Route path="/filters" component={Filters} />
           <Route path="*" component={NotFound} />
         </Router>
       </GlobalStateProvider>

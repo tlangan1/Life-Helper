@@ -1,20 +1,31 @@
 /** @jsxImportSource solid-js */
+import { useGlobalState } from "./GlobalStateProvider";
 
-export const Header = (props) => (
-  <>
-    <header>
-      <nav class="nav-using-flex">
-        <a class="navlink home" id="linkHome" href="/">
-          <img src="/home.svg" />{" "}
-        </a>
-        <h1>
-          <a href="/life">Life Helper</a>
-        </h1>
-        <a class="navlink account" id="linkOrder" href="/account">
-          <img src="/account.svg" />{" "}
-        </a>
-      </nav>
-    </header>
-    {props.children}
-  </>
-);
+export function Header(props) {
+  var { setItemType } = useGlobalState();
+  return (
+    <>
+      <header>
+        <nav class="nav-using-flex">
+          <a
+            class="navlink"
+            id="linkHome"
+            onClick={() => setItemType("objective")}
+            href="/"
+          >
+            <img src="/home.svg" />{" "}
+          </a>
+          <h1>
+            <a class="navlink" href="/filters">
+              Filters
+            </a>
+          </h1>
+          <a class="navlink" id="linkOrder" href="/account">
+            <img src="/account.svg" />{" "}
+          </a>
+        </nav>
+      </header>
+      {props.children}
+    </>
+  );
+}

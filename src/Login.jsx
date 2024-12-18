@@ -1,9 +1,8 @@
 /** @jsxImportSource solid-js */
-import "./Login.css";
 
-export const Login = (props) => {
+export function Login(props) {
   return (
-    <div class="account-route">
+    <div class="route">
       <div class="login">
         <form>
           <label for="username">Username:</label>
@@ -33,4 +32,4 @@ export const Login = (props) => {
       </div>
     </div>
   );
-};
+}

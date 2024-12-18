@@ -9,7 +9,7 @@ export function ListItems(props) {
 
   // *** The SolidJS resource items is used to store the objectives, goals or tasks
   // *** retrieved from the server depending on the context.
-  var { itemType, toggleRefreshData, refreshData, dataServer } =
+  var { itemType, toggleRefreshData, refreshData, dataServer, filters } =
     useGlobalState();
   const [items, { mutate, refetch }] = createResource(refreshData, fetchItems);
   //   var fetchCount = 0;
@@ -24,9 +24,16 @@ export function ListItems(props) {
         <Show when={items().length > 0}>
           <div class="item-list">
             <For each={items()}>
-              {(item) =>
-                ProjectItem(props, item, props.setParent, props.parent)
-              }
+              {(item) => (
+                <ProjectItem
+                  item={item}
+                  setParent={props.setParent}
+                  parent={props.parent}
+                  items={items}
+                  mutate={mutate}
+                  refetch={refetch}
+                />
+              )}
             </For>
           </div>
         </Show>
@@ -42,17 +49,16 @@ export function ListItems(props) {
           items.state == "ready" && completedCount(items)
         }`}</span>
       </footer>
-      {/* <button onClick={() => toggleRefreshData()}>Sort</button> */}
       <button
+        class="action-button"
         onClick={() => {
           const newItems = items();
           newItems.sort((a, b) => a.item_id - b.item_id);
           mutate(newItems);
-          refetch(newItems);
-          //   A comment
+          refetch();
         }}
       >
-        Sort
+        Sort the items in place by item_id, the number in the parentheses.
       </button>
     </div>
   );
@@ -60,14 +66,16 @@ export function ListItems(props) {
   // *** Helper functions for the code above
   async function fetchItems(source, { value, refetching }) {
     if (refetching) {
-      return refetching;
+      return value;
     }
     var searchParams = "";
     if (itemType() != "objective")
       searchParams = JSON.stringify({
         parent_id: props.parent()[props.parent().length - 1].item_id,
+        include_completed: filters().include_completed_items,
       });
 
+    // alert(JSON.stringify(filters()));
     var response = await fetch(
       dataServer + `/${itemType()}s` + "?params=" + searchParams
     );

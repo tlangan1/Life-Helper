@@ -1,5 +1,29 @@
-@property --primary-color {
+@property --primary-font-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgb(78, 78, 78);
+}
+
+@property --emphasis-color {
   syntax: "<color>";
   inherits: true;
   initial-value: rgba(175, 47, 47, 0.75);
+}
+
+@property --emphasis-color-complement {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(80, 208, 208, 0.75);
+}
+
+@property --primary-background-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: white;
+}
+
+@property --secondary-background-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(0, 153, 204, 1);
 }
