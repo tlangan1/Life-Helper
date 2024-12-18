@@ -9,14 +9,18 @@ export const askWebPushPermission = async (message) => {
   await requestNotificationPermission(message);
 };
 
-export const registerServiceWorker = async () => {
+export const registerServiceWorker = async (msg) => {
   if (BrowserSupports()) {
     console.log("starting registerServiceWorker");
-    await navigator.serviceWorker.register("/service_worker.js", {
-      updateViaCache: "none",
-    });
+    if (requestNotificationPermission(msg)) {
+      await navigator.serviceWorker.register("/service_worker.js", {
+        updateViaCache: "none",
+      });
 
-    console.log("Service Worker registered");
+      console.log("Service Worker registered");
+    } else {
+      console.log("User denied permission to send push notifications");
+    }
   } else {
     console.log("Service workers not supported by this browser");
   }
@@ -87,5 +91,9 @@ async function requestNotificationPermission(msg) {
   // send the push subscription to the database. I chose to not hard code
   // this url in both the web site and in the service worker and used this
   // strategy instead
-  if (permission == "granted") sendMessage(msg);
+  if (permission == "granted") {
+    sendMessage(msg);
+    return true;
+  }
+  return false;
 }

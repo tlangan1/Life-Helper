@@ -21,12 +21,19 @@ import { ProjectItem } from "./ProjectItem.jsx";
 import { AddItem } from "./AddItem.jsx";
 
 import { ListItems } from "./ListItems.jsx";
+import { Filters } from "./Filters";
 
-function LifeHelperApp(props) {
-  registerServiceWorker();
+export function LifeHelperApp(props) {
+  //   registerServiceWorker();
   // *** dataServer is the URL of the server that provides the data.
-  var { itemType, setItemType, refreshData, toggleRefreshData, dataServer } =
-    useGlobalState();
+  var {
+    itemType,
+    setItemType,
+    refreshData,
+    toggleRefreshData,
+    dataServer,
+    filters,
+  } = useGlobalState();
 
   // *** parent contains an array of at most two objects.
   // *** It is essentially a stack that is used to navigate the hierarchy of objectives, goals and tasks.
@@ -48,15 +55,20 @@ function LifeHelperApp(props) {
   var [visibleClassValue, setVisibleClassValue] = createSignal("");
 
   return (
-    <section class="life-helper-route">
+    <section class="route">
       <header class="life-helper-header">
         {/* <p>refreshData() is {refreshData()}</p> */}
         {/* <p>props.type is {props.type}</p> */}
         <button
           class="subscription-button"
-          disabled
+          //   onClick={(e) =>
+          //     askWebPushPermission({
+          //       type: "Backend Server URL",
+          //       backend_server_url: dataServer,
+          //     })
+          //   }
           onClick={(e) =>
-            askWebPushPermission({
+            registerServiceWorker({
               type: "Backend Server URL",
               backend_server_url: dataServer,
             })
@@ -75,9 +87,6 @@ function LifeHelperApp(props) {
           ></button>
         </div>
         <AddItem
-          //   parent_id={
-          //     parent().length == 0 ? 0 : parent()[parent().length - 1].item_id
-          //   }
           parent={parent}
           item_type={itemType()}
           dataServer={dataServer}

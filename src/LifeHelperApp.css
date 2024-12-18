@@ -1,34 +1,5 @@
 @import "./colors.css";
 
-html {
-  box-sizing: border-box;
-}
-
-::before,
-::after,
-* {
-  box-sizing: inherit;
-}
-
-html,
-body,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 0;
-  padding: 0;
-}
-
-h1 {
-  font-size: 1.5rem;
-  padding: 0.5rem;
-  color: var(--primary-color);
-}
-
-.life-helper-route,
 header.life-helper-header {
   display: flex;
   flex-direction: column;
@@ -46,14 +17,14 @@ button {
 
 button.subscription-button {
   border: 1px solid #0066cc;
-  background-color: #0099cc;
+  background-color: var(--secondary-background-color);
   color: #ffffff;
   padding: 5px 10px;
   margin-top: 1rem;
 }
 
 button.subscription-button:hover {
-  border: 1px solid #0099cc;
+  border: 1px solid var(--secondary-background-color);
   background-color: #00aacc;
   color: #ffffff;
   padding: 5px 10px;
@@ -76,7 +47,7 @@ button.return {
 }
 
 button.return.visible {
-  color: var(--primary-color);
+  color: var(--primary-font-color);
   opacity: 0.3;
   display: block;
 }
@@ -95,7 +66,7 @@ div.toggle {
 div.toggle:hover > span.hide {
   opacity: 1;
   font-size: 0.8rem;
-  color: var(--primary-color);
+  color: var(--primary-font-color);
   transition: all 1s;
 }
 
