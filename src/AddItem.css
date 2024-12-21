@@ -32,14 +32,6 @@
   margin-bottom: 1rem;
 }
 
-button.action-button {
-  background: rgb(240, 240, 240);
-  color: black;
-  border: solid black;
-  margin: 0.5rem;
-  border-radius: 0.5rem;
-}
-
 input[type="text"] ~ span {
   margin-bottom: 0.5rem;
 }

@@ -64,20 +64,21 @@ export function ListItems(props) {
     if (refetching) {
       return value;
     }
-    var searchParams = "";
-    if (itemType() != "objective")
-      searchParams = JSON.stringify({
-        parent_id: props.parent()[props.parent().length - 1].item_id,
-        include_completed: filters().include_completed_items,
-      });
-    else
-      searchParams = JSON.stringify({
-        include_completed: filters().include_completed_items,
-      });
+
+    var searchParams = {};
+
+    searchParams.parent_id =
+      itemType() == "objective"
+        ? 0
+        : props.parent()[props.parent().length - 1].item_id;
+
+    // searchParams.completed_items = filters().completed_items;
+    // searchParams.started_items = filters().started_items;
+    searchParams = { ...searchParams, ...filters() };
 
     // alert(JSON.stringify(filters()));
     var response = await fetch(
-      dataServer + `/${itemType()}s` + "?params=" + searchParams
+      dataServer + `/${itemType()}s` + "?params=" + JSON.stringify(searchParams)
     );
     if (!response.ok) {
       alert(
