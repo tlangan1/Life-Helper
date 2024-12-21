@@ -79,13 +79,15 @@ export function ProjectItemDetail(props) {
                   dataServer
                 )
               }
-              disabled={props.item().completed_dtm}
+              disabled={props.item().started_dtm}
               checked={props.item().started_dtm}
             ></input>
             <label for={`start_task_${props.item().item_id}`}>Start</label>
             <input
               type="checkbox"
               id={`pause_task_${props.item().item_id}`}
+              disabled={props.item().completed_dtm || props.item().deleted_dtm}
+              checked={props.item().paused_dtm}
             ></input>
             <label for={`pause_task_${props.item().item_id}`}>Pause</label>
             <input
@@ -100,6 +102,8 @@ export function ProjectItemDetail(props) {
                   dataServer
                 )
               }
+              disabled={props.item().completed_dtm || props.item().deleted_dtm}
+              checked={props.item().completed_dtm}
             ></input>
             <label for={`complete_task_${props.item().item_id}`}>
               complete
@@ -111,12 +115,14 @@ export function ProjectItemDetail(props) {
               type="checkbox"
               id={`start_task_${props.item().item_id}`}
               disabled
+              checked={props.item().started_dtm}
             ></input>
             <label for={`started_item_${props.item().item_id}`}>Started</label>
             <input
               type="checkbox"
               id={`complete_task_${props.item().item_id}`}
               disabled
+              checked={props.item().completed_dtm}
             ></input>
             <label for={`completed_item_${props.item().item_id}`}>
               completed
@@ -139,6 +145,8 @@ export function ProjectItemDetail(props) {
                 dataServer
               )
             }
+            disabled={props.item().completed_dtm || props.item().deleted_dtm}
+            checked={props.item().deleted_dtm}
           ></input>
         </div>
       </div>
@@ -178,24 +186,15 @@ export function ProjectItemDetail(props) {
     // Return the success or failure of the update operation.
     // If successful, fetch the item and update the item signal.
     if (success) {
-      if (
-        operation == "cancel_delete" ||
-        (operation == "complete" && filters().include_completed_items)
-      ) {
+      if (fullRefreshRequired(operation, filters)) {
         toggleRefreshData();
       } else {
         var updatedItem = await fetchItemDetails();
-        props.item().started_dtm = updatedItem[0].started_dtm;
-        props.item().completed_dtm = updatedItem[0].completed_dtm;
-        props.setItem(Object.assign({}, props.item()));
+        props.setItem(updatedItem[0]);
       }
     } else {
-      // TODO: make sure the checkbox is unchecked.
       e.target.checked = false;
     }
-    // TODO 1 End:
-    // TODO 2: Get rid of this signal. Refetch the detail every time it is expanded.
-    // props.setPopulateDetail(!props.populateDetail());
   }
 
   function toggleContentEditable() {
@@ -205,5 +204,12 @@ export function ProjectItemDetail(props) {
         `div[data-item_id="${props.item().item_id}"] button.editable`
       )
       .classList.toggle("editing");
+  }
+
+  function fullRefreshRequired(operation, filters) {
+    return (
+      operation == "cancel_delete" ||
+      (operation == "complete" && !filters().include_completed_items)
+    );
   }
 }

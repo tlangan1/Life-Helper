@@ -45,9 +45,10 @@ export async function affectItem(evt, affectType, item_type, data, dataServer) {
         break;
       case "cancel_delete":
         item = {
+          item_type: item_type,
           item_id: data.item_id,
         };
-        endPoint = `/${affectType}/${item_type}`;
+        endPoint = `/${affectType}`;
         break;
       default:
         alert(`Invalid affectType "${affectType}" in function affectItem!`);

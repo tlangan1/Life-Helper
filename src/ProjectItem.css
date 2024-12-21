@@ -72,3 +72,9 @@ button.children:hover {
 .completed {
   background-color: turquoise;
 }
+
+/* If the item.completed_dtm is true, then the class "completed" is added to the div */
+/* and the main label has a turquoise background */
+.deleted {
+  background-color: red;
+}

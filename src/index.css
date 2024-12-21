@@ -57,3 +57,11 @@ a.navlink:hover {
   flex-direction: column;
   align-items: center;
 }
+
+button.action-button {
+  background: rgb(240, 240, 240);
+  color: black;
+  border: solid black;
+  margin: 0.5rem;
+  border-radius: 0.5rem;
+}

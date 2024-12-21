@@ -16,8 +16,6 @@ export function ProjectItem(props) {
   var { mode, itemType, setItemType, toggleRefreshData } = useGlobalState();
   var [item, setItem] = createSignal(Object.assign({}, props.item));
 
-  var [populateDetail, setPopulateDetail] = createSignal(false);
-
   console.log(`In ProjectItem rendering item with name ${item().item_name}`);
   return (
     <div
@@ -28,13 +26,11 @@ export function ProjectItem(props) {
       <input type="checkbox" name={item().item_id} id={item().item_id} />
       <div class="item-header">
         <label
-          onClick={() => {
-            if (populateDetail() == false) setPopulateDetail(!populateDetail());
-          }}
           for={item().item_id}
           classList={{
             completed: item().completed_dtm,
             started: item().started_dtm,
+            deleted: item().deleted_dtm,
           }}
         >
           {item().item_name} ({mode == "dev" ? item().item_id : ""})
@@ -48,8 +44,6 @@ export function ProjectItem(props) {
         ) : null}
       </div>
       <ProjectItemDetail
-        populateDetail={populateDetail}
-        setPopulateDetail={setPopulateDetail}
         itemType={itemType}
         item={item}
         setItem={setItem}
