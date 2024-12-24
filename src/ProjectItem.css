@@ -11,17 +11,13 @@
   padding-left: 1rem;
 }
 
-/* .item-list > div > .item-header > label + div {
-  display: none;
-} */
-
-.item-list > div > .item-header + div {
+.item-list .item-header + .project-item-detail {
   display: none;
 }
 
 .item-list > div > input[type="checkbox"]:checked + .item-header + div {
   display: block;
-  background-color: #f0f0f0;
+  background-color: var(--subsection-background-color);
 }
 
 .item-list > div > .item-header > label::before {
@@ -45,11 +41,6 @@
 button.children:hover {
   cursor: pointer;
 }
-
-/* .item-list > div  > .item-header > label {
-  display: inline-block;
-  width: 100%;
-} */
 
 .item-header {
   display: flex;

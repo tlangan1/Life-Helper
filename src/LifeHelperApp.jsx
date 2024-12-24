@@ -13,15 +13,15 @@ import {
   createSignal,
   createResource,
   createEffect,
+  Switch,
 } from "solid-js";
 
 import { useGlobalState } from "./GlobalStateProvider";
 
-import { ProjectItem } from "./ProjectItem.jsx";
 import { AddItem } from "./AddItem.jsx";
 
-import { ListItems } from "./ListItems.jsx";
-import { Filters } from "./Filters";
+import { ProjectItemsList } from "./ProjectItemsList.jsx";
+import { NotesList } from "./NotesList.jsx";
 
 export function LifeHelperApp(props) {
   //   registerServiceWorker();
@@ -33,6 +33,7 @@ export function LifeHelperApp(props) {
     setParent,
     toggleRefreshData,
     dataServer,
+    listView,
   } = useGlobalState();
 
   // *** pageTitleEffect is a signal that is used to set the page title and
@@ -46,16 +47,8 @@ export function LifeHelperApp(props) {
   return (
     <section class="route">
       <header class="life-helper-header">
-        {/* <p>refreshData() is {refreshData()}</p> */}
-        {/* <p>props.type is {props.type}</p> */}
         <button
-          class="subscription-button"
-          //   onClick={(e) =>
-          //     askWebPushPermission({
-          //       type: "Backend Server URL",
-          //       backend_server_url: dataServer,
-          //     })
-          //   }
+          class="action-button"
           onClick={(e) =>
             registerServiceWorker({
               type: "Backend Server URL",
@@ -65,7 +58,7 @@ export function LifeHelperApp(props) {
         >
           Request A Web Push Subscription
         </button>
-        <button class="subscription-button" onClick={(e) => sendMessage(e)}>
+        <button class="action-button" onClick={(e) => sendMessage(e)}>
           Send Message To Service Worker
         </button>
         <div class="header-title">
@@ -81,7 +74,7 @@ export function LifeHelperApp(props) {
           dataServer={dataServer}
         />
       </header>
-      <ListItems setParent={setParent} parent={parent} />
+      <ProjectItemsList setParent={setParent} parent={parent} />
     </section>
   );
 

@@ -1,12 +1,13 @@
 import { Show, For, createResource } from "solid-js";
 import { ProjectItem } from "./ProjectItem.jsx";
-import { useGlobalState } from "./GlobalStateProvider";
+import { useGlobalState } from "./GlobalStateProvider.jsx";
 
-import { startedButNotCompletedCount, completedCount } from "./helperFunctions";
+import {
+  startedButNotCompletedCount,
+  completedCount,
+} from "./helperFunctions.js";
 
-export function ListItems(props) {
-  // Remember props contains the setParent and parent signals.
-
+export function ProjectItemsList(props) {
   // *** The SolidJS resource items is used to store the objectives, goals or tasks
   // *** retrieved from the server depending on the context.
   var { itemType, refreshData, dataServer, filters } = useGlobalState();
@@ -72,11 +73,8 @@ export function ListItems(props) {
         ? 0
         : props.parent()[props.parent().length - 1].item_id;
 
-    // searchParams.completed_items = filters().completed_items;
-    // searchParams.started_items = filters().started_items;
     searchParams = { ...searchParams, ...filters() };
 
-    // alert(JSON.stringify(filters()));
     var response = await fetch(
       dataServer + `/${itemType()}s` + "?params=" + JSON.stringify(searchParams)
     );
