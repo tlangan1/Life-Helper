@@ -15,19 +15,35 @@ button.editable::before {
   cursor: pointer;
 }
 
-button.editable.editing::before {
+button.editable.editing > label::before {
   /* content: "\2705"; */
   content: "\1f4be";
   margin-right: 0.5rem;
   cursor: pointer;
 }
 
-span {
-  display: inline-block;
-  min-width: 1rem;
-  padding: 0.25rem;
+input.editable {
+  display: none;
 }
 
-span[contenteditable="true"] {
-  background-color: white;
+.description input[type="checkbox"] {
+  display: none;
+}
+
+.description .notes-list {
+  display: none;
+}
+
+.description label::before {
+  content: "\25b8\0020";
+  cursor: pointer;
+}
+
+.description input[type="checkbox"]:checked + label::before {
+  /* this is the down arrow */
+  content: "\25bE\0020";
+}
+
+.description input[type="checkbox"]:checked ~ .notes-list {
+  display: block;
 }

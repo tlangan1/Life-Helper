@@ -15,10 +15,10 @@ button {
   border: 0;
 }
 
-button.subscription-button {
+/* button.subscription-button {
   border: 1px solid #0066cc;
   background-color: var(--secondary-background-color);
-  color: #ffffff;
+  color: var(--primary-background-color);
   padding: 5px 10px;
   margin-top: 1rem;
 }
@@ -26,15 +26,9 @@ button.subscription-button {
 button.subscription-button:hover {
   border: 1px solid var(--secondary-background-color);
   background-color: #00aacc;
-  color: #ffffff;
+  color: var(--primary-background-color);
   padding: 5px 10px;
-}
-
-button.subscription-button:disabled {
-  border: 1px solid #999999;
-  background-color: #cccccc;
-  color: #666666;
-}
+} */
 
 button.return::after {
   font-size: 30px;

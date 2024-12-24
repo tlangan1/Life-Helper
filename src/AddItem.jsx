@@ -1,24 +1,9 @@
 import "./AddItem.css";
-import { Portal, Show } from "solid-js/web";
-import { createSignal } from "solid-js";
+import { Show } from "solid-js/web";
+import { createEffect, createSignal } from "solid-js";
 import { useGlobalState } from "./GlobalStateProvider";
 
 import { affectItem, capitalizeFirstLetter } from "./helperFunctions";
-
-// <input
-//   class="new-item"
-//   onChange={(e) => {
-//     affectItemCaller(
-//       e,
-//       "add",
-//       parent().length == 0 ? 0 : parent()[parent().length - 1].item_id,
-//       props.type,
-//       dataServer
-//     );
-//   }}
-//   placeholder={`Enter ${props.type}`}
-//   autofocus={true}
-// />;
 
 export function AddItem(props) {
   var itemName;
@@ -28,8 +13,11 @@ export function AddItem(props) {
   //   var indefiniteArticle = setAppropriateIndefiniteArticle;
   // *** dataServer is the URL of the server that provides the data.
   var { toggleRefreshData, dataServer } = useGlobalState();
-  var minTitleLength = 10;
-  var maxTitleLength = 50;
+  var minNameLength = 10;
+  var maxNameLength = 50;
+  createEffect(() => {
+    if (AddItem()) document.querySelector("dialog").showModal();
+  });
 
   return (
     <>
@@ -52,70 +40,69 @@ export function AddItem(props) {
         </Show>
       </div>
       <Show when={AddItem()}>
-        <Portal mount={document.querySelector("body")}>
-          <div class="popup-wrapper">
-            <div class="popup">
-              <p>
-                {`parent_id is ${parentID()}`}
-                <br />
-                {`item_type is ${props.item_type}`}
-                <br />
-                {`dataServer is ${props.dataServer}`}
-              </p>
-              <label htmlFor="item_label">
-                {capitalizeFirstLetter(props.item_type)} Name:
-              </label>
-              <input
-                ref={itemName}
-                type="text"
-                name="item_label"
-                id="item_label"
-                minLength={minTitleLength}
-                maxLength={maxTitleLength}
-                onKeyUp={updateCharacterCount}
-              />
-              <span>
-                {minTitleLength} to {maxTitleLength} characters required:
-              </span>
-              <label htmlFor="item_description">
-                {capitalizeFirstLetter(props.item_type)} Description:
-              </label>
-              <textarea
-                ref={itemDescription}
-                name="item_description"
-                id="item_description"
-              ></textarea>
-              <div class="buttons">
-                <button
-                  class="action-button"
-                  title="Click to save this item"
-                  onClick={(e) =>
-                    saveItem(
-                      e,
-                      "add",
-                      props.item_type,
-                      {
-                        parent_id: parentID(),
-                        item_name: itemName.value,
-                        item_description: itemDescription.value,
-                      },
-                      dataServer
-                    )
-                  }
-                >
-                  Save this item
-                </button>
-                <button
-                  class="action-button"
-                  title="Click to cancel adding this item"
-                  onClick={toggleAddItem}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
+        <dialog class="popup">
+          <label htmlFor="item_name" class="block">
+            {capitalizeFirstLetter(props.item_type)} Name (Required):
+          </label>
+          <input
+            // The ref is used to get the value of the input field in the saveItem function.
+            // item_name: itemName.value
+            ref={itemName}
+            type="text"
+            name="item_name"
+            id="item_name"
+            minLength={minNameLength}
+            maxLength={maxNameLength}
+            onKeyUp={updateCharacterCount}
+            required
+            autofocus
+            size={maxNameLength}
+            // pattern=".{10,50}"
+          />
+          <span></span>
+          <span class="block">
+            {minNameLength} to {maxNameLength} characters required:
+          </span>
+          <label htmlFor="item_description" class="block">
+            {capitalizeFirstLetter(props.item_type)} Description:
+          </label>
+          <textarea
+            // The ref is used to get the value of the input field in the saveItem function.
+            // item_description: itemDescription.value
+            ref={itemDescription}
+            name="item_description"
+            id="item_description"
+          ></textarea>
+          <div class="buttons">
+            <button
+              class="action-button save"
+              title="Click to save this item"
+              disabled
+              onClick={(e) =>
+                saveItem(
+                  e,
+                  "add",
+                  props.item_type,
+                  {
+                    parent_id: parentID(),
+                    item_name: itemName.value,
+                    item_description: itemDescription.value,
+                  },
+                  dataServer
+                )
+              }
+            >
+              Save this item
+            </button>
+            <button
+              class="action-button"
+              title="Click to cancel adding this item"
+              onClick={toggleAddItem}
+            >
+              Cancel
+            </button>
           </div>
-        </Portal>
+        </dialog>
       </Show>
       <Show when={AddExistingItem()}>
         <p>Existing Item Popup</p>
@@ -134,9 +121,9 @@ export function AddItem(props) {
 
   function toggleAddItem() {
     setAddItem(!AddItem());
-    if (AddItem()) {
-      item_label.focus();
-    }
+    // if (AddItem()) {
+    //   item_name.focus();
+    // }
   }
   function toggleAddExistingItem() {
     setAddExistingItem(!AddExistingItem());
@@ -164,16 +151,16 @@ export function AddItem(props) {
 
   function updateCharacterCount(e) {
     var itemValue = e.target.value;
-    var itemSpan = e.target.nextElementSibling;
-    var originalColor = window.getComputedStyle(itemSpan)["color"];
+    var itemSpan = e.target.nextElementSibling.nextElementSibling;
 
     if (itemValue.length < e.target.minLength) {
-      itemSpan.style.color = "red";
+      document.querySelector(".action-button.save").disabled = true;
       itemSpan.innerText = `${
         e.target.minLength - itemValue.length
       } more characters required`;
     } else {
-      itemSpan.style.color = "";
+      document.querySelector(".action-button.save").disabled = false;
+      e.target.disabled = false;
       itemSpan.innerText = `${
         e.target.maxLength - itemValue.length
       } characters left`;

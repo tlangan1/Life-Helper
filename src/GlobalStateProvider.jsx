@@ -22,7 +22,7 @@ export function GlobalStateProvider(props) {
   var [parent, setParent] = createSignal([]);
 
   var [filters, setFilters] = createSignal({
-    completed_items: "either",
+    completed_items: "no",
     started_items: "either",
     deleted_items: "no",
   });

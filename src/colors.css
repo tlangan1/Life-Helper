@@ -10,6 +10,18 @@
   initial-value: rgba(175, 47, 47, 0.75);
 }
 
+@property --emphasis-background-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(0, 133, 242, 0.063);
+}
+
+@property --popup-background-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgb(190, 227, 240);
+}
+
 @property --emphasis-color-complement {
   syntax: "<color>";
   inherits: true;
@@ -26,4 +38,35 @@
   syntax: "<color>";
   inherits: true;
   initial-value: rgba(0, 153, 204, 1);
+}
+
+@property --backdrop-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(211, 211, 211, 0.75);
+}
+
+@property --subsection-background-color {
+  syntax: "<color>";
+  inherits: true;
+  /* initial-value: rgb(240, 240, 240); */
+  initial-value: rgb(240, 240, 94);
+}
+
+@property --disabled-button-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgb(102, 102, 102);
+}
+
+@property --disabled-button-border-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgb(153, 153, 153);
+}
+
+@property --disabled-button-background-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgb(204, 204, 204);
 }

@@ -47,6 +47,7 @@ import { displayObjectKeysAndValues } from "./diagnostic";
 import { useGlobalState } from "./GlobalStateProvider";
 import { createSignal, createEffect } from "solid-js";
 import { affectItem } from "./helperFunctions";
+import { NotesList } from "./NotesList";
 
 export function ProjectItemDetail(props) {
   var { itemType, dataServer, toggleRefreshData, filters } = useGlobalState();
@@ -60,10 +61,6 @@ export function ProjectItemDetail(props) {
 
   return (
     <div class="project-item-detail">
-      {/* <h3>
-        Product Item Detail for {props.item_type}
-        with id = {props.item_id}
-      </h3> */}
       <div class="item-controls">
         {props.itemType() == "task" ? (
           <div class="non-cancel-item-controls">
@@ -151,11 +148,16 @@ export function ProjectItemDetail(props) {
         </div>
       </div>
       <div class="description">
-        <button class="editable" onClick={toggleContentEditable}></button>
-        Description:{" "}
+        <input
+          type="checkbox"
+          name={`showAllNotes${props.item().item_id}`}
+          id={`showAllNotes${props.item().item_id}`}
+        />
+        <label for={`showAllNotes${props.item().item_id}`}>Description:</label>
         <span contentEditable={contentEditable()}>
           {props.item().item_description}
         </span>
+        <NotesList item={props.item} />
       </div>
     </div>
   );
@@ -195,15 +197,6 @@ export function ProjectItemDetail(props) {
     } else {
       e.target.checked = false;
     }
-  }
-
-  function toggleContentEditable() {
-    setContentEditable(!contentEditable());
-    document
-      .querySelector(
-        `div[data-item_id="${props.item().item_id}"] button.editable`
-      )
-      .classList.toggle("editing");
   }
 
   function fullRefreshRequired(operation, filters) {

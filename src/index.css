@@ -48,7 +48,7 @@ a.navlink {
 
 a.navlink:hover {
   color: var(--emphasis-color);
-  background-color: rgba(0, 133, 242, 0.063);
+  background-color: var(--emphasis-background-color);
   height: 100%;
 }
 
@@ -60,8 +60,21 @@ a.navlink:hover {
 
 button.action-button {
   background: rgb(240, 240, 240);
-  color: black;
-  border: solid black;
+  color: var(--primary-font-color);
+  border: solid var(--primary-font-color);
   margin: 0.5rem;
   border-radius: 0.5rem;
+}
+
+button.action-button:disabled {
+  border: 1px solid var(--disabled-button-border-color);
+  background-color: var(--disabled-button-background-color);
+  color: var(--disabled-button-color);
+  cursor: not-allowed;
+}
+
+button.action-button:hover {
+  border: 1px solid var(--secondary-background-color);
+  background-color: #00aacc;
+  color: var(--primary-background-color);
 }
