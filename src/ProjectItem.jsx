@@ -23,7 +23,12 @@ export function ProjectItem(props) {
       data-item_name={item().item_name}
       onDblClick={openChildren}
     >
-      <input type="checkbox" name={item().item_id} id={item().item_id} />
+      <input
+        type="checkbox"
+        name={item().item_id}
+        id={item().item_id}
+        role="button"
+      />
       <div class="item-header">
         <label
           for={item().item_id}

@@ -21,7 +21,7 @@ import { useGlobalState } from "./GlobalStateProvider";
 import { AddItem } from "./AddItem.jsx";
 
 import { ProjectItemsList } from "./ProjectItemsList.jsx";
-import { NotesList } from "./NotesList.jsx";
+import { NoteList } from "./NotesList.jsx";
 
 export function LifeHelperApp(props) {
   //   registerServiceWorker();
