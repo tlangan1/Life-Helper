@@ -67,7 +67,7 @@ export function ProjectItemDetail(props) {
           <div class="non-cancel-item-controls">
             <input
               type="checkbox"
-              id={`start_task_${props.item().item_id}`}
+              id={`start_item_${props.item().item_id}`}
               onClick={(event) =>
                 affectItemCaller(
                   event,
@@ -80,17 +80,17 @@ export function ProjectItemDetail(props) {
               disabled={props.item().started_dtm}
               checked={props.item().started_dtm}
             ></input>
-            <label for={`start_task_${props.item().item_id}`}>Start</label>
+            <label for={`start_item_${props.item().item_id}`}>Start</label>
             <input
               type="checkbox"
-              id={`pause_task_${props.item().item_id}`}
+              id={`pause_item_${props.item().item_id}`}
               disabled={props.item().completed_dtm || props.item().deleted_dtm}
               checked={props.item().paused_dtm}
             ></input>
-            <label for={`pause_task_${props.item().item_id}`}>Pause</label>
+            <label for={`pause_item_${props.item().item_id}`}>Pause</label>
             <input
               type="checkbox"
-              id={`complete_task_${props.item().item_id}`}
+              id={`complete_item_${props.item().item_id}`}
               onClick={(event) =>
                 affectItemCaller(
                   event,
@@ -103,7 +103,7 @@ export function ProjectItemDetail(props) {
               disabled={props.item().completed_dtm || props.item().deleted_dtm}
               checked={props.item().completed_dtm}
             ></input>
-            <label for={`complete_task_${props.item().item_id}`}>
+            <label for={`complete_item_${props.item().item_id}`}>
               complete
             </label>
           </div>
@@ -111,14 +111,14 @@ export function ProjectItemDetail(props) {
           <div class="non-cancel-item-controls">
             <input
               type="checkbox"
-              id={`start_task_${props.item().item_id}`}
+              id={`started_item_${props.item().item_id}`}
               disabled
               checked={props.item().started_dtm}
             ></input>
             <label for={`started_item_${props.item().item_id}`}>Started</label>
             <input
               type="checkbox"
-              id={`complete_task_${props.item().item_id}`}
+              id={`completed_item_${props.item().item_id}`}
               disabled
               checked={props.item().completed_dtm}
             ></input>
@@ -128,12 +128,12 @@ export function ProjectItemDetail(props) {
           </div>
         )}
         <div class="cancel-item-control">
-          <label for={`cancel_delete_task_${props.item().item_id}`}>
+          <label for={`cancel_delete_item_${props.item().item_id}`}>
             Cancel/Delete
           </label>
           <input
             type="checkbox"
-            id={`cancel_task_${props.item().item_id}`}
+            id={`cancel_delete_item_${props.item().item_id}`}
             onClick={(event) =>
               affectItemCaller(
                 event,
