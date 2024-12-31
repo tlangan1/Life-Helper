@@ -85,14 +85,14 @@ export function AddNote(props) {
   }
 
   function saveNote(e, operation, item_type, data, dataServer) {
-    if (affectItemCaller(e, operation, item_type, data, dataServer)) {
-      console.log("This should come first: Note saved");
-      toggleAddNote();
-      props.toggleRefreshNotes();
-    }
+    affectItemCaller(e, operation, item_type, data, dataServer);
   }
 
   async function affectItemCaller(e, operation, item_type, data, dataServer) {
-    return await affectItem(e, operation, item_type, data, dataServer);
+    var success = await affectItem(e, operation, item_type, data, dataServer);
+    if (success) {
+      toggleAddNote();
+      props.toggleRefreshNotes();
+    }
   }
 }
