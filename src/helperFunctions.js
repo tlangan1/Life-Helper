@@ -19,12 +19,13 @@ export async function affectItem(evt, affectType, item_type, data, dataServer) {
   try {
     switch (affectType) {
       case "add":
-        item = {
-          parent_id: data.parent_id,
-          // TODO: replace evt with data
-          name: data.item_name,
-          description: data.item_description, // TODO create a description control
-        };
+        // item = {
+        //   parent_id: data.parent_id,
+        //   // TODO: replace evt with data
+        //   name: data.item_name,
+        //   description: data.item_description, // TODO create a description control
+        // };
+        item = data;
         endPoint = `/${affectType}/${item_type}`;
         break;
       case "start":

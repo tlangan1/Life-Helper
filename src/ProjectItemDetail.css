@@ -34,7 +34,7 @@ input.editable {
   display: none;
 }
 
-.description label::before {
+.description > label::before {
   content: "\25b8\0020";
   cursor: pointer;
 }

@@ -13,8 +13,9 @@ export function AddItem(props) {
   //   var indefiniteArticle = setAppropriateIndefiniteArticle;
   // *** dataServer is the URL of the server that provides the data.
   var { toggleRefreshData, dataServer } = useGlobalState();
-  var minNameLength = 10;
-  var maxNameLength = 50;
+  var minTextLength = 10;
+  var maxTextLength = 50;
+  var [descriptionLength, setDescriptionLength] = createSignal(0);
   createEffect(() => {
     if (AddItem()) document.querySelector("dialog").showModal();
   });
@@ -51,17 +52,23 @@ export function AddItem(props) {
             type="text"
             name="item_name"
             id="item_name"
-            minLength={minNameLength}
-            maxLength={maxNameLength}
-            onKeyUp={updateCharacterCount}
+            minLength={minTextLength}
+            maxLength={maxTextLength}
+            onKeyUp={(e) => setDescriptionLength(e.target.value.length)}
             required
             autofocus
-            size={maxNameLength}
+            size={maxTextLength}
             // pattern=".{10,50}"
           />
           <span></span>
           <span class="block">
-            {minNameLength} to {maxNameLength} characters required:
+            {descriptionLength() < minTextLength
+              ? `${
+                  minTextLength - descriptionLength()
+                } more characters required`
+              : `${
+                  maxTextLength - descriptionLength()
+                } more characters available`}
           </span>
           <label htmlFor="item_description" class="block">
             {capitalizeFirstLetter(props.item_type)} Description:
@@ -72,12 +79,14 @@ export function AddItem(props) {
             ref={itemDescription}
             name="item_description"
             id="item_description"
+            rows="5"
+            minLength={15}
           ></textarea>
           <div class="buttons">
             <button
               class="action-button save"
               title="Click to save this item"
-              disabled
+              disabled={descriptionLength() < minTextLength}
               onClick={(e) =>
                 saveItem(
                   e,
@@ -147,24 +156,6 @@ export function AddItem(props) {
   async function affectItemCaller(e, operation, item_type, data, dataServer) {
     await affectItem(e, operation, item_type, data, dataServer);
     toggleRefreshData();
-  }
-
-  function updateCharacterCount(e) {
-    var itemValue = e.target.value;
-    var itemSpan = e.target.nextElementSibling.nextElementSibling;
-
-    if (itemValue.length < e.target.minLength) {
-      document.querySelector(".action-button.save").disabled = true;
-      itemSpan.innerText = `${
-        e.target.minLength - itemValue.length
-      } more characters required`;
-    } else {
-      document.querySelector(".action-button.save").disabled = false;
-      e.target.disabled = false;
-      itemSpan.innerText = `${
-        e.target.maxLength - itemValue.length
-      } characters left`;
-    }
   }
 
   function parentID() {

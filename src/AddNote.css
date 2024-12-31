@@ -1,0 +1,17 @@
+#note_text:invalid + span {
+  color: var(--emphasis-color);
+}
+
+#note_text + span::before {
+  padding-right: 0.25rem;
+}
+
+#note_text:invalid + span::before {
+  content: "✖";
+  color: var(--emphasis-color);
+}
+
+#note_text:valid + span::before {
+  content: "✔";
+  color: green;
+}

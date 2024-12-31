@@ -28,13 +28,6 @@ dialog::backdrop {
   justify-content: space-around;
 }
 
-.popup textarea {
-  resize: none;
-  min-width: 350px;
-  min-height: 5rem;
-  margin-bottom: 1rem;
-}
-
 input[type="text"] ~ span {
   margin-bottom: 0.5rem;
 }

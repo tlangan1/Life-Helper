@@ -29,6 +29,10 @@ h1 {
   color: var(--emphasis-color);
 }
 
+textarea {
+  resize: none;
+}
+
 nav.nav-using-flex {
   display: flex;
   flex-direction: row;
@@ -74,7 +78,7 @@ button.action-button:disabled {
 }
 
 button.action-button:hover {
-  border: 1px solid var(--secondary-background-color);
+  border: solid var(--secondary-background-color);
   background-color: #00aacc;
   color: var(--primary-background-color);
 }

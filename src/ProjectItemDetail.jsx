@@ -47,11 +47,12 @@ import { displayObjectKeysAndValues } from "./diagnostic";
 import { useGlobalState } from "./GlobalStateProvider";
 import { createSignal, createEffect } from "solid-js";
 import { affectItem } from "./helperFunctions";
-import { NotesList } from "./NotesList";
+import { NoteList } from "./NotesList";
 
 export function ProjectItemDetail(props) {
   var { itemType, dataServer, toggleRefreshData, filters } = useGlobalState();
   var [contentEditable, setContentEditable] = createSignal(false);
+  var [notesRequested, setNotesRequested] = createSignal(false);
 
   createEffect(() => {
     if (!contentEditable()) {
@@ -152,12 +153,16 @@ export function ProjectItemDetail(props) {
           type="checkbox"
           name={`showAllNotes${props.item().item_id}`}
           id={`showAllNotes${props.item().item_id}`}
+          role="button"
+          onClick={() => setNotesRequested(!notesRequested())}
         />
         <label for={`showAllNotes${props.item().item_id}`}>Description:</label>
         <span contentEditable={contentEditable()}>
           {props.item().item_description}
         </span>
-        <NotesList item={props.item} />
+        <Show when={notesRequested()}>
+          <NoteList item={props.item} />
+        </Show>
       </div>
     </div>
   );
