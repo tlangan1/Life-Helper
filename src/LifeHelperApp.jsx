@@ -7,21 +7,13 @@ import {
   registerServiceWorker,
 } from "./index.js";
 
-import {
-  Show,
-  For,
-  createSignal,
-  createResource,
-  createEffect,
-  Switch,
-} from "solid-js";
+import { createSignal, createEffect } from "solid-js";
 
 import { useGlobalState } from "./GlobalStateProvider";
 
 import { AddItem } from "./AddItem.jsx";
 
 import { ProjectItemsList } from "./ProjectItemsList.jsx";
-import { NoteList } from "./NotesList.jsx";
 
 export function LifeHelperApp(props) {
   //   registerServiceWorker();
@@ -33,7 +25,6 @@ export function LifeHelperApp(props) {
     setParent,
     toggleRefreshData,
     dataServer,
-    listView,
   } = useGlobalState();
 
   // *** pageTitleEffect is a signal that is used to set the page title and
@@ -68,11 +59,7 @@ export function LifeHelperApp(props) {
             onClick={returnToParent}
           ></button>
         </div>
-        <AddItem
-          parent={parent}
-          item_type={itemType()}
-          dataServer={dataServer}
-        />
+        <AddItem parent={parent} />
       </header>
       <ProjectItemsList setParent={setParent} parent={parent} />
     </section>

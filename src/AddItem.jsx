@@ -12,7 +12,7 @@ export function AddItem(props) {
   var [AddExistingItem, setAddExistingItem] = createSignal(false);
   //   var indefiniteArticle = setAppropriateIndefiniteArticle;
   // *** dataServer is the URL of the server that provides the data.
-  var { toggleRefreshData, dataServer } = useGlobalState();
+  var { toggleRefreshData, dataServer, itemType } = useGlobalState();
   var minTextLength = 10;
   var maxTextLength = 50;
   var [descriptionLength, setDescriptionLength] = createSignal(0);
@@ -25,25 +25,25 @@ export function AddItem(props) {
       <div class="add-item-buttons">
         <button
           class="action-button inline"
-          title={`Click here to add a new ${props.item_type}`}
+          title={`Click here to add a new ${itemType()}`}
           onClick={toggleAddItem}
         >
-          {`Add a new ${props.item_type}`}
+          {`Add a new ${itemType()}`}
         </button>
-        <Show when={props.item_type != "objective"}>
+        <Show when={itemType() != "objective"}>
           <button
             class="action-button inline"
-            title={`Click here to add an existing ${props.item_type}`}
+            title={`Click here to add an existing ${itemType()}`}
             onClick={toggleAddExistingItem}
           >
-            {`Add an existing ${props.item_type}`}
+            {`Add an existing ${itemType()}`}
           </button>
         </Show>
       </div>
       <Show when={AddItem()}>
         <dialog class="popup">
           <label htmlFor="item_name" class="block">
-            {capitalizeFirstLetter(props.item_type)} Name (Required):
+            {capitalizeFirstLetter(itemType())} Name (Required):
           </label>
           <input
             // The ref is used to get the value of the input field in the saveItem function.
@@ -71,7 +71,7 @@ export function AddItem(props) {
                 } more characters available`}
           </span>
           <label htmlFor="item_description" class="block">
-            {capitalizeFirstLetter(props.item_type)} Description:
+            {capitalizeFirstLetter(itemType())} Description:
           </label>
           <textarea
             // The ref is used to get the value of the input field in the saveItem function.
@@ -91,7 +91,7 @@ export function AddItem(props) {
                 saveItem(
                   e,
                   "add",
-                  props.item_type,
+                  itemType(),
                   {
                     parent_id: parentID(),
                     item_name: itemName.value,
@@ -141,7 +141,7 @@ export function AddItem(props) {
   // not used since I added the capability of linking to an existing goal/task
   //   function setAppropriateIndefiniteArticle() {
   //     // Cspell:ignore aeiou
-  //     if (props.item_type[0].match(/[aeiou]/)) {
+  //     if (itemType[0].match(/[aeiou]/)) {
   //       return "an";
   //     } else {
   //       return "a";

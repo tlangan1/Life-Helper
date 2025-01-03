@@ -1,45 +1,3 @@
-// This is the code that was once in ProjectItem.jsx used to delete an item.
-// {
-//   <button
-//     class="destroy"
-//     onClick={(e) => {
-//       affectItemCaller(
-//         e,
-//         "delete",
-//         props.itemType,
-//         { item_id: item.item_id },
-//         dataServer
-//       );
-//     }}
-//   />;
-// }
-
-// This is the code that was once in ProjectItem.jsx used to start a task.
-// {
-//   <div class="toggle">
-//     {props.itemType == "task" ? (
-//       <input
-//         type="checkbox"
-//         class="toggle"
-//         onClick={(e) => {
-//           affectItemCaller(
-//             e,
-//             "start",
-//             props.itemType,
-//             { item_id: item.item_id },
-//             dataServer
-//           );
-//         }}
-//         disabled={item.completed_dtm}
-//         checked={item.started_dtm}
-//       ></input>
-//     ) : (
-//       <input type="checkbox" class="toggle" disabled></input>
-//     )}
-//     <span class="hide">Start</span>
-//   </div>;
-// }
-
 import "./ProjectItemDetail.css";
 
 import { displayObjectKeysAndValues } from "./diagnostic";
@@ -54,16 +12,16 @@ export function ProjectItemDetail(props) {
   var [contentEditable, setContentEditable] = createSignal(false);
   var [notesRequested, setNotesRequested] = createSignal(false);
 
-  createEffect(() => {
-    if (!contentEditable()) {
-      console.log("contentEditable is false");
-    }
-  });
+  //   createEffect(() => {
+  //     if (!contentEditable()) {
+  //       console.log("contentEditable is false");
+  //     }
+  //   });
 
   return (
     <div class="project-item-detail">
       <div class="item-controls">
-        {props.itemType() == "task" ? (
+        {itemType() == "task" ? (
           <div class="non-cancel-item-controls">
             <input
               type="checkbox"
@@ -72,8 +30,8 @@ export function ProjectItemDetail(props) {
                 affectItemCaller(
                   event,
                   "start",
-                  props.itemType(),
-                  { item_id: props.item().item_id },
+                  itemType(),
+                  { task_id: props.item().item_id },
                   dataServer
                 )
               }
@@ -95,8 +53,8 @@ export function ProjectItemDetail(props) {
                 affectItemCaller(
                   event,
                   "complete",
-                  props.itemType(),
-                  { item_id: props.item().item_id },
+                  itemType(),
+                  { task_id: props.item().item_id },
                   dataServer
                 )
               }
@@ -138,8 +96,8 @@ export function ProjectItemDetail(props) {
               affectItemCaller(
                 event,
                 "cancel_delete",
-                props.itemType(),
-                { item_id: props.item().item_id },
+                itemType(),
+                { item_type: itemType(), item_id: props.item().item_id },
                 dataServer
               )
             }
