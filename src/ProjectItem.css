@@ -56,6 +56,12 @@ button.children:hover {
   font-weight: bold;
 }
 
+/* If the item.paused_dtm is true, then the class "paused" is added to the div */
+/* and the main label is bolded */
+.paused {
+  font-style: italic;
+}
+
 /* If the item.completed_dtm is true, then the class "completed" is added to the div */
 /* and the main label has a turquoise background */
 /* Now, since everything that was completed must have been started then both the */

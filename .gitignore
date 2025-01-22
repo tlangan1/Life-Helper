@@ -4,3 +4,4 @@ cache-examples
 js/external
 sw.js
 README.pdf
+*.txt

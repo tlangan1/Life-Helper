@@ -42,6 +42,15 @@ export function ProjectItemDetail(props) {
             <input
               type="checkbox"
               id={`pause_item_${props.item().item_id}`}
+              onClick={(event) =>
+                affectItemCaller(
+                  event,
+                  "pause",
+                  itemType(),
+                  { task_id: props.item().item_id },
+                  dataServer
+                )
+              }
               disabled={props.item().completed_dtm || props.item().deleted_dtm}
               checked={props.item().paused_dtm}
             ></input>

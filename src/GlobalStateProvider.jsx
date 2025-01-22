@@ -4,6 +4,7 @@ import { createSignal, createContext, useContext } from "solid-js";
 const GlobalStateContext = createContext();
 
 export function GlobalStateProvider(props) {
+  var [loggedIn, setLoggedIn] = createSignal(false);
   var [itemType, setItemType] = createSignal("objective");
   // *** refreshData is a signal that is used to initiate a data refresh
   // *** using the function fetchItems.
@@ -28,7 +29,8 @@ export function GlobalStateProvider(props) {
   });
 
   const globalState = {
-    mode: "dev",
+    loggedIn: loggedIn,
+    setLoggedIn: setLoggedIn,
     itemType: itemType,
     parent: parent,
     setParent: setParent,
@@ -37,9 +39,10 @@ export function GlobalStateProvider(props) {
     toggleRefreshData: function toggleRefreshData() {
       setRefreshData((refreshData() + 1) % 2);
     },
-    dataServer: "https://192.168.1.159:3001",
+    dataServer: "https://192.168.1.10:3001",
     filters: filters,
     setFilters: setFilters,
+    mode: "dev",
   };
 
   return (

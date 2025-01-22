@@ -14,7 +14,7 @@ export function ProjectItemsList(props) {
   const [items, { mutate, refetch }] = createResource(refreshData, fetchItems);
 
   return (
-    <div>
+    <div class="item-list-container">
       <span>{items.loading && "Loading..."}</span>
       <span>{items.error && "Error"}</span>
       {items.state == "ready" && (
@@ -45,18 +45,18 @@ export function ProjectItemsList(props) {
         <span>{`Completed items: ${
           items.state == "ready" && completedCount(items)
         }`}</span>
+        <button
+          class="action-button"
+          onClick={() => {
+            const newItems = items();
+            newItems.sort((a, b) => a.item_id - b.item_id);
+            mutate(newItems);
+            refetch();
+          }}
+        >
+          Sort the items in place by item_id, the number in the parentheses.
+        </button>
       </footer>
-      <button
-        class="action-button"
-        onClick={() => {
-          const newItems = items();
-          newItems.sort((a, b) => a.item_id - b.item_id);
-          mutate(newItems);
-          refetch();
-        }}
-      >
-        Sort the items in place by item_id, the number in the parentheses.
-      </button>
     </div>
   );
 

@@ -30,19 +30,17 @@ export async function affectItem(evt, affectType, item_type, data, dataServer) {
   try {
     switch (affectType) {
       case "add":
-        endPoint = `/${affectType}/${item_type}`;
-        break;
+      case "pause":
       case "start":
       case "complete":
-        endPoint = `/${affectType}`;
-        break;
-      case "update":
-        break;
       case "cancel_delete":
-        endPoint = `/${affectType}`;
+      case "update":
+        endPoint = `/${affectType}/${item_type}`;
         break;
       default:
-        alert(`Invalid affectType "${affectType}" in function affectItem!`);
+        alert(
+          `Invalid route "/${affectType}/${item_type}" in function affectItem!`
+        );
         return false;
     }
 

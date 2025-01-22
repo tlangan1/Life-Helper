@@ -31,6 +31,7 @@ export function ProjectItem(props) {
             completed: item().completed_dtm,
             started: item().started_dtm,
             deleted: item().deleted_dtm,
+            paused: item().paused_dtm,
           }}
         >
           {item().item_name} ({mode == "dev" ? item().item_id : ""})
