@@ -9,7 +9,9 @@ import { Router, Route } from "@solidjs/router";
 import { LifeHelperApp } from "./LifeHelperApp";
 import { Filters } from "./Filters";
 import { Header } from "./Header";
+import { Account } from "./Account";
 import { Login } from "./Login";
+import { Register } from "./Register";
 import { NotFound } from "./NotFound";
 
 const root = document.getElementById("root");
@@ -40,7 +42,9 @@ render(() => {
       <GlobalStateProvider>
         <Router root={Header}>
           <Route path="/" component={LifeHelperApp} />
-          <Route path="/account" component={Login} />
+          <Route path="/login" component={Login} />
+          <Route path="/register" component={Register} />
+          <Route path="/account" component={Account} />
           <Route path="/filters" component={Filters} />
           <Route path="*" component={NotFound} />
         </Router>

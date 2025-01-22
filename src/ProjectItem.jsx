@@ -1,18 +1,13 @@
 import "./ProjectItem.css";
 
-import { createSignal, createMemo } from "solid-js";
+import { createSignal } from "solid-js";
 
-import {
-  affectItem,
-  childItemType,
-  capitalizeFirstLetter,
-} from "./helperFunctions";
+import { childItemType, capitalizeFirstLetter } from "./helperFunctions";
 
 import { useGlobalState } from "./GlobalStateProvider";
 import { ProjectItemDetail } from "./ProjectItemDetail";
 
 export function ProjectItem(props) {
-  // *** dataServer is the URL of the server that provides the data.
   var { mode, itemType, setItemType, toggleRefreshData } = useGlobalState();
   var [item, setItem] = createSignal(Object.assign({}, props.item));
 
@@ -36,6 +31,7 @@ export function ProjectItem(props) {
             completed: item().completed_dtm,
             started: item().started_dtm,
             deleted: item().deleted_dtm,
+            paused: item().paused_dtm,
           }}
         >
           {item().item_name} ({mode == "dev" ? item().item_id : ""})
@@ -49,7 +45,6 @@ export function ProjectItem(props) {
         ) : null}
       </div>
       <ProjectItemDetail
-        itemType={itemType}
         item={item}
         setItem={setItem}
         items={props.items}

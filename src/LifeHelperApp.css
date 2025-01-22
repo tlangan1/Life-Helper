@@ -4,31 +4,25 @@ header.life-helper-header {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: min(700px, 90vw);
+}
+
+h1 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .header-title {
   display: flex;
+  justify-content: center;
+  width: min(700px, 90vw);
 }
 
 button {
   background: none;
   border: 0;
 }
-
-/* button.subscription-button {
-  border: 1px solid #0066cc;
-  background-color: var(--secondary-background-color);
-  color: var(--primary-background-color);
-  padding: 5px 10px;
-  margin-top: 1rem;
-}
-
-button.subscription-button:hover {
-  border: 1px solid var(--secondary-background-color);
-  background-color: #00aacc;
-  color: var(--primary-background-color);
-  padding: 5px 10px;
-} */
 
 button.return::after {
   font-size: 30px;

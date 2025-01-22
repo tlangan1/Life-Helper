@@ -8,7 +8,7 @@ import { AddNote } from "./AddNote";
 export function NoteList(props) {
   var { itemType, dataServer } = useGlobalState();
   var [refreshNotes, setRefreshNotes] = createSignal(0);
-  const [notes, { mutate, refetch }] = createResource(refreshNotes, fetchItems);
+  const [notes, { mutate, refetch }] = createResource(refreshNotes, fetchNotes);
 
   return (
     <div class="notes-list">
@@ -28,12 +28,10 @@ export function NoteList(props) {
   // *** Helper functions for the code above
 
   function toggleRefreshNotes() {
-    console.log("This should come second: toggleRefreshNotes");
     setRefreshNotes((refreshNotes() + 1) % 2);
   }
 
-  async function fetchItems(source, { value, refetching }) {
-    console.log("This should come third: fetchItems");
+  async function fetchNotes(source, { value, refetching }) {
     if (refetching) {
       return value;
     }

@@ -87,3 +87,18 @@
 ### Enable caching using vite-plugin-pwa without PWA capabilities
 
 - The service worker is now selectively caching a few things in the service worker activation event. It is also aggressively caching everything in the fetch event that is not already cached and aggressively using cached items when available.
+
+## Login considerations
+
+### Chrome bug with pattern attribute
+
+- See [this](https://issues.chromium.org/issues/40255414) for a deeper understanding. In an example in this discussion they change the pattern shown below to the pattern underneath it.
+  ```
+  pattern="^[a-zA-Z0-9!#$%&amp;'*+/=?^_`{|}~.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)\*$"
+  pattern="^[a-zA-Z0-9!#$%&amp;'*+\/=?^_`\{\|\}~.\-]+@[a-zA-Z0-9\-]+(\.[a-zA-Z0-9\-]+)\*$"
+  ```
+- Here is a very simple example of this bug that I found. I use this pattern, to ensure that there is no white space in a input of type text; however, when viewed in chrome it appears as `pattern="^(?!.*s).+$"`, the backslash is missing. In order to fix this problem I had to make the following change.
+  ```
+  pattern="^(?!.*\s).+$"
+  pattern="^(?!.*\\s).+$"
+  ```

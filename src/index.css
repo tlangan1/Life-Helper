@@ -33,6 +33,10 @@ textarea {
   resize: none;
 }
 
+.hidden {
+  display: none;
+}
+
 nav.nav-using-flex {
   display: flex;
   flex-direction: row;
@@ -43,7 +47,7 @@ nav.nav-using-flex {
   border-bottom: 1px solid #e6e6e6;
 }
 
-a.navlink {
+nav a.navlink {
   text-decoration: none;
   color: var(--primary-font-color);
   padding: 4px;
@@ -60,6 +64,10 @@ a.navlink:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.route > h2 {
+  padding: 0.5rem;
 }
 
 button.action-button {
@@ -81,4 +89,50 @@ button.action-button:hover {
   border: solid var(--secondary-background-color);
   background-color: #00aacc;
   color: var(--primary-background-color);
+}
+
+fieldset {
+  width: 20rem;
+  background-color: var(--emphasis-background-color);
+  border-radius: 0.5rem;
+}
+
+fieldset label {
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+fieldset input {
+  width: 90%;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+/* input:invalid:not(:placeholder-shown),
+textarea:invalid:not(:placeholder-shown) {
+  border-color: red;
+} */
+
+input:user-invalid,
+textarea:user-invalid {
+  border-color: red;
+}
+
+input:user-invalid + span::before {
+  content: "✖";
+  color: red;
+}
+
+.item-list-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(700px, 90vw);
+}
+
+.item-list-container footer {
+  align-self: start;
 }

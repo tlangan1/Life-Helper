@@ -1,0 +1,17 @@
+.account {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: solid;
+  padding: 1rem;
+}
+
+.account > .account_item {
+  justify-self: start;
+}
+
+.account_item {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
