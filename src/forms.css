@@ -1,0 +1,90 @@
+fieldset {
+  width: 20rem;
+  background-color: var(--emphasis-background-color);
+  border-radius: 0.5rem;
+}
+
+fieldset label,
+fieldset input {
+  display: block;
+  width: 100%;
+  border-radius: 0.5rem;
+}
+
+fieldset label {
+  padding-bottom: 0.5rem;
+}
+
+fieldset input {
+  padding: 0.2rem;
+}
+
+input:invalid:not(:placeholder-shown),
+textarea:invalid:not(:placeholder-shown) {
+  border-color: red;
+}
+
+/* input:user-invalid,
+textarea:user-invalid {
+  border-color: red;
+} */
+
+input:user-invalid + span::before {
+  content: "✖";
+  color: red;
+}
+
+/* *** Introduce the form-control-wrapper class *** */
+
+.form-control-wrapper {
+  margin-bottom: 0.5rem;
+}
+
+/* *** End of the form-control-wrapper class *** */
+
+/* *** Introduce the input-validation-wrapper class *** */
+
+.input-validation-wrapper {
+  position: relative;
+}
+
+.input-validation-wrapper > span {
+  position: absolute;
+  right: 0.5rem;
+  top: 0.1rem;
+}
+
+/* *** End of the input-validation-wrapper class *** */
+
+/* *** I not sure what of this we need *** */
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper > * {
+  position: absolute;
+}
+
+.password-wrapper > label {
+  z-index: 1;
+}
+
+.password-eye {
+  position: absolute;
+  right: 35px;
+  top: 25px;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper > span.show {
+  padding: 0.5rem;
+  cursor: pointer;
+  right: 12%;
+}
+
+.password-wrapper > span.show::before {
+  content: "👁";
+  margin-right: 0.5rem;
+  font-size: 1rem;
+}
