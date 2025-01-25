@@ -91,41 +91,6 @@ button.action-button:hover {
   color: var(--primary-background-color);
 }
 
-fieldset {
-  width: 20rem;
-  background-color: var(--emphasis-background-color);
-  border-radius: 0.5rem;
-}
-
-fieldset label {
-  display: block;
-  width: 100%;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-}
-
-fieldset input {
-  width: 90%;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  margin-right: 0.5rem;
-}
-
-/* input:invalid:not(:placeholder-shown),
-textarea:invalid:not(:placeholder-shown) {
-  border-color: red;
-} */
-
-input:user-invalid,
-textarea:user-invalid {
-  border-color: red;
-}
-
-input:user-invalid + span::before {
-  content: "✖";
-  color: red;
-}
-
 .item-list-container {
   display: flex;
   flex-direction: column;

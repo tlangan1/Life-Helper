@@ -102,3 +102,4 @@
   pattern="^(?!.*\s).+$"
   pattern="^(?!.*\\s).+$"
   ```
+- `ODDLY ENOUGH THIS BUG DOES NOT OCCUR WHEN USING LIVE SERVER`

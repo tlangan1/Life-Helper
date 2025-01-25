@@ -1,5 +1,6 @@
 /** @jsxImportSource solid-js */
-import "./AccountForm.css";
+import "./Account.css";
+import "./forms.css";
 
 import { useGlobalState } from "./GlobalStateProvider";
 import { AccountForm } from "./AccountForm";

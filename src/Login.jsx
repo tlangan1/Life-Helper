@@ -12,29 +12,34 @@ export function Login(props) {
 
       <form id="formLogin">
         <fieldset>
-          <label for="login_user_name_or_email">User Name or Email</label>
+          <label for="login_user_id">User ID</label>
           <input
-            id="login_user_name_or_email"
+            id="login_user_id"
             required
             type="text"
             autocomplete="current username"
-            placeholder="user name or email address"
-            title="Enter your user name or email address."
+            placeholder="user ID"
+            title="Enter your ID."
             minLength="10"
             maxLength="30"
           />
-          <label for="login_password">Password</label>
-          <input
-            id="login_password"
-            autocomplete="current-password"
-            required
-            // *** ************************************************* ***
-            // placeholder="" Note that a blank placeholder will work for the css
-            // that does not style the input field as invalid when it is empty.
-            // placeholder=""
-            // But I am going to use a placeholder to show the pattern
-            placeholder="password"
-          />
+          <div class="password-wrapper">
+            <label for="login_password">Password</label>
+            <input
+              id="login_password"
+              required
+              type="password"
+              autocomplete="current-password"
+              // *** ************************************************* ***
+              // placeholder="" can be used for the css that prevents
+              // the input field from being invalid when a placeholder
+              // is present.
+              placeholder=""
+              title="The password must be at least 10 characters long and contain at least one lowercase letter, uppercase letter and number."
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d\s]{10,}$"
+            />
+            <span class="show">Show</span>
+          </div>
         </fieldset>
       </form>
       <button class="action-button">Login</button>
