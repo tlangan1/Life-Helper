@@ -55,7 +55,7 @@ export function Register(props) {
                 required
                 type="text"
                 autocomplete="name"
-                // placeholder="full name"
+                placeholder=""
                 title="Enter your full name."
                 minLength="10"
                 maxLength="100"
@@ -72,7 +72,7 @@ export function Register(props) {
                 required
                 type="text"
                 autocomplete="given-name"
-                // placeholder="display name"
+                placeholder=""
                 title="Enter the name you want to be called by."
                 minLength="1"
                 maxLength="30"
@@ -93,7 +93,7 @@ export function Register(props) {
                 required
                 type="text"
                 autocomplete="new username"
-                // placeholder="user name"
+                placeholder=""
                 title="Enter a user name."
                 minLength="10"
                 maxLength="30"

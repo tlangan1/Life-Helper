@@ -8,16 +8,16 @@ import { affectItem, capitalizeFirstLetter } from "./helperFunctions";
 export function AddItem(props) {
   var itemName;
   var itemDescription;
-  var [AddItem, setAddItem] = createSignal(false);
+  var [addingItem, setAddingItem] = createSignal(false);
+  var [savingItem, setSavingItem] = createSignal(false);
   var [AddExistingItem, setAddExistingItem] = createSignal(false);
   //   var indefiniteArticle = setAppropriateIndefiniteArticle;
-  // *** dataServer is the URL of the server that provides the data.
   var { toggleRefreshData, dataServer, itemType } = useGlobalState();
   var minTextLength = 10;
   var maxTextLength = 50;
   var [descriptionLength, setDescriptionLength] = createSignal(0);
   createEffect(() => {
-    if (AddItem()) document.querySelector("dialog").showModal();
+    if (addingItem()) document.querySelector("dialog").showModal();
   });
 
   return (
@@ -26,7 +26,7 @@ export function AddItem(props) {
         <button
           class="action-button inline"
           title={`Click here to add a new ${itemType()}`}
-          onClick={toggleAddItem}
+          onClick={toggleAddingItem}
         >
           {`Add a new ${itemType()}`}
         </button>
@@ -34,13 +34,13 @@ export function AddItem(props) {
           <button
             class="action-button inline"
             title={`Click here to add an existing ${itemType()}`}
-            onClick={toggleAddExistingItem}
+            onClick={toggleAddingExistingItem}
           >
             {`Add an existing ${itemType()}`}
           </button>
         </Show>
       </div>
-      <Show when={AddItem()}>
+      <Show when={addingItem()}>
         <dialog class="popup">
           <label htmlFor="item_name" class="block">
             {capitalizeFirstLetter(itemType())} Name (Required):
@@ -86,9 +86,9 @@ export function AddItem(props) {
             <button
               class="action-button save"
               title="Click to save this item"
-              disabled={descriptionLength() < minTextLength}
-              onClick={(e) =>
-                saveItem(
+              disabled={descriptionLength() < minTextLength || savingItem()}
+              onClick={(e) => {
+                affectItemCaller(
                   e,
                   "add",
                   itemType(),
@@ -98,15 +98,15 @@ export function AddItem(props) {
                     item_description: itemDescription.value,
                   },
                   dataServer
-                )
-              }
+                );
+              }}
             >
               Save this item
             </button>
             <button
               class="action-button"
               title="Click to cancel adding this item"
-              onClick={toggleAddItem}
+              onClick={toggleAddingItem}
             >
               Cancel
             </button>
@@ -118,7 +118,7 @@ export function AddItem(props) {
         <button
           class="action-button"
           title="Click to cancel adding this item"
-          onClick={toggleAddExistingItem}
+          onClick={toggleAddingExistingItem}
         >
           Cancel
         </button>
@@ -128,13 +128,15 @@ export function AddItem(props) {
 
   /* *** Helper functions for code above *** */
 
-  function toggleAddItem() {
-    setAddItem(!AddItem());
-    // if (AddItem()) {
-    //   item_name.focus();
-    // }
+  function toggleAddingItem() {
+    setAddingItem(!addingItem());
   }
-  function toggleAddExistingItem() {
+
+  function toggleSavingItem() {
+    setSavingItem(!savingItem());
+  }
+
+  function toggleAddingExistingItem() {
     setAddExistingItem(!AddExistingItem());
   }
 
@@ -148,14 +150,14 @@ export function AddItem(props) {
   //     }
   //   }
 
-  function saveItem(e, operation, item_type, data, dataServer) {
-    affectItemCaller(e, operation, item_type, data, dataServer);
-    setAddItem(false);
-  }
-
   async function affectItemCaller(e, operation, item_type, data, dataServer) {
-    await affectItem(e, operation, item_type, data, dataServer);
-    toggleRefreshData();
+    toggleSavingItem();
+    var success = await affectItem(e, operation, item_type, data, dataServer);
+    if (success) {
+      toggleAddingItem();
+      toggleSavingItem();
+      toggleRefreshData();
+    }
   }
 
   function parentID() {
