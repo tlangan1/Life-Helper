@@ -30,6 +30,8 @@ export function GlobalStateProvider(props) {
 
   const globalState = {
     loggedIn: loggedIn,
+    passwordPattern:
+      "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d\\s~`!@#$%^&*()_-+={}[]|\\:;]{10,}$",
     setLoggedIn: setLoggedIn,
     itemType: itemType,
     parent: parent,
@@ -39,7 +41,7 @@ export function GlobalStateProvider(props) {
     toggleRefreshData: function toggleRefreshData() {
       setRefreshData((refreshData() + 1) % 2);
     },
-    dataServer: "https://192.168.1.10:3001",
+    dataServer: "https://192.168.1.159:3001",
     filters: filters,
     setFilters: setFilters,
     mode: "dev",
