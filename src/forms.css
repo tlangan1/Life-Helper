@@ -4,34 +4,36 @@ fieldset {
   border-radius: 0.5rem;
 }
 
-fieldset label,
-fieldset input {
+fieldset label {
   display: block;
   width: 100%;
+  padding: 0.5rem;
   border-radius: 0.5rem;
 }
 
-fieldset label {
-  padding-bottom: 0.5rem;
-}
-
 fieldset input {
-  padding: 0.2rem;
+  display: inline-block;
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
 }
 
-input:invalid:not(:placeholder-shown),
-textarea:invalid:not(:placeholder-shown) {
-  border-color: red;
-}
-
+/* *** Perhaps some time in the future I will experiment with *** */
+/* *** using user-invalid instead of invalid *** */
 /* input:user-invalid,
 textarea:user-invalid {
   border-color: red;
 } */
 
-input:user-invalid + span::before {
+fieldset input:invalid:not(:placeholder-shown),
+textarea:invalid:not(:placeholder-shown) {
+  border-color: red;
+}
+
+fieldset input:invalid:not(:placeholder-shown) ~ span::after {
   content: "✖";
   color: red;
+  margin-left: 0.5rem;
 }
 
 /* *** Introduce the form-control-wrapper class *** */
@@ -41,7 +43,6 @@ input:user-invalid + span::before {
 }
 
 /* *** End of the form-control-wrapper class *** */
-
 /* *** Introduce the input-validation-wrapper class *** */
 
 .input-validation-wrapper {
@@ -51,40 +52,63 @@ input:user-invalid + span::before {
 .input-validation-wrapper > span {
   position: absolute;
   right: 0.5rem;
-  top: 0.1rem;
+  bottom: 0.5rem;
 }
 
 /* *** End of the input-validation-wrapper class *** */
-
 /* *** I not sure what of this we need *** */
-.password-wrapper {
+.embedded-label-wrapper {
   position: relative;
 }
 
-.password-wrapper > * {
+.embedded-label-wrapper > label {
+  user-select: none;
+}
+
+.embedded-label-wrapper > * {
   position: absolute;
 }
 
-.password-wrapper > label {
-  z-index: 1;
+.embedded-label-wrapper > input {
+  position: relative;
+  padding: 1rem;
 }
 
-.password-eye {
-  position: absolute;
-  right: 35px;
-  top: 25px;
+.embedded-label-wrapper > label {
+  padding: 1rem;
+}
+
+.embedded-label-wrapper > span {
+  padding: 0.5rem;
+  cursor: pointer;
+  right: 0%;
+  /* *** I cannot explain why this is necessary *** */
+  /* *** to center the span stuff vertically *** */
+  /* *** I feel like it is a bit of a hack *** */
+  top: 0.2rem;
   display: flex;
   align-items: center;
 }
 
-.password-wrapper > span.show {
-  padding: 0.5rem;
-  cursor: pointer;
-  right: 12%;
+.embedded-label-wrapper > span.show::before {
+  content: url("open-eye.svg");
+  margin-right: 0.5rem;
 }
 
-.password-wrapper > span.show::before {
-  content: "👁";
+.embedded-label-wrapper > span.hide::before {
+  content: url("closed-eye.svg");
   margin-right: 0.5rem;
+}
+
+.embedded-label-wrapper > input:placeholder-shown + label {
   font-size: 1rem;
+  top: 0rem;
+  transition: all 0.5s;
+}
+
+.embedded-label-wrapper > input:not(:placeholder-shown) + label,
+.embedded-label-wrapper > input:focus + label {
+  font-size: 0.8rem;
+  top: -0.8rem;
+  transition: all 0.5s;
 }

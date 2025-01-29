@@ -1,6 +1,13 @@
 /** @jsxImportSource solid-js */
+import { createSignal } from "solid-js";
+
+import { affectItem } from "./helperFunctions";
+import { useGlobalState } from "./GlobalStateProvider";
 
 export function Login(props) {
+  var { passwordPattern, dataServer } = useGlobalState();
+  var [passwordVisible, setPasswordVisible] = createSignal(false);
+
   return (
     <section class="route">
       <h2>
@@ -12,37 +19,70 @@ export function Login(props) {
 
       <form id="formLogin">
         <fieldset>
-          <label for="login_user_id">User ID</label>
-          <input
-            id="login_user_id"
-            required
-            type="text"
-            autocomplete="current username"
-            placeholder="user ID"
-            title="Enter your ID."
-            minLength="10"
-            maxLength="30"
-          />
-          <div class="password-wrapper">
-            <label for="login_password">Password</label>
-            <input
-              id="login_password"
-              required
-              type="password"
-              autocomplete="current-password"
-              // *** ************************************************* ***
-              // placeholder="" can be used for the css that prevents
-              // the input field from being invalid when a placeholder
-              // is present.
-              placeholder=""
-              title="The password must be at least 10 characters long and contain at least one lowercase letter, uppercase letter and number."
-              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d\s]{10,}$"
-            />
-            <span class="show">Show</span>
+          <div class="form-control-wrapper">
+            <div class="embedded-label-wrapper">
+              <input
+                id="login_user_id"
+                required
+                type="text"
+                autocomplete="current username"
+                placeholder=""
+                title="Enter your ID."
+                minLength="10"
+                maxLength="30"
+              />
+              <label for="login_user_id">User ID</label>
+              <span></span>
+            </div>
+          </div>
+          <div class="form-control-wrapper">
+            <div class="embedded-label-wrapper">
+              <input
+                id="login_password"
+                required
+                type={passwordVisible() ? "text" : "password"}
+                autocomplete="current-password"
+                // *** ************************************************* ***
+                // placeholder="" can be used for the css that prevents
+                // the input field from being invalid when a placeholder
+                // is present.
+                placeholder=""
+                title="The password must be at least 10 characters long and contain at least one lowercase letter, uppercase letter and number."
+                pattern={passwordPattern}
+              />
+              <label for="login_password">Password</label>
+              <span
+                class={passwordVisible() ? "hide" : "show"}
+                onClick={() => setPasswordVisible(!passwordVisible())}
+              >
+                {passwordVisible() ? "Hide" : "Show"}
+              </span>
+            </div>
           </div>
         </fieldset>
       </form>
-      <button class="action-button">Login</button>
+      <button
+        class="action-button"
+        onClick={(e) => {
+          affectItemCaller(e, "check", "user_login", dataServer);
+        }}
+      >
+        Login
+      </button>
     </section>
   );
+
+  // *** Helper functions for the code above
+  async function affectItemCaller(e, operation, item_type, dataServer) {
+    var data = {
+      user_name: document.getElementById("login_user_id").value,
+      password: document.getElementById("login_password").value,
+    };
+
+    var success = await affectItem(e, operation, item_type, data, dataServer);
+    // TODO: Add code to handle the success or failure of the request.
+    // if (success) {
+    //   history.pushState({}, "", "./");
+    // }
+  }
 }

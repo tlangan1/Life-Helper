@@ -9,10 +9,11 @@ import { affectItem } from "./helperFunctions";
 
 export function AddNote(props) {
   var noteText;
-  var [AddNote, setAddNote] = createSignal(false);
+  var [addingNote, setAddingNote] = createSignal(false);
+  var [savingNote, setSavingNote] = createSignal(false);
   var { dataServer, itemType } = useGlobalState();
   createEffect(() => {
-    if (AddNote()) document.querySelector("dialog").showModal();
+    if (addingNote()) document.querySelector("dialog").showModal();
   });
   var [noteLength, setNoteLength] = createSignal(0);
   var minTextLength = 15;
@@ -24,12 +25,12 @@ export function AddNote(props) {
         <button
           class="action-button"
           title="Click here to add a new note"
-          onClick={toggleAddNote}
+          onClick={toggleAddingNote}
         >
           ✏️ Add a note
         </button>
       </div>
-      <Show when={AddNote()}>
+      <Show when={addingNote()}>
         <dialog class="popup">
           <label htmlFor="note_text" class="block">
             Note Text (Required):
@@ -67,11 +68,11 @@ export function AddNote(props) {
                   dataServer
                 );
               }}
-              disabled={noteLength() < minTextLength}
+              disabled={noteLength() < minTextLength || savingNote()}
             >
               Save Note
             </button>
-            <button class="action-button" onClick={toggleAddNote}>
+            <button class="action-button" onClick={toggleAddingNote}>
               Cancel
             </button>
           </div>
@@ -80,14 +81,20 @@ export function AddNote(props) {
     </>
   );
 
-  function toggleAddNote() {
-    setAddNote(!AddNote());
+  function toggleAddingNote() {
+    setAddingNote(!addingNote());
+  }
+
+  function toggleSavingNote() {
+    setSavingNote(!savingNote());
   }
 
   async function affectItemCaller(e, operation, item_type, data, dataServer) {
+    toggleSavingNote();
     var success = await affectItem(e, operation, item_type, data, dataServer);
     if (success) {
-      toggleAddNote();
+      toggleAddingNote();
+      toggleSavingNote();
       props.toggleRefreshNotes();
     }
   }

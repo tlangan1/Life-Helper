@@ -5,11 +5,12 @@ import { useGlobalState } from "./GlobalStateProvider";
 
 export function Register(props) {
   var [step, setStep] = createSignal("user name creation");
-  var { dataServer } = useGlobalState();
+  var { passwordPattern, dataServer } = useGlobalState();
   var [validityUserName, setValidityUserName] = createSignal({});
   var [validityPassword, setValidityPassword] = createSignal({});
   var checkUserNameValidity = initializeValidityChecker(validityUserName);
   var checkPasswordValidity = initializeValidityChecker(validityPassword);
+  var [passwordVisible, setPasswordVisible] = createSignal(false);
 
   onMount(() => {
     initializeFieldSetValidator(
@@ -55,7 +56,7 @@ export function Register(props) {
                 required
                 type="text"
                 autocomplete="name"
-                // placeholder="full name"
+                placeholder=""
                 title="Enter your full name."
                 minLength="10"
                 maxLength="100"
@@ -72,7 +73,7 @@ export function Register(props) {
                 required
                 type="text"
                 autocomplete="given-name"
-                // placeholder="display name"
+                placeholder=""
                 title="Enter the name you want to be called by."
                 minLength="1"
                 maxLength="30"
@@ -93,7 +94,7 @@ export function Register(props) {
                 required
                 type="text"
                 autocomplete="new username"
-                // placeholder="user name"
+                placeholder=""
                 title="Enter a user name."
                 minLength="10"
                 maxLength="30"
@@ -116,86 +117,85 @@ export function Register(props) {
             hidden: step() == "user name creation",
           }}
         >
-          <div class="password-wrapper">
-            <label for="register_password">Password</label>
-            <div class="password-eye">
-              <span class="eye-strikethrough">/</span>
+          <div class="form-control-wrapper">
+            <div class="embedded-label-wrapper">
+              <input
+                id="register_password"
+                required
+                type={passwordVisible() ? "text" : "password"}
+                autocomplete="new-password"
+                placeholder=""
+                title="The password must be at least 10 characters long and contain at least one lowercase letter, uppercase letter and number."
+                aria-describedby="password_requirements"
+                // *** ************************************************* ***
+                // placeholder="" Note that a blank placeholder will work for the css
+                // that does not style the input field as invalid when it is empty.
+                // placeholder="" but I am going to use a placeholder anyway.
+                onChange={(e) => checkPasswordValidity.setValidity(e.target)}
+                // *** ************************************************* ***
+                // This pattern is an example of the
+                // problem with chrome...see the README.md.
+                // chrome changes this
+                // pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d\s]{10,}$"
+                // to this
+                // pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*d)[A-Za-zds]{10,}$"
+                // so I have to change it to this
+                // pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d\\s]{10,}$"
+                // *** ************************************************* ***
+                // This pattern will enforce the rule that the password
+                // is at least 10 characters long and contains
+                // at least one lowercase letter, one uppercase letter.
+                pattern={passwordPattern}
+              />
+              <label for="register_password">Password</label>
               <span
-                aria-label="Toggle password visibility"
-                aria-hidden="true"
-                class="eye"
+                class={passwordVisible() ? "hide" : "show"}
+                onClick={() => setPasswordVisible(!passwordVisible())}
               >
-                👁
+                {passwordVisible() ? "Hide" : "Show"}
               </span>
-
-              <span>Show</span>
             </div>
-            <input
-              id="register_password"
-              required
-              type="password"
-              autocomplete="new-password"
-              placeholder="password"
-              title="The password must be at least 10 characters long and contain at least one lowercase letter, uppercase letter and number."
-              aria-describedby="password_requirements"
-              // *** ************************************************* ***
-              // placeholder="" Note that a blank placeholder will work for the css
-              // that does not style the input field as invalid when it is empty.
-              // placeholder="" but I am going to use a placeholder anyway.
-              onChange={(e) => checkPasswordValidity.setValidity(e.target)}
-              // *** ************************************************* ***
-              // This pattern is an example of the
-              // problem with chrome...see the README.md.
-              // chrome changes this
-              // pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d\s]{10,}$"
-              // to this
-              // pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*d)[A-Za-zds]{10,}$"
-              // so I have to change it to this
-              // pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d\\s]{10,}$"
-              // *** ************************************************* ***
-              // This pattern will enforce the rule that the password
-              // is at least 10 characters long and contains
-              // at least one lowercase letter, one uppercase letter.
-              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d\\s]{10,}$"
-            />
           </div>
-          <div class="password-wrapper">
-            <label for="register_password_confirmation">Confirm Password</label>
-            <div class="password-eye">
-              <span class="eye">👁</span>
+          <div class="form-control-wrapper">
+            <div class="embedded-label-wrapper">
+              <input
+                id="register_password_confirmation"
+                required
+                type={passwordVisible() ? "text" : "password"}
+                autocomplete="new-password"
+                placeholder=""
+                pattern={passwordPattern}
+                title="The password must be at least 10 characters long and contain at least one lowercase letter, uppercase letter and number."
+                aria-describedby="password_requirements"
+                onChange={(e) => checkPasswordValidity.setValidity(e.target)}
+              />
+              <label for="register_password_confirmation">
+                Confirm Password
+              </label>
               <span
-                aria-label="Toggle password visibility"
-                aria-hidden="true"
-              ></span>
-              <span>Show</span>
+                class={passwordVisible() ? "hide" : "show"}
+                onClick={() => setPasswordVisible(!passwordVisible())}
+              >
+                {passwordVisible() ? "Hide" : "Show"}
+              </span>
             </div>
-            <input
-              id="register_password_confirmation"
-              required
-              type="password"
-              autocomplete="new-password"
-              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d\\s]{10,}$"
-              title="The password must be at least 10 characters long and contain at least one lowercase letter, uppercase letter and number."
-              aria-describedby="password_requirements"
-              placeholder="password"
-              onChange={(e) => checkPasswordValidity.setValidity(e.target)}
-            />
+            <p id="password_requirements">
+              The password must be at least 10 characters in length and contain
+              at least one upper case letter, one lower case letter and one
+              number.
+            </p>
+            <button
+              class="action-button"
+              disabled={
+                !checkPasswordValidity.ifInvalid() || !checkPasswordsMatch()
+              }
+              onClick={(e) => {
+                affectItemCaller(e, "add", "user_login", dataServer);
+              }}
+            >
+              Sign Up
+            </button>
           </div>
-          <p id="password_requirements">
-            The password must be at least 10 characters in length and contain at
-            least one upper case letter, one lower case letter and one number.
-          </p>
-          <button
-            class="action-button"
-            disabled={
-              !checkPasswordValidity.ifInvalid() || !checkPasswordsMatch()
-            }
-            onClick={(e) => {
-              affectItemCaller(e, "add", "user_login", dataServer);
-            }}
-          >
-            Sign Up
-          </button>
         </fieldset>
       </form>
     </section>
@@ -204,10 +204,10 @@ export function Register(props) {
   // *** Helper functions for the code above
   async function affectItemCaller(e, operation, item_type, dataServer) {
     var data = {
-      user_name: document.getElementById("register_user_name_or_email").value,
+      user_name: document.getElementById("register_user_name").value,
       password: document.getElementById("register_password").value,
       full_name: document.getElementById("register_full_name").value,
-      display_name: document.getElementById("display_name").value,
+      display_name: document.getElementById("register_display_name").value,
     };
 
     var success = await affectItem(e, operation, item_type, data, dataServer);

@@ -35,6 +35,7 @@ export async function affectItem(evt, affectType, item_type, data, dataServer) {
       case "complete":
       case "cancel_delete":
       case "update":
+      case "check":
         endPoint = `/${affectType}/${item_type}`;
         break;
       default:
