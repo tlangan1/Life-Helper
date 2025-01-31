@@ -1,4 +1,4 @@
-import "./Account.css";
+import "./CSS/Account.css";
 import { useGlobalState } from "./GlobalStateProvider";
 
 export function AccountMenu(props) {

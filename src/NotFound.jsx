@@ -1,5 +1,5 @@
 /** @jsxImportSource solid-js */
-import "./NotFound.css";
+import "./CSS/NotFound.css";
 
 export const NotFound = (props) => {
   var regex = /https:\/\/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}\/(\w+)/;

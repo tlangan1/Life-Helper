@@ -1,8 +1,8 @@
-import "./ProjectItem.css";
+import "./CSS/ProjectItem.css";
 
 import { createSignal } from "solid-js";
 
-import { childItemType, capitalizeFirstLetter } from "./helperFunctions";
+import { childItemType, capitalizeFirstLetter } from "./JS/helperFunctions";
 
 import { useGlobalState } from "./GlobalStateProvider";
 import { ProjectItemDetail } from "./ProjectItemDetail";

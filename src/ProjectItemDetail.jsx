@@ -1,8 +1,8 @@
-import "./ProjectItemDetail.css";
+import "./CSS/ProjectItemDetail.css";
 
 import { useGlobalState } from "./GlobalStateProvider";
 import { createSignal } from "solid-js";
-import { affectItem } from "./helperFunctions";
+import { affectItem } from "./JS/helperFunctions";
 import { NoteList } from "./NotesList";
 
 export function ProjectItemDetail(props) {

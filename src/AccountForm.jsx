@@ -1,5 +1,5 @@
 import { useGlobalState } from "./GlobalStateProvider";
-import { reformatMySQLDate } from "./helperFunctions";
+import { reformatMySQLDate } from "./JS/helperFunctions";
 
 export function AccountForm() {
   var { user } = useGlobalState();
