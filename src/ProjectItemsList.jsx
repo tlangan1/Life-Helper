@@ -5,7 +5,7 @@ import { useGlobalState } from "./GlobalStateProvider.jsx";
 import {
   startedButNotCompletedCount,
   completedCount,
-} from "./helperFunctions.js";
+} from "./JS/helperFunctions.js";
 
 export function ProjectItemsList(props) {
   // *** The SolidJS resource items is used to store the objectives, goals or tasks

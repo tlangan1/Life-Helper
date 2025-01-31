@@ -1,7 +1,7 @@
 /** @jsxImportSource solid-js */
 import { createSignal } from "solid-js";
 
-import { affectItem } from "./helperFunctions";
+import { affectItem } from "./JS/helperFunctions";
 import { useGlobalState } from "./GlobalStateProvider";
 
 export function Login(props) {

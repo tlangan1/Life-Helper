@@ -1,5 +1,5 @@
 /** @jsxImportSource solid-js */
-import "./Filters.css";
+import "./CSS/Filters.css";
 
 import { useGlobalState } from "./GlobalStateProvider";
 

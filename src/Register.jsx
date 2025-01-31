@@ -1,6 +1,6 @@
 /** @jsxImportSource solid-js */
 import { createEffect, createSignal, onMount } from "solid-js";
-import { affectItem } from "./helperFunctions";
+import { affectItem } from "./JS/helperFunctions";
 import { useGlobalState } from "./GlobalStateProvider";
 
 export function Register(props) {

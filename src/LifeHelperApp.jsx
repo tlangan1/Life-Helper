@@ -1,11 +1,11 @@
 /** @jsxImportSource solid-js */
 
-import "./LifeHelperApp.css";
+import "./CSS/LifeHelperApp.css";
 import {
   askWebPushPermission,
   sendMessage,
   registerServiceWorker,
-} from "./index.js";
+} from "./JS/index.js";
 
 import { createSignal, createEffect } from "solid-js";
 

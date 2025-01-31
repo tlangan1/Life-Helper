@@ -1,9 +1,9 @@
-import "./AddItem.css";
+import "./CSS/AddItem.css";
 import { Show } from "solid-js/web";
 import { createEffect, createSignal } from "solid-js";
 import { useGlobalState } from "./GlobalStateProvider";
 
-import { affectItem, capitalizeFirstLetter } from "./helperFunctions";
+import { affectItem, capitalizeFirstLetter } from "./JS/helperFunctions";
 
 export function AddItem(props) {
   var itemName;

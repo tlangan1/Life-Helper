@@ -1,6 +1,6 @@
 /** @jsxImportSource solid-js */
 /* @refresh reload */
-import "./index.css";
+import "./CSS/index.css";
 
 import { render } from "solid-js/web";
 import { MetaProvider, Meta } from "@solidjs/meta";

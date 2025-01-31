@@ -1,5 +1,3 @@
-import "./NoteList.css";
-
 import { createSignal, createResource, For } from "solid-js";
 
 import { useGlobalState } from "./GlobalStateProvider";

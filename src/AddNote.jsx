@@ -1,11 +1,11 @@
-import "./AddNote.css";
+import "./CSS/AddNote.css";
 
 import { createEffect, createSignal } from "solid-js";
 import { Show } from "solid-js/web";
 
 import { useGlobalState } from "./GlobalStateProvider";
 
-import { affectItem } from "./helperFunctions";
+import { affectItem } from "./JS/helperFunctions";
 
 export function AddNote(props) {
   var noteText;
