@@ -16,11 +16,11 @@ export function NoteList(props) {
       <span>{notes.loading && "Loading..."}</span>
       <span>{notes.error && "Error"}</span>
       {notes.state == "ready" && (
-        <ul>
+        <ol reversed>
           <For each={notes()}>
             {(note) => <li class="note">{note.note}</li>}
           </For>
-        </ul>
+        </ol>
       )}
     </div>
   );

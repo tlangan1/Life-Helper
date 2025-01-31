@@ -1,8 +1,11 @@
 /** @jsxImportSource solid-js */
 import { useGlobalState } from "./GlobalStateProvider";
+import { createSignal, Show } from "solid-js";
+import { AccountMenu } from "./AccountMenu";
 
 export function Header(props) {
-  var { setItemType } = useGlobalState();
+  var { user, setItemType } = useGlobalState();
+  var [accountMenu, setAccountMenu] = createSignal(false);
   return (
     <>
       <header>
@@ -20,9 +23,19 @@ export function Header(props) {
               Filters
             </a>
           </h1>
-          <a class="navlink" id="linkOrder" href="/account">
-            <img src="/account.svg" />{" "}
-          </a>
+          <div>
+            <a
+              class="navlink"
+              id="linkAccount"
+              href="/account"
+              onPointerEnter={() => setAccountMenu(true)}
+            >
+              <img src="/account.svg" /> {user().display_name}
+            </a>
+            <Show when={accountMenu()}>
+              <AccountMenu setAccountMenu={setAccountMenu} />
+            </Show>
+          </div>
         </nav>
       </header>
       {props.children}

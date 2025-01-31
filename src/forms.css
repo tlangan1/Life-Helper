@@ -1,21 +1,34 @@
+/* *** The fieldset related CSS rules *** */
+
 fieldset {
   width: 20rem;
   background-color: var(--emphasis-background-color);
   border-radius: 0.5rem;
-}
 
-fieldset label {
-  display: block;
-  width: 100%;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-}
+  label {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+  }
 
-fieldset input {
-  display: inline-block;
-  width: 100%;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
+  input {
+    display: inline-block;
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+  }
+
+  input:invalid:not(:placeholder-shown),
+  textarea:invalid:not(:placeholder-shown) {
+    border-color: red;
+  }
+
+  input:invalid:not(:placeholder-shown) ~ span::after {
+    content: "✖";
+    color: red;
+    margin-left: 0.5rem;
+  }
 }
 
 /* *** Perhaps some time in the future I will experiment with *** */
@@ -25,90 +38,75 @@ textarea:user-invalid {
   border-color: red;
 } */
 
-fieldset input:invalid:not(:placeholder-shown),
-textarea:invalid:not(:placeholder-shown) {
-  border-color: red;
-}
-
-fieldset input:invalid:not(:placeholder-shown) ~ span::after {
-  content: "✖";
-  color: red;
-  margin-left: 0.5rem;
-}
-
-/* *** Introduce the form-control-wrapper class *** */
+/* *** The form-control-wrapper class CSS rules *** */
 
 .form-control-wrapper {
   margin-bottom: 0.5rem;
 }
 
-/* *** End of the form-control-wrapper class *** */
-/* *** Introduce the input-validation-wrapper class *** */
+/* *** The separated-label-wrapper class CSS rules *** */
 
-.input-validation-wrapper {
+.separated-label-wrapper {
   position: relative;
+
+  > span {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    right: 0.5rem;
+    top: 0;
+    bottom: 0;
+  }
 }
 
-.input-validation-wrapper > span {
-  position: absolute;
-  right: 0.5rem;
-  bottom: 0.5rem;
-}
-
-/* *** End of the input-validation-wrapper class *** */
-/* *** I not sure what of this we need *** */
+/* *** The embedded-label-wrapper class CSS rules *** */
 .embedded-label-wrapper {
   position: relative;
-}
 
-.embedded-label-wrapper > label {
-  user-select: none;
-}
+  > * {
+    position: absolute;
+  }
 
-.embedded-label-wrapper > * {
-  position: absolute;
-}
+  > label {
+    user-select: none;
+    padding: 1rem;
+  }
 
-.embedded-label-wrapper > input {
-  position: relative;
-  padding: 1rem;
-}
+  > input {
+    position: relative;
+    padding: 1rem;
+  }
 
-.embedded-label-wrapper > label {
-  padding: 1rem;
-}
+  > span {
+    padding: 0.5rem;
+    cursor: pointer;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+  }
 
-.embedded-label-wrapper > span {
-  padding: 0.5rem;
-  cursor: pointer;
-  right: 0%;
-  /* *** I cannot explain why this is necessary *** */
-  /* *** to center the span stuff vertically *** */
-  /* *** I feel like it is a bit of a hack *** */
-  top: 0.2rem;
-  display: flex;
-  align-items: center;
-}
+  > span.show::before {
+    content: url("open-eye.svg");
+    margin-right: 0.5rem;
+  }
 
-.embedded-label-wrapper > span.show::before {
-  content: url("open-eye.svg");
-  margin-right: 0.5rem;
-}
+  > span.hide::before {
+    content: url("closed-eye.svg");
+    margin-right: 0.5rem;
+  }
 
-.embedded-label-wrapper > span.hide::before {
-  content: url("closed-eye.svg");
-  margin-right: 0.5rem;
-}
+  > input:placeholder-shown + label {
+    font-size: 1rem;
+    top: 0rem;
+    transition: all 0.5s;
+  }
 
-.embedded-label-wrapper > input:placeholder-shown + label {
-  font-size: 1rem;
-  top: 0rem;
-  transition: all 0.5s;
-}
-
-.embedded-label-wrapper > input:not(:placeholder-shown) + label,
-.embedded-label-wrapper > input:focus + label {
-  font-size: 0.8rem;
-  top: -0.8rem;
-  transition: all 0.5s;
+  > input:not(:placeholder-shown) + label,
+  > input:focus + label {
+    font-size: 0.8rem;
+    top: -0.8rem;
+    transition: all 0.5s;
+  }
 }

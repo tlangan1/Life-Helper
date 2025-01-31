@@ -85,8 +85,7 @@ button.action-button:disabled {
   cursor: not-allowed;
 }
 
-button.action-button:hover {
-  border: solid var(--secondary-background-color);
+button.action-button:hover:not(:disabled) {
   background-color: #00aacc;
   color: var(--primary-background-color);
 }

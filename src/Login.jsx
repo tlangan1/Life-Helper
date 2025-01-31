@@ -5,7 +5,7 @@ import { affectItem } from "./helperFunctions";
 import { useGlobalState } from "./GlobalStateProvider";
 
 export function Login(props) {
-  var { passwordPattern, dataServer } = useGlobalState();
+  var { setLoggedIn, setUser, passwordPattern, dataServer } = useGlobalState();
   var [passwordVisible, setPasswordVisible] = createSignal(false);
 
   return (
@@ -74,15 +74,26 @@ export function Login(props) {
 
   // *** Helper functions for the code above
   async function affectItemCaller(e, operation, item_type, dataServer) {
-    var data = {
+    var sentData = {
       user_name: document.getElementById("login_user_id").value,
       password: document.getElementById("login_password").value,
     };
 
-    var success = await affectItem(e, operation, item_type, data, dataServer);
-    // TODO: Add code to handle the success or failure of the request.
-    // if (success) {
-    //   history.pushState({}, "", "./");
-    // }
+    var returnedData = await affectItem(
+      e,
+      operation,
+      item_type,
+      sentData,
+      dataServer
+    );
+
+    // TODO: Enhance this code.
+    if (returnedData.success) {
+      setLoggedIn(true);
+      setUser(returnedData);
+      //   history.pushState({}, "", "./");
+    } else {
+      alert("Login failed. Please try again.");
+    }
   }
 }

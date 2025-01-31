@@ -5,6 +5,7 @@ const GlobalStateContext = createContext();
 
 export function GlobalStateProvider(props) {
   var [loggedIn, setLoggedIn] = createSignal(false);
+  var [user, setUser] = createSignal({});
   var [itemType, setItemType] = createSignal("objective");
   // *** refreshData is a signal that is used to initiate a data refresh
   // *** using the function fetchItems.
@@ -30,6 +31,9 @@ export function GlobalStateProvider(props) {
 
   const globalState = {
     loggedIn: loggedIn,
+    setLoggedIn: setLoggedIn,
+    user,
+    setUser,
     passwordPattern:
       "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d\\s~`!@#$%^&*()_-+={}[]|\\:;]{10,}$",
     setLoggedIn: setLoggedIn,
@@ -41,7 +45,7 @@ export function GlobalStateProvider(props) {
     toggleRefreshData: function toggleRefreshData() {
       setRefreshData((refreshData() + 1) % 2);
     },
-    dataServer: "https://192.168.1.159:3001",
+    dataServer: "https://192.168.1.10:3001",
     filters: filters,
     setFilters: setFilters,
     mode: "dev",

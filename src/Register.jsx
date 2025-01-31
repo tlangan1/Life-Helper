@@ -50,7 +50,7 @@ export function Register(props) {
         >
           <div class="form-control-wrapper">
             <label for="register_full_name">Full Name</label>
-            <div class="input-validation-wrapper">
+            <div class="separated-label-wrapper">
               <input
                 id="register_full_name"
                 required
@@ -67,7 +67,7 @@ export function Register(props) {
           </div>
           <div class="form-control-wrapper">
             <label for="register_display_name">Display Name</label>
-            <div class="input-validation-wrapper">
+            <div class="separated-label-wrapper">
               <input
                 id="register_display_name"
                 required
@@ -88,7 +88,7 @@ export function Register(props) {
             <label for="register_user_name">User Name or Email</label>
             {/* If you use this label it will not suggest an email address */}
             {/* <label for="register_user_name">User Name</label> */}
-            <div class="input-validation-wrapper">
+            <div class="separated-label-wrapper">
               <input
                 id="register_user_name"
                 required
@@ -203,18 +203,27 @@ export function Register(props) {
 
   // *** Helper functions for the code above
   async function affectItemCaller(e, operation, item_type, dataServer) {
-    var data = {
+    var sentData = {
       user_name: document.getElementById("register_user_name").value,
       password: document.getElementById("register_password").value,
       full_name: document.getElementById("register_full_name").value,
       display_name: document.getElementById("register_display_name").value,
     };
 
-    var success = await affectItem(e, operation, item_type, data, dataServer);
-    // TODO: Add code to handle the success or failure of the request.
-    // if (success) {
-    //   history.pushState({}, "", "./");
-    // }
+    var returnedData = await affectItem(
+      e,
+      operation,
+      item_type,
+      sentData,
+      dataServer
+    );
+    // TODO: Make sure this is architected in such a way that the chrome password manager.
+    // will save the password.
+    if (returnedData.success) {
+      //   history.pushState({}, "", "./");
+    } else {
+      alert("Registration failed.");
+    }
   }
 
   function initializeValidityChecker(signal) {

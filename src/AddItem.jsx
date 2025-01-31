@@ -12,7 +12,7 @@ export function AddItem(props) {
   var [savingItem, setSavingItem] = createSignal(false);
   var [AddExistingItem, setAddExistingItem] = createSignal(false);
   //   var indefiniteArticle = setAppropriateIndefiniteArticle;
-  var { toggleRefreshData, dataServer, itemType } = useGlobalState();
+  var { loggedIn, toggleRefreshData, dataServer, itemType } = useGlobalState();
   var minTextLength = 10;
   var maxTextLength = 50;
   var [descriptionLength, setDescriptionLength] = createSignal(0);
@@ -27,6 +27,7 @@ export function AddItem(props) {
           class="action-button inline"
           title={`Click here to add a new ${itemType()}`}
           onClick={toggleAddingItem}
+          disabled={!loggedIn()}
         >
           {`Add a new ${itemType()}`}
         </button>
@@ -35,6 +36,7 @@ export function AddItem(props) {
             class="action-button inline"
             title={`Click here to add an existing ${itemType()}`}
             onClick={toggleAddingExistingItem}
+            disabled={!loggedIn()}
           >
             {`Add an existing ${itemType()}`}
           </button>
@@ -130,6 +132,11 @@ export function AddItem(props) {
 
   function toggleAddingItem() {
     setAddingItem(!addingItem());
+    if (!addingItem()) {
+      itemName.value = "";
+      itemDescription.value = "";
+      setDescriptionLength(0);
+    }
   }
 
   function toggleSavingItem() {
@@ -150,13 +157,28 @@ export function AddItem(props) {
   //     }
   //   }
 
-  async function affectItemCaller(e, operation, item_type, data, dataServer) {
+  async function affectItemCaller(
+    e,
+    operation,
+    item_type,
+    sentData,
+    dataServer
+  ) {
     toggleSavingItem();
-    var success = await affectItem(e, operation, item_type, data, dataServer);
-    if (success) {
-      toggleAddingItem();
+    try {
+      var returnedData = await affectItem(
+        e,
+        operation,
+        item_type,
+        sentData,
+        dataServer
+      );
+      if (returnedData.success) {
+        toggleAddingItem();
+        toggleRefreshData();
+      }
+    } finally {
       toggleSavingItem();
-      toggleRefreshData();
     }
   }
 

@@ -11,7 +11,7 @@ export function AddNote(props) {
   var noteText;
   var [addingNote, setAddingNote] = createSignal(false);
   var [savingNote, setSavingNote] = createSignal(false);
-  var { dataServer, itemType } = useGlobalState();
+  var { loggedIn, dataServer, itemType } = useGlobalState();
   createEffect(() => {
     if (addingNote()) document.querySelector("dialog").showModal();
   });
@@ -26,6 +26,7 @@ export function AddNote(props) {
           class="action-button"
           title="Click here to add a new note"
           onClick={toggleAddingNote}
+          disabled={!loggedIn()}
         >
           ✏️ Add a note
         </button>
@@ -83,19 +84,38 @@ export function AddNote(props) {
 
   function toggleAddingNote() {
     setAddingNote(!addingNote());
+    if (!addingNote()) {
+      noteText.value = "";
+      setNoteLength(0);
+    }
   }
 
   function toggleSavingNote() {
     setSavingNote(!savingNote());
   }
 
-  async function affectItemCaller(e, operation, item_type, data, dataServer) {
+  async function affectItemCaller(
+    e,
+    operation,
+    item_type,
+    sentData,
+    dataServer
+  ) {
     toggleSavingNote();
-    var success = await affectItem(e, operation, item_type, data, dataServer);
-    if (success) {
-      toggleAddingNote();
+    try {
+      var returnedData = await affectItem(
+        e,
+        operation,
+        item_type,
+        sentData,
+        dataServer
+      );
+      if (returnedData.success) {
+        toggleAddingNote();
+        props.toggleRefreshNotes();
+      }
+    } finally {
       toggleSavingNote();
-      props.toggleRefreshNotes();
     }
   }
 }

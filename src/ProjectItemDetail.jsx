@@ -6,7 +6,8 @@ import { affectItem } from "./helperFunctions";
 import { NoteList } from "./NotesList";
 
 export function ProjectItemDetail(props) {
-  var { itemType, dataServer, toggleRefreshData, filters } = useGlobalState();
+  var { loggedIn, itemType, dataServer, toggleRefreshData, filters } =
+    useGlobalState();
   var [notesRequested, setNotesRequested] = createSignal(false);
 
   return (
@@ -26,7 +27,7 @@ export function ProjectItemDetail(props) {
                   dataServer
                 )
               }
-              disabled={props.item().started_dtm}
+              disabled={props.item().started_dtm || !loggedIn()}
               checked={props.item().started_dtm}
             ></input>
             <label for={`start_item_${props.item().item_id}`}>Start</label>
@@ -42,7 +43,11 @@ export function ProjectItemDetail(props) {
                   dataServer
                 )
               }
-              disabled={props.item().completed_dtm || props.item().deleted_dtm}
+              disabled={
+                props.item().completed_dtm ||
+                props.item().deleted_dtm ||
+                !loggedIn()
+              }
               checked={props.item().paused_dtm}
             ></input>
             <label for={`pause_item_${props.item().item_id}`}>Pause</label>
@@ -58,11 +63,15 @@ export function ProjectItemDetail(props) {
                   dataServer
                 )
               }
-              disabled={props.item().completed_dtm || props.item().deleted_dtm}
+              disabled={
+                props.item().completed_dtm ||
+                props.item().deleted_dtm ||
+                !loggedIn()
+              }
               checked={props.item().completed_dtm}
             ></input>
             <label for={`complete_item_${props.item().item_id}`}>
-              complete
+              Complete
             </label>
           </div>
         ) : (
@@ -81,7 +90,7 @@ export function ProjectItemDetail(props) {
               checked={props.item().completed_dtm}
             ></input>
             <label for={`completed_item_${props.item().item_id}`}>
-              completed
+              Completed
             </label>
           </div>
         )}
@@ -101,7 +110,11 @@ export function ProjectItemDetail(props) {
                 dataServer
               )
             }
-            disabled={props.item().completed_dtm || props.item().deleted_dtm}
+            disabled={
+              props.item().completed_dtm ||
+              props.item().deleted_dtm ||
+              !loggedIn()
+            }
             checked={props.item().deleted_dtm}
           ></input>
         </div>
@@ -143,12 +156,24 @@ export function ProjectItemDetail(props) {
     }
   }
 
-  async function affectItemCaller(e, operation, item_type, data, dataServer) {
-    var success = await affectItem(e, operation, item_type, data, dataServer);
+  async function affectItemCaller(
+    e,
+    operation,
+    item_type,
+    sentData,
+    dataServer
+  ) {
+    var returnedData = await affectItem(
+      e,
+      operation,
+      item_type,
+      sentData,
+      dataServer
+    );
     // Granular update strategy.
     // Return the success or failure of the update operation.
     // If successful, fetch the item and update the item signal.
-    if (success) {
+    if (returnedData.success) {
       if (fullRefreshRequired(operation, filters)) {
         toggleRefreshData();
       } else {
