@@ -1,5 +1,21 @@
 # Life Helper SolidJS Application
 
+- [Life Helper SolidJS Application](#life-helper-solidjs-application)
+  - [Notes](#notes)
+  - [Basics](#basics)
+  - [Vite Build and Preview](#vite-build-and-preview)
+  - [Application Behavior](#application-behavior)
+  - [Enable https self-signed SSL certificates:](#enable-https-self-signed-ssl-certificates)
+  - [Service Workers:](#service-workers)
+    - [Enable vite-plugin-pwa](#enable-vite-plugin-pwa)
+    - [Enable caching using vite-plugin-pwa without PWA capabilities](#enable-caching-using-vite-plugin-pwa-without-pwa-capabilities)
+  - [Login considerations](#login-considerations)
+    - [Chrome bug with pattern attribute](#chrome-bug-with-pattern-attribute)
+  - [Additional Software](#additional-software)
+    - [Solid Drag and Drop Package](#solid-drag-and-drop-package)
+  - [Enhancements:](#enhancements)
+    - [Associate users with tasks](#associate-users-with-tasks)
+
 ## Notes
 
 - Do not put an ampersand, `&`, in the name of a folder anywhere in the path within which `vite` is being used. It results in an error thrown by node.js saying that it cannot find vite. I did `NOT` try an uninstall and reinstall of `vite` to see if that may also be a solution.
@@ -103,3 +119,63 @@
   pattern="^(?!.*\\s).+$"
   ```
 - `ODDLY ENOUGH THIS BUG DOES NOT OCCUR WHEN USING LIVE SERVER`
+
+## Additional Software
+
+### [Solid Drag and Drop Package](https://github.com/thisbeyond/solid-dnd/tree/main)
+
+- I installed this package on 2/2/2025 to provide an elegant way to allow the user to sort lists using drag and drop in a SolidJS friendly way but, after about 5 hours, I realized that the repo had not been updated in
+
+## Enhancements:
+
+### Associate users with tasks
+
+- Before I go any farther I need to know what gets stored in he database for authentication methods other than conventional user_name/password.
+- Backup the database before implementing these changes.
+- Schema changes required to accomplish the following enhancements
+
+  - Add the following columns to the task table
+    - created_user
+    - completed_user
+    - deleted_user
+  - Create the work_log table with the following columns
+    - work_log_id auto-increment
+    - user_identifier varchar(100)...we need to accommodate the pass key and other identifiers
+    - task_id
+    - started_work_dtm
+    - ended_work_dtm
+    - elapsed_time_in_minutes
+  - Add foreign key relationships from task to user for
+    - created_user
+    - completed_user
+    - deleted_user
+    - remember to update p_add_all_foreign_keys
+  - Add foreign key relationships from work_log to user for
+    - user_name
+  - Add foreign key relationships from work_log to task for
+    - task_id
+  - Enhance the following stored procedures
+    - p_add_task
+    - p_cancel_delete_item
+    - p_update_item
+    - p_migrate_task
+    - p_create_task
+    - p_task_and_goal_trigger_test_1
+    - p_task_and_goal_trigger_test_2
+    - trigger_task_update
+
+- Task Creation:
+  - When a user creates a task the user_name of that user should be put into the created_user column.
+- Task Starting:
+  - When a user starts a task the user_name of that user should be put into the started_user column.
+  - A row should be inserted into the `work log` entity memorializing the started_dtm, or now(), into a started_work_dtm column and null into the ended_work_dtm column.
+- Task Pausing:
+  - When a user pauses a task the row with a null paused_dtm associated with this task should be updated with the paused_dtm value.
+- Task Un-Pausing:
+  - A row should be inserted into `work log` entity memorializing the now() into a started_work_dtm column and null into the ended_work_dtm column.
+- Task Completion:
+  - When a user completes a task the user_name of that user should be put into the completed_user column.
+  - When a user completes a task the row with a null paused_dtm associated with this task, IF ONE EXISTS, should be updated with the completed_dtm, or now(), value.
+- Task Cancellation/Deletion:
+  - When a user cancel/deletes a task the user_name of that user should be put into the delete_user column.
+  - When a user cancel/deletes a task the row with a null paused_dtm associated with this task, IF ONE EXISTS, should be updated with the delete_dtm, or now(), value.

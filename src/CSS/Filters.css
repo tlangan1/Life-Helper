@@ -2,7 +2,7 @@ div.grouping {
   border: 1px solid #e6e6e6;
   padding: 4px;
   margin-top: 4px;
-  text-align: center;
+  /* text-align: center; */
 }
 
 div.grouping > * {
@@ -16,6 +16,10 @@ div.grouping > div > div {
 div.grouping > div > div {
   display: flex;
   justify-content: space-between;
+}
+
+div.grouping > div > div:has(input[type="checkbox"]) {
+  justify-content: start;
 }
 
 div.grouping > div > div :nth-child(1) {

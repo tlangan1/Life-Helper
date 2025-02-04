@@ -34,7 +34,14 @@ export function childItemType(parentType) {
   else return "task";
 }
 
-export async function affectItem(evt, affectType, item_type, data, dataServer) {
+export async function affectItem(
+  evt,
+  affectType,
+  item_type,
+  data,
+  dataServer,
+  user
+) {
   var endPoint;
 
   try {

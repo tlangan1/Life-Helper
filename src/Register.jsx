@@ -82,6 +82,21 @@ export function Register(props) {
               <span></span>
             </div>
           </div>
+          <div class="form-control-wrapper">
+            <label for="register_email_address">Email Address</label>
+            <div class="separated-label-wrapper">
+              <input
+                id="register_email_address"
+                type="text"
+                autocomplete="email"
+                placeholder=""
+                title="Enter your email address (optional)."
+                minLength="5"
+                maxLength="100"
+              />
+              <span></span>
+            </div>
+          </div>
           {/* The mere presence of the word Email in the label will cause */}
           {/* chrome to suggest an email address */}
           <div class="form-control-wrapper">
@@ -145,7 +160,7 @@ export function Register(props) {
                 // This pattern will enforce the rule that the password
                 // is at least 10 characters long and contains
                 // at least one lowercase letter, one uppercase letter.
-                pattern={passwordPattern}
+                // pattern={passwordPattern}
               />
               <label for="register_password">Password</label>
               <span
@@ -164,7 +179,7 @@ export function Register(props) {
                 type={passwordVisible() ? "text" : "password"}
                 autocomplete="new-password"
                 placeholder=""
-                pattern={passwordPattern}
+                // pattern={passwordPattern}
                 title="The password must be at least 10 characters long and contain at least one lowercase letter, uppercase letter and number."
                 aria-describedby="password_requirements"
                 onChange={(e) => checkPasswordValidity.setValidity(e.target)}
@@ -208,6 +223,7 @@ export function Register(props) {
       password: document.getElementById("register_password").value,
       full_name: document.getElementById("register_full_name").value,
       display_name: document.getElementById("register_display_name").value,
+      email_address: document.getElementById("register_email_address").value,
     };
 
     var returnedData = await affectItem(

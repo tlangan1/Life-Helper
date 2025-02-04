@@ -27,8 +27,13 @@ export function AccountForm() {
           />
         </div>
         <div class="account_item">
-          <label for="phone">Phone Number</label>
-          <input type="text" name="phone" id="phone" />
+          <label for="email_address">Email Address</label>
+          <input
+            type="text"
+            name="email_address"
+            id="email_address"
+            value={user().email_address}
+          />
         </div>
         <div class="account_item">
           <label for="joined">Joined</label>

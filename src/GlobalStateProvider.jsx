@@ -32,10 +32,9 @@ export function GlobalStateProvider(props) {
   const globalState = {
     loggedIn: loggedIn,
     setLoggedIn: setLoggedIn,
-    user,
-    setUser,
-    passwordPattern:
-      "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d\\s~`!@#$%^&*()_-+={}[]|\\:;]{10,}$",
+    user: user,
+    setUser: setUser,
+    passwordPattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{10,}$",
     setLoggedIn: setLoggedIn,
     itemType: itemType,
     parent: parent,

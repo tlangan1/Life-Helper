@@ -16,6 +16,7 @@ export function ProjectItem(props) {
     <div
       data-item_id={item().item_id}
       data-item_name={item().item_name}
+      id={`project_item_{ item().item_id }`}
       onDblClick={openChildren}
     >
       <input

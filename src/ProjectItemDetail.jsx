@@ -6,7 +6,7 @@ import { affectItem } from "./JS/helperFunctions";
 import { NoteList } from "./NotesList";
 
 export function ProjectItemDetail(props) {
-  var { loggedIn, itemType, dataServer, toggleRefreshData, filters } =
+  var { loggedIn, user, itemType, dataServer, toggleRefreshData, filters } =
     useGlobalState();
   var [notesRequested, setNotesRequested] = createSignal(false);
 
@@ -168,7 +168,8 @@ export function ProjectItemDetail(props) {
       operation,
       item_type,
       sentData,
-      dataServer
+      dataServer,
+      user
     );
     // Granular update strategy.
     // Return the success or failure of the update operation.

@@ -12,6 +12,10 @@ export function Filters(props) {
         <h3>State Filters</h3>
         <div>
           <div>
+            <label htmlFor="chkAssignedToUser">Assigned to me: </label>
+            <input type="checkbox" />
+          </div>
+          <div>
             <label htmlFor="selCompleted">Completed Items: </label>
             <select
               name="selCompleted"
