@@ -106,6 +106,7 @@ textarea:user-invalid {
   > input:not(:placeholder-shown) + label,
   > input:focus + label {
     font-size: 0.8rem;
+    padding-bottom: 0rem;
     top: -0.8rem;
     transition: all 0.5s;
   }
