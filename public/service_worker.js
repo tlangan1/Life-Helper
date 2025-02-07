@@ -1,6 +1,6 @@
 "use strict";
 
-const version = 1.68;
+const version = 1.76;
 var cachePrefix = "life-helper";
 var cacheName = `${cachePrefix}-${version}`;
 var backendURL;
@@ -19,13 +19,13 @@ main().catch(console.error);
 // This function will run every time the service worker is started whether
 // or not it has already been installed and activated.
 async function main() {
-  console.log(
+  logToConsole(
     `main: Life Helper service worker version (${version}) is starting...`
   );
 }
 
 async function onInstall(event) {
-  console.log(
+  logToConsole(
     `Life Helper service worker version ${version} is installed..."install" event beginning to run.`
   );
   self.skipWaiting();
@@ -33,7 +33,7 @@ async function onInstall(event) {
 
 async function onActivate(event) {
   // This will be called only once when the service worker is activated.
-  console.log(
+  logToConsole(
     `Life Helper service worker version ${version} is activated..."activate" event beginning to run.`
   );
   clearCaches(cachePrefix);
@@ -54,8 +54,10 @@ async function onActivate(event) {
 
 async function onMessage(event) {
   if (event.data) {
-    console.log(
-      `Got this message from the client page, ${event.source.url.substring(
+    logToConsole(
+      `Got the message ${
+        event.data.message
+      } from the client page, ${event.source.url.substring(
         0,
         event.source.url.length - 6
       )}`
@@ -73,20 +75,20 @@ async function onMessage(event) {
 //   event.respondWith(
 //     (async () => {
 //       var now = new Date();
-//       console.log(`${now}: Handling fetch event for ${event.request.url}`);
+//       logToConsole(`${now}: Handling fetch event for ${event.request.url}`);
 //       // Try to get the response from a cache.
 //       // const cachedResponse = await caches.match(event.request);
 //       var cache = await caches.open(cacheName);
 //       var cachedResponse = await cache.match(event.request);
 //       // Return it if we found one.
 //       if (cachedResponse) {
-//         console.log(`use cached response for ${event.request.url}`);
+//         logToConsole(`use cached response for ${event.request.url}`);
 //         return cachedResponse;
 //       }
 //       // If we didn't find a match in the cache, use the network.
 //       var response = await fetch(event.request);
-//       // console.log(`use network response for ${event.request.url}`);
-//       console.log(
+//       // logToConsole(`use network response for ${event.request.url}`);
+//       logToConsole(
 //         `use network response for ${event.request.url} and put it in cache now`
 //       );
 //       cache.put(event.request, response.clone());
@@ -103,19 +105,19 @@ function onFetch(event) {
   event.respondWith(
     (async () => {
       var now = new Date();
-      console.log(`${now}: Handling fetch event for ${event.request.url}`);
+      logToConsole(`${now}: Handling fetch event for ${event.request.url}`);
       // Try to get the response from a cache.
       // const cachedResponse = await caches.match(event.request);
       var cache = await caches.open(cacheName);
       var cachedResponse = await cache.match(event.request);
       // Return it if we found one.
       if (cachedResponse) {
-        console.log(`use cached response for ${event.request.url}`);
+        logToConsole(`use cached response for ${event.request.url}`);
         return cachedResponse;
       }
       // If we didn't find a match in the cache, use the network.
       var response = await fetch(event.request);
-      console.log(
+      logToConsole(
         `use network response for ${event.request.url} and put it in cache now`
       );
       cache.add(event.request, response.clone());
@@ -126,7 +128,7 @@ function onFetch(event) {
 
 self.addEventListener("push", function (event) {
   if (event.data) {
-    console.log("Push event!! ", event.data.json());
+    logToConsole("Push event!! ", event.data.json());
     // TODO: Send a message to the page to notify it that a push has been received
     // This is where I think I am dropping the ball.
     // What I should be doing is adding it to a cache to which the page is attached.
@@ -143,12 +145,12 @@ self.addEventListener("push", function (event) {
       })
     );
   } else {
-    console.log("Push event but no data");
+    logToConsole("Push event but no data");
   }
 });
 
 self.addEventListener("pushsubscriptionchange", function (event) {
-  console.log("Push Subscription Change event!! ", event);
+  logToConsole("Push Subscription Change event!! ", event);
   /* *** ******************************************************* *** */
   // cSpell:disable
   /* *** This is pushpad's code and below is MDN's code *** */
@@ -220,15 +222,15 @@ async function obtainPushSubscription() {
     );
     const options = { applicationServerKey, userVisibleOnly: true };
     const subscription = await self.registration.pushManager.subscribe(options);
-    console.log("Before calling saveSubscription");
+    logToConsole("Before calling saveSubscription");
     const response = await saveSubscription(
       subscription,
       // event.target.registration.scope
       backendURL
     );
-    console.log(response);
+    logToConsole(response);
   } catch (err) {
-    console.log("Error", err);
+    logToConsole("Error", err);
   }
 }
 
@@ -250,7 +252,7 @@ const urlB64ToUint8Array = (base64String) => {
 // saveSubscription saves the subscription to the backend
 const saveSubscription = async (subscription, url) => {
   const SERVER_URL = `${url}/add/web_push_subscription`;
-  console.log(
+  logToConsole(
     `Before fetch call to save the web push subscription: SERVER_URL is ${SERVER_URL}`
   );
   const response = await fetch(SERVER_URL, {
@@ -289,18 +291,18 @@ async function loadCache() {
 async function loadCacheItem(url, options, cache) {
   var response = await cache.match(url);
   if (response) {
-    console.log("Found response in cache:", response);
+    logToConsole("Found response in cache:", response);
 
     return response;
   }
-  console.log("No response found in cache. About to fetch from network…");
+  logToConsole("No response found in cache. About to fetch from network…");
 
   try {
     response = await fetchURL(url, options);
 
     cache.put(url, response);
   } catch {
-    console.log("Unable to cache item...request failed.");
+    logToConsole("Unable to cache item...request failed.");
   }
 }
 
@@ -315,7 +317,7 @@ async function fetchURL(url, options) {
 }
 
 async function clearCaches(cachePrefix) {
-  console.log(
+  logToConsole(
     `Clearing cache for any named caches that are prefixed with ${cachePrefix} but are not version ${version}`
   );
 
@@ -333,4 +335,8 @@ async function clearCaches(cachePrefix) {
       return caches.delete(cacheName);
     })
   );
+}
+
+function logToConsole(message) {
+  console.log(`${new Date().toLocaleString()}: ${message}`);
 }

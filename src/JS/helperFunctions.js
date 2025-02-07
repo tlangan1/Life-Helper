@@ -14,6 +14,10 @@ export function reformatMySQLDate(inputDate) {
   }
 }
 
+export function logToConsole(message) {
+  console.log(`${new Date().toLocaleString()}: ${message}`);
+}
+
 export function startedButNotCompletedCount(items) {
   return items().reduce((totalStarted, item) => {
     if (item.started_dtm && !item.completed_dtm) return totalStarted + 1;

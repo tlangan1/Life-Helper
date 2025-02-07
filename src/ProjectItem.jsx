@@ -2,7 +2,11 @@ import "./CSS/ProjectItem.css";
 
 import { createSignal } from "solid-js";
 
-import { childItemType, capitalizeFirstLetter } from "./JS/helperFunctions";
+import {
+  childItemType,
+  logToConsole,
+  capitalizeFirstLetter,
+} from "./JS/helperFunctions";
 
 import { useGlobalState } from "./GlobalStateProvider";
 import { ProjectItemDetail } from "./ProjectItemDetail";
@@ -11,7 +15,7 @@ export function ProjectItem(props) {
   var { mode, itemType, setItemType, toggleRefreshData } = useGlobalState();
   var [item, setItem] = createSignal(Object.assign({}, props.item));
 
-  console.log(`In ProjectItem rendering item with name ${item().item_name}`);
+  //   logToConsole(`In ProjectItem rendering item with name ${item().item_name}`);
   return (
     <div
       data-item_id={item().item_id}

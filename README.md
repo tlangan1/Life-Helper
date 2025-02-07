@@ -131,6 +131,7 @@
 ### Associate users with tasks
 
 - Before I go any farther I need to know what gets stored in he database for authentication methods other than conventional user_name/password.
+  - Continue with the tutorial.
 - Backup the database before implementing these changes.
 - Schema changes required to accomplish the following enhancements
 

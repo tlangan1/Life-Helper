@@ -39,7 +39,7 @@ export function LifeHelperApp(props) {
     <section class="route">
       <header class="life-helper-header">
         <button
-          class="action-button"
+          class="action-button web-push-subscription-button"
           onClick={(e) =>
             registerServiceWorker({
               type: "Backend Server URL",
@@ -49,7 +49,10 @@ export function LifeHelperApp(props) {
         >
           Request A Web Push Subscription
         </button>
-        <button class="action-button" onClick={(e) => sendMessage(e)}>
+        <button
+          class="action-button"
+          onClick={(e) => sendMessage("Test message from Life Helper App")}
+        >
           Send Message To Service Worker
         </button>
         <div class="header-title">
