@@ -4,12 +4,20 @@ import { createSignal, Show } from "solid-js";
 import { AccountMenu } from "./AccountMenu";
 
 export function Header(props) {
-  var { user, setItemType } = useGlobalState();
+  var { user, setItemType, dataServer } = useGlobalState();
   var [accountMenu, setAccountMenu] = createSignal(false);
+  var [isProduction, setIsProduction] = createSignal(false);
+  fetchIsProduction();
   return (
     <>
       <header>
-        <nav class="nav-using-flex">
+        <nav
+          classList={{
+            "nav-using-flex": true,
+            "not-production": !isProduction(),
+          }}
+          //   class="nav-using-flex"
+        >
           <a
             class="navlink"
             id="linkHome"
@@ -41,4 +49,18 @@ export function Header(props) {
       {props.children}
     </>
   );
+
+  async function fetchIsProduction() {
+    var response = await fetch(
+      dataServer + `/isProduction` // *** The route to check if the server is in production
+    );
+    if (!response.ok) {
+      alert(
+        `Server Error: status is ${response.status} reason is ${response.statusText}`
+      );
+    } else {
+      var data = await response.json();
+      setIsProduction(data.isProduction);
+    }
+  }
 }

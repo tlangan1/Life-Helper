@@ -41,7 +41,7 @@ export function AccountForm() {
             type="text"
             name="joined"
             id="joined"
-            value={reformatMySQLDate(user().create_dtm)}
+            value={reformatMySQLDate(user().created_dtm)}
           />
         </div>
       </div>

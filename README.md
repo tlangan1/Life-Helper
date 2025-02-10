@@ -131,9 +131,14 @@
 ### Associate users with tasks
 
 - Before I go any farther I need to know what gets stored in he database for authentication methods other than conventional user_name/password.
+  - Continue with the tutorial.
 - Backup the database before implementing these changes.
 - Schema changes required to accomplish the following enhancements
 
+  - Change the following column name everywhere
+    - create_dtm to created_dtm
+    - Implement the test_life_helper database upgrade and testing strategy for just this change
+    - At this point I am installing vitest in this project.
   - Add the following columns to the task table
     - created_user
     - completed_user

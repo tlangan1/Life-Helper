@@ -12,6 +12,7 @@ export function AccountMenu(props) {
           setUser({});
           props.setAccountMenu(false);
         }}
+        href="/"
       >
         Log Out
       </a>

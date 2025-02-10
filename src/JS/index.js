@@ -5,29 +5,31 @@
 // var swRegistration;
 // var svcWorker;
 
+import { logToConsole } from "./helperFunctions";
+
 export const askWebPushPermission = async (message) => {
   await requestNotificationPermission(message);
 };
 
 export const registerServiceWorker = async (msg) => {
   if (BrowserSupports()) {
-    console.log("starting registerServiceWorker");
+    logToConsole("starting registerServiceWorker");
     if (requestNotificationPermission(msg)) {
       await navigator.serviceWorker.register("/service_worker.js", {
         updateViaCache: "none",
       });
 
-      console.log("Service Worker registered");
+      logToConsole("Service Worker registered");
     } else {
-      console.log("User denied permission to send push notifications");
+      logToConsole("User denied permission to send push notifications");
     }
   } else {
-    console.log("Service workers not supported by this browser");
+    logToConsole("Service workers not supported by this browser");
   }
 };
 
 export function sendMessage(msg) {
-  console.log("starting sendMessage");
+  logToConsole("starting sendMessage");
   if (!navigator.serviceWorker.controller)
     alert("No service worker is currently active");
   else {
@@ -43,24 +45,28 @@ navigator.serviceWorker.addEventListener(
   function onControllerChange(event) {
     /* *** Commented out 7/31/2024 *** */
     // svcWorker = navigator.serviceWorker.controller;
-    console.log("Controller changed");
+    logToConsole("Controller changed");
   }
 );
 
 navigator.serviceWorker.addEventListener("message", (event) => {
-  console.log("Got a message from the service worker!!!");
-  if (event.data && event.data.type === "Push Notification") {
-    console.log("Push Notification received");
+  logToConsole("Got a message from the service worker!!!");
+  if (event.data.data && event.data.type === "Push Notification") {
+    logToConsole(
+      `Push Notification received from task with task_id ${
+        event.data.data.task_id ? event.data.data.task_id : "No task_id"
+      }`
+    );
     document.title = event.data.data.name;
     // I am going to use the strategy of forcing a data refresh from the
     // database to give the visual effect of updating cache (for now).
   }
   if (event.data && event.data.type === "Service Worker Activated") {
-    console.log(
+    logToConsole(
       "The service worker is notifying the page that it is activated."
     );
     document.title = "Activated";
-    document.querySelector(".subscription-button").disabled = false;
+    document.querySelector(".web-push-subscription-button").disabled = true;
   }
 });
 
@@ -79,7 +85,7 @@ function BrowserSupports() {
 }
 
 async function requestNotificationPermission(msg) {
-  console.log("starting requestNotificationPermission");
+  logToConsole("starting requestNotificationPermission");
   const permission = await window.Notification.requestPermission();
   // value of permission can be 'granted', 'default', 'denied'
   // granted: user has accepted the request

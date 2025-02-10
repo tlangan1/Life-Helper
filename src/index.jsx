@@ -17,9 +17,11 @@ import { NotFound } from "./NotFound";
 const root = document.getElementById("root");
 
 import { GlobalStateProvider } from "./GlobalStateProvider";
-import { createSignal } from "solid-js";
+import { logToConsole } from "./JS/helperFunctions";
 
-console.log("window.location.hostname = " + window.location.hostname);
+logToConsole(`window.location.hostname is ${window.location.hostname}`);
+
+import { sendMessage } from "./JS/index";
 
 // @ts-ignore
 if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
@@ -36,6 +38,7 @@ const Other = (props) => (
 );
 
 render(() => {
+  sendMessage("Hello from the Application");
   return (
     <MetaProvider>
       <Meta name="description" content="Life Helper Objective Tracker" />

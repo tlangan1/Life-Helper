@@ -3,6 +3,7 @@ import { ProjectItem } from "./ProjectItem.jsx";
 import { useGlobalState } from "./GlobalStateProvider.jsx";
 
 import {
+  logToConsole,
   startedButNotCompletedCount,
   completedCount,
 } from "./JS/helperFunctions.js";
@@ -12,6 +13,8 @@ export function ProjectItemsList(props) {
   // *** retrieved from the server depending on the context.
   var { itemType, refreshData, dataServer, filters } = useGlobalState();
   const [items, { mutate, refetch }] = createResource(refreshData, fetchItems);
+
+  logToConsole(`In ProjectItemsList rendering items of type '${itemType()}'`);
 
   return (
     <div class="item-list-container">

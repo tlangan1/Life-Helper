@@ -160,7 +160,7 @@ export function Register(props) {
                 // This pattern will enforce the rule that the password
                 // is at least 10 characters long and contains
                 // at least one lowercase letter, one uppercase letter.
-                // pattern={passwordPattern}
+                pattern={passwordPattern}
               />
               <label for="register_password">Password</label>
               <span
@@ -179,7 +179,7 @@ export function Register(props) {
                 type={passwordVisible() ? "text" : "password"}
                 autocomplete="new-password"
                 placeholder=""
-                // pattern={passwordPattern}
+                pattern={passwordPattern}
                 title="The password must be at least 10 characters long and contain at least one lowercase letter, uppercase letter and number."
                 aria-describedby="password_requirements"
                 onChange={(e) => checkPasswordValidity.setValidity(e.target)}
