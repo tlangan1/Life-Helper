@@ -37,6 +37,18 @@ textarea {
   display: none;
 }
 
+nav.not-production::before {
+  content: "You are not in production!";
+  position: absolute;
+  top: 4rem;
+  left: 10%;
+  font-size: 2rem;
+  z-index: 1;
+  background-color: var(--secondary-color);
+  background-color: red;
+  box-shadow: 5px 5px 5px 0px #78a1bc;
+}
+
 nav.nav-using-flex {
   display: flex;
   flex-direction: row;

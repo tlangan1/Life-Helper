@@ -135,6 +135,10 @@
 - Backup the database before implementing these changes.
 - Schema changes required to accomplish the following enhancements
 
+  - Change the following column name everywhere
+    - create_dtm to created_dtm
+    - Implement the test_life_helper database upgrade and testing strategy for just this change
+    - At this point I am installing vitest in this project.
   - Add the following columns to the task table
     - created_user
     - completed_user

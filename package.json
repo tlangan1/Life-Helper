@@ -6,7 +6,8 @@
     "start": "vite",
     "dev": "vite --host",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "test": "vitest"
   },
   "scripts-comments": {
     "dev": "Starts Vite in development mode with HMR and --host exposes the dev server to your local network",
@@ -15,11 +16,13 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "jsdom": "^26.0.0",
     "solid-devtools": "^0.27.3",
     "vite": "^4.3.9",
     "vite-plugin-mkcert": "^1.17.1",
     "vite-plugin-pwa": "^0.21.0",
-    "vite-plugin-solid": "^2.7.0"
+    "vite-plugin-solid": "^2.7.0",
+    "vitest": "^3.0.5"
   },
   "dependencies": {
     "@solid-primitives/autofocus": "^0.0.111",

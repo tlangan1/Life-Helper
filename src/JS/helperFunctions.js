@@ -4,6 +4,7 @@ export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+// The default format for MySQL dates is "YYYY-MM-DD HH:MM:SS".
 export function reformatMySQLDate(inputDate) {
   var date = new Date(inputDate);
   if (!isNaN(date.getTime())) {
