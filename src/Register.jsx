@@ -2,7 +2,7 @@
 import { createSignal, onMount } from "solid-js";
 import { affectItem } from "./JS/helperFunctions";
 import { useGlobalState } from "./GlobalStateProvider";
-// import { useNavigate } from "@solidjs/router";
+import { useNavigate } from "@solidjs/router";
 
 export function Register(props) {
   var [step, setStep] = createSignal("user name creation");
@@ -17,7 +17,7 @@ export function Register(props) {
     passwordMismatchMessage: "",
   });
 
-  //   const navigate = useNavigate(); // Create navigate function
+  const navigate = useNavigate(); // Create navigate function
 
   // *** ************************************************* ***
   // The logic surrounding the userFieldsValid and pwdFieldsValid
@@ -235,6 +235,13 @@ export function Register(props) {
 
   // *** Helper functions for the code above
   async function affectItemCaller(e, operation, item_type, dataServer) {
+    // *** ************************************************* ***
+    // *** This is crucially important to prevent the form from
+    // ** being submitted and the page from being reloaded.
+    //** This is a SPA after all. */
+    e.preventDefault();
+    // *** ************************************************* ***
+
     var sentData = {
       user_name: document.getElementById("register_user_name").value,
       password: document.getElementById("register_password").value,
@@ -253,8 +260,8 @@ export function Register(props) {
     console.log("After affectItem Call");
     // TODO: replace the alert with a more user-friendly message
     // in the DOM, not an alert.
-    // if (returnedData.success) navigate("/account");
-    // else alert("Registration failed.");
+    if (returnedData.success) navigate("/account");
+    else alert("Registration failed.");
   }
 
   function initValidityChecker(signal) {
