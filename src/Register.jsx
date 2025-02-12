@@ -1,27 +1,37 @@
 /** @jsxImportSource solid-js */
-import { createEffect, createSignal, onMount } from "solid-js";
+import { createSignal, onMount } from "solid-js";
 import { affectItem } from "./JS/helperFunctions";
 import { useGlobalState } from "./GlobalStateProvider";
+import { useNavigate } from "@solidjs/router";
 
 export function Register(props) {
   var [step, setStep] = createSignal("user name creation");
   var { passwordPattern, dataServer } = useGlobalState();
-  var [validityUserName, setValidityUserName] = createSignal({});
-  var [validityPassword, setValidityPassword] = createSignal({});
-  var checkUserNameValidity = initializeValidityChecker(validityUserName);
-  var checkPasswordValidity = initializeValidityChecker(validityPassword);
+  var [userFieldsValid, setUserFieldsValid] = createSignal({});
+  var [pwdFieldsValid, setPwdFieldsValid] = createSignal({});
+  var checkUserValidity = initValidityChecker(userFieldsValid);
+  var checkPwdValidity = initValidityChecker(pwdFieldsValid);
   var [passwordVisible, setPasswordVisible] = createSignal(false);
+  var [passwordsMatch, setPasswordsMatch] = createSignal({
+    passwordMismatchClass: "error-message",
+    passwordMismatchMessage: "",
+  });
 
+  const navigate = useNavigate(); // Create navigate function
+
+  // *** ************************************************* ***
+  // The logic surrounding the userFieldsValid and pwdFieldsValid
+  // signals serves the purpose of enabling the commit button on each
+  // fieldset only when all fields in the given fieldset are valid.
+  // These signals are initialized in the onMount function because
+  // the code is relying on the browser to determine if the fields
+  // are valid or not and the browser cannot make that determination
+  // until the fields are rendered.
+  // *** ************************************************* ***
   onMount(() => {
-    initializeFieldSetValidator(
-      "register_user_name_creation",
-      setValidityUserName
-    );
-    initializeFieldSetValidator(
-      "register_password_creation",
-      setValidityPassword
-    );
-    function initializeFieldSetValidator(fieldsetID, setter) {
+    initFieldSetValidator("register_user_name_creation", setUserFieldsValid);
+    initFieldSetValidator("register_password_creation", setPwdFieldsValid);
+    function initFieldSetValidator(fieldsetID, setter) {
       var validityObject = {};
       var fieldset = document.getElementById(fieldsetID);
       var inputs = fieldset.querySelectorAll("input");
@@ -32,15 +42,10 @@ export function Register(props) {
     }
   });
 
-  function submitHandler(e) {
-    e.preventDefault();
-  }
-
   return (
     <section class="route">
       <h2>Register</h2>
 
-      {/* <form id="formRegister" onSubmit={submitHandler}> */}
       <form id="formRegister">
         <fieldset
           id="register_user_name_creation"
@@ -49,7 +54,10 @@ export function Register(props) {
           }}
         >
           <div class="form-control-wrapper">
-            <label for="register_full_name">Full Name</label>
+            {/* <label for="register_full_name" data-default_value="Full Name"> */}
+            <label for="register_full_name">
+              Full Name (10-100 characters)
+            </label>
             <div class="separated-label-wrapper">
               <input
                 id="register_full_name"
@@ -60,13 +68,15 @@ export function Register(props) {
                 title="Enter your full name."
                 minLength="10"
                 maxLength="100"
-                onChange={(e) => checkUserNameValidity.setValidity(e.target)}
+                onInput={(e) => checkUserValidity.setValidity(e.target)}
               />
               <span></span>
             </div>
           </div>
           <div class="form-control-wrapper">
-            <label for="register_display_name">Display Name</label>
+            <label for="register_display_name">
+              Display Name (1-30 characters)
+            </label>
             <div class="separated-label-wrapper">
               <input
                 id="register_display_name"
@@ -77,7 +87,7 @@ export function Register(props) {
                 title="Enter the name you want to be called by."
                 minLength="1"
                 maxLength="30"
-                onChange={(e) => checkUserNameValidity.setValidity(e.target)}
+                onInput={(e) => checkUserValidity.setValidity(e.target)}
               />
               <span></span>
             </div>
@@ -100,7 +110,9 @@ export function Register(props) {
           {/* The mere presence of the word Email in the label will cause */}
           {/* chrome to suggest an email address */}
           <div class="form-control-wrapper">
-            <label for="register_user_name">User Name or Email</label>
+            <label for="register_user_name">
+              User Name or Email (10-30 characters)
+            </label>
             {/* If you use this label it will not suggest an email address */}
             {/* <label for="register_user_name">User Name</label> */}
             <div class="separated-label-wrapper">
@@ -113,14 +125,14 @@ export function Register(props) {
                 title="Enter a user name."
                 minLength="10"
                 maxLength="30"
-                onChange={(e) => checkUserNameValidity.setValidity(e.target)}
+                onInput={(e) => checkUserValidity.setValidity(e.target)}
               />
               <span></span>
             </div>
           </div>
           <button
             class="action-button"
-            disabled={!checkUserNameValidity.ifInvalid()}
+            disabled={!checkUserValidity.isInvalid()}
             onClick={() => setStep("password creation")}
           >
             Continue
@@ -146,7 +158,8 @@ export function Register(props) {
                 // placeholder="" Note that a blank placeholder will work for the css
                 // that does not style the input field as invalid when it is empty.
                 // placeholder="" but I am going to use a placeholder anyway.
-                onChange={(e) => checkPasswordValidity.setValidity(e.target)}
+                onInput={(e) => checkPwdValidity.setValidity(e.target)}
+                onPointerDown={(e) => setPasswordFocusClass()}
                 // *** ************************************************* ***
                 // This pattern is an example of the
                 // problem with chrome...see the README.md.
@@ -182,7 +195,7 @@ export function Register(props) {
                 pattern={passwordPattern}
                 title="The password must be at least 10 characters long and contain at least one lowercase letter, uppercase letter and number."
                 aria-describedby="password_requirements"
-                onChange={(e) => checkPasswordValidity.setValidity(e.target)}
+                onInput={(e) => checkPwdValidity.setValidity(e.target)}
               />
               <label for="register_password_confirmation">
                 Confirm Password
@@ -194,6 +207,9 @@ export function Register(props) {
                 {passwordVisible() ? "Hide" : "Show"}
               </span>
             </div>
+            <p class={passwordsMatch().passwordMismatchClass}>
+              {passwordsMatch().passwordMismatchMessage}
+            </p>
             <p id="password_requirements">
               The password must be at least 10 characters in length and contain
               at least one upper case letter, one lower case letter and one
@@ -202,7 +218,8 @@ export function Register(props) {
             <button
               class="action-button"
               disabled={
-                !checkPasswordValidity.ifInvalid() || !checkPasswordsMatch()
+                !checkPwdValidity.isInvalid() ||
+                !passwordsMatch().passwordMismatchClass == "success-message"
               }
               onClick={(e) => {
                 affectItemCaller(e, "add", "user_login", dataServer);
@@ -218,6 +235,13 @@ export function Register(props) {
 
   // *** Helper functions for the code above
   async function affectItemCaller(e, operation, item_type, dataServer) {
+    // *** ************************************************* ***
+    // *** This is crucially important to prevent the form from
+    // ** being submitted and the page from being reloaded.
+    //** This is a SPA after all. */
+    e.preventDefault();
+    // *** ************************************************* ***
+
     var sentData = {
       user_name: document.getElementById("register_user_name").value,
       password: document.getElementById("register_password").value,
@@ -233,34 +257,86 @@ export function Register(props) {
       sentData,
       dataServer
     );
-    // TODO: Make sure this is architected in such a way that the chrome password manager.
-    // will save the password.
-    if (returnedData.success) {
-      //   history.pushState({}, "", "./");
-    } else {
-      alert("Registration failed.");
-    }
+    console.log("After affectItem Call");
+    // TODO: replace the alert with a more user-friendly message
+    // in the DOM, not an alert.
+    if (returnedData.success) navigate("/account");
+    else alert("Registration failed.");
   }
 
-  function initializeValidityChecker(signal) {
+  function initValidityChecker(signal) {
+    var valid = false;
     return {
       setValidity: function setValidity(input) {
-        signal()[input.id] = input.checkValidity();
-        setValidityUserName(structuredClone(signal()));
+        valid = input.checkValidity();
+        signal()[input.id] = valid;
+        formatInputFeedback(input);
+        setUserFieldsValid(structuredClone(signal()));
       },
 
-      ifInvalid: function checkValidity() {
+      isInvalid: function checkValidity() {
         return Object.values(signal()).filter((value) => !value).length == 0;
       },
     };
+
+    // *** Helper functions for this function
+    function formatInputFeedback(input) {
+      formatPasswordFeedback(input);
+      checkPasswordsMatch();
+
+      // *** Helper functions for this function
+      function formatPasswordFeedback(input) {
+        if (document.querySelector(`.embedded-label-wrapper > #${input.id}`))
+          // *** don't format the password fields spans
+          // if the password fields are not visible
+          return;
+
+        var span = document.querySelector(
+          `.separated-label-wrapper > #${input.id} + span`
+        );
+        if (!valid) {
+          if (input.value.length > 0)
+            span.innerHTML = -(input.minLength - input.value.length);
+          else span.innerHTML = "";
+        } else {
+          span.innerHTML = "&#x2714;";
+        }
+      }
+    }
   }
 
   function checkPasswordsMatch() {
-    if (!document.getElementById("register_password")) return false;
-    else
-      return (
-        document.getElementById("register_password").value ===
-        document.getElementById("register_password_confirmation").value
-      );
+    if (document.getElementById("register_password")) {
+      var passwordMatch;
+      if (document.getElementById("register_password_confirmation").value == "")
+        passwordMatch = {
+          passwordMismatchClass: "error-message",
+          passwordMismatchMessage: "",
+        };
+      else {
+        passwordMatch = {
+          passwordMismatchClass:
+            document.getElementById("register_password").value ===
+            document.getElementById("register_password_confirmation").value
+              ? "success-message"
+              : "error-message",
+          passwordMismatchMessage:
+            document.getElementById("register_password").value ===
+            document.getElementById("register_password_confirmation").value
+              ? "Passwords match!"
+              : "Passwords do not match.",
+        };
+        setPasswordsMatch(passwordMatch);
+      }
+    }
+  }
+
+  function setPasswordFocusClass() {
+    var passwordFields = Array.from(
+      document.querySelectorAll(`input[autocomplete="new-password"]`)
+    );
+    passwordFields.forEach((input) => {
+      input.classList.add("password_focus");
+    });
   }
 }
