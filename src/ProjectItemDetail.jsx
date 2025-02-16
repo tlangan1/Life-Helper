@@ -20,7 +20,7 @@ export function ProjectItemDetail(props) {
               id={`start_item_${props.item().item_id}`}
               onClick={(event) =>
                 affectItemCaller(
-                  event,
+                  event.target,
                   "start",
                   itemType(),
                   { task_id: props.item().item_id },
@@ -36,7 +36,7 @@ export function ProjectItemDetail(props) {
               id={`pause_item_${props.item().item_id}`}
               onClick={(event) =>
                 affectItemCaller(
-                  event,
+                  event.target,
                   "pause",
                   itemType(),
                   { task_id: props.item().item_id },
@@ -56,7 +56,7 @@ export function ProjectItemDetail(props) {
               id={`complete_item_${props.item().item_id}`}
               onClick={(event) =>
                 affectItemCaller(
-                  event,
+                  event.target,
                   "complete",
                   itemType(),
                   { task_id: props.item().item_id },
@@ -103,7 +103,7 @@ export function ProjectItemDetail(props) {
             id={`cancel_delete_item_${props.item().item_id}`}
             onClick={(event) =>
               affectItemCaller(
-                event,
+                event.target,
                 "cancel_delete",
                 itemType(),
                 { item_type: itemType(), item_id: props.item().item_id },
@@ -157,16 +157,15 @@ export function ProjectItemDetail(props) {
   }
 
   async function affectItemCaller(
-    e,
+    target,
     operation,
-    item_type,
+    itemType,
     sentData,
     dataServer
   ) {
     var returnedData = await affectItem(
-      e,
       operation,
-      item_type,
+      itemType,
       sentData,
       dataServer,
       user
@@ -182,7 +181,7 @@ export function ProjectItemDetail(props) {
         props.setItem(updatedItem[0]);
       }
     } else {
-      e.target.checked = false;
+      target.checked = false;
     }
   }
 

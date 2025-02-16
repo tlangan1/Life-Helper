@@ -1,5 +1,15 @@
 "use strict";
 
+var affectTypes = new Set([
+  "add",
+  "pause",
+  "start",
+  "complete",
+  "cancel_delete",
+  "update",
+  "check",
+]);
+
 export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -39,33 +49,14 @@ export function childItemType(parentType) {
   else return "task";
 }
 
-export async function affectItem(
-  evt,
-  affectType,
-  item_type,
-  data,
-  dataServer,
-  user
-) {
+export async function affectItem(affectType, itemType, data, dataServer, user) {
   var endPoint;
 
   try {
-    switch (affectType) {
-      case "add":
-      case "pause":
-      case "start":
-      case "complete":
-      case "cancel_delete":
-      case "update":
-      case "check":
-        endPoint = `/${affectType}/${item_type}`;
-        break;
-      default:
-        alert(
-          `Invalid route "/${affectType}/${item_type}" in function affectItem!`
-        );
-        return false;
+    if (!affectTypes.has(affectType)) {
+      return { success: false };
     }
+    endPoint = `/${affectType}/${itemType}`;
 
     // request options
     const options = {
@@ -94,7 +85,6 @@ export async function affectItem(
       );
       return data;
     } else {
-      evt.target.value = "";
       return data;
     }
   } catch (error) {

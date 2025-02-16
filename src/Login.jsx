@@ -64,7 +64,7 @@ export function Login(props) {
       <button
         class="action-button"
         onClick={(e) => {
-          affectItemCaller(e, "check", "user_login", dataServer);
+          affectItemCaller("check", "user_login", dataServer);
         }}
       >
         Login
@@ -73,16 +73,15 @@ export function Login(props) {
   );
 
   // *** Helper functions for the code above
-  async function affectItemCaller(e, operation, item_type, dataServer) {
+  async function affectItemCaller(operation, itemType, dataServer) {
     var sentData = {
       user_name: document.getElementById("login_user_id").value,
       password: document.getElementById("login_password").value,
     };
 
     var returnedData = await affectItem(
-      e,
       operation,
-      item_type,
+      itemType,
       sentData,
       dataServer
     );

@@ -217,12 +217,13 @@ export function Register(props) {
             </p>
             <button
               class="action-button"
+              type="button"
               disabled={
                 !checkPwdValidity.isInvalid() ||
                 !passwordsMatch().passwordMismatchClass == "success-message"
               }
               onClick={(e) => {
-                affectItemCaller(e, "add", "user_login", dataServer);
+                affectItemCaller("add", "user_login", dataServer);
               }}
             >
               Sign Up
@@ -234,12 +235,19 @@ export function Register(props) {
   );
 
   // *** Helper functions for the code above
-  async function affectItemCaller(e, operation, item_type, dataServer) {
+  async function affectItemCaller(operation, itemType, dataServer) {
     // *** ************************************************* ***
     // *** This is crucially important to prevent the form from
-    // ** being submitted and the page from being reloaded.
-    //** This is a SPA after all. */
-    e.preventDefault();
+    // *** being submitted and the page from being reloaded.
+    // *** This is a SPA after all. */
+    // e.preventDefault();
+    // *** However, by making the button type="button" this is
+    // *** no longer necessary and the password manager
+    // *** still behaves as desired.
+    // ***
+    // *** My hunch is that I could call e.preventDefault() when
+    // *** the button is type="button" and it would have no
+    // *** effect...everything would still work as desired.
     // *** ************************************************* ***
 
     var sentData = {
@@ -251,9 +259,8 @@ export function Register(props) {
     };
 
     var returnedData = await affectItem(
-      e,
       operation,
-      item_type,
+      itemType,
       sentData,
       dataServer
     );

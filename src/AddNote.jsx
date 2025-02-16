@@ -58,7 +58,6 @@ export function AddNote(props) {
               class="action-button"
               onClick={(e) => {
                 affectItemCaller(
-                  e,
                   "add",
                   "note",
                   {
@@ -94,19 +93,12 @@ export function AddNote(props) {
     setSavingNote(!savingNote());
   }
 
-  async function affectItemCaller(
-    e,
-    operation,
-    item_type,
-    sentData,
-    dataServer
-  ) {
+  async function affectItemCaller(operation, itemType, sentData, dataServer) {
     toggleSavingNote();
     try {
       var returnedData = await affectItem(
-        e,
         operation,
-        item_type,
+        itemType,
         sentData,
         dataServer
       );
