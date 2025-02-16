@@ -7,7 +7,7 @@
     "dev": "vite --host",
     "build": "vite build",
     "serve": "vite preview",
-    "test": "vitest"
+    "test": "vitest --ui"
   },
   "scripts-comments": {
     "dev": "Starts Vite in development mode with HMR and --host exposes the dev server to your local network",
@@ -16,6 +16,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@vitest/ui": "^3.0.5",
     "jsdom": "^26.0.0",
     "solid-devtools": "^0.27.3",
     "vite": "^4.3.9",

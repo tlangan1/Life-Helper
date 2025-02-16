@@ -4,9 +4,41 @@ import {
   capitalizeFirstLetter,
   reformatMySQLDate,
   startedButNotCompletedCount,
+  affectItem,
 } from "./helperFunctions";
 
 describe("Helper Functions", () => {
+  describe("test from vitest documentation", () => {
+    it("should return 0", () => {
+      const getApples = vi.fn(() => 0);
+
+      getApples();
+
+      expect(getApples).toHaveBeenCalled();
+      expect(getApples).toHaveReturnedWith(0);
+
+      getApples.mockReturnValueOnce(5);
+
+      const res = getApples();
+      expect(res).toBe(5);
+      expect(getApples).toHaveNthReturnedWith(2, 5);
+    });
+  });
+  describe("Affect Item Test", () => {
+    it("should mock fetch", async () => {
+      const fetch = vi.fn(
+        (route, options) =>
+          new Promise((resolve) => resolve({ success: false }))
+      );
+      window.fetch = fetch;
+      const result = await affectItem();
+      expect(fetch).not.toHaveBeenCalled();
+      expect(result.success).toBe(false);
+    }, 10000);
+  });
+  describe("Some other test", () => {
+    it.todo();
+  });
   describe("Capitalize First Letter", () => {
     it("should capitalize the first letter of a string", () => {
       expect(capitalizeFirstLetter("hello")).toBe("Hello");

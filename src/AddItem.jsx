@@ -91,7 +91,6 @@ export function AddItem(props) {
               disabled={descriptionLength() < minTextLength || savingItem()}
               onClick={(e) => {
                 affectItemCaller(
-                  e,
                   "add",
                   itemType(),
                   {
@@ -157,19 +156,12 @@ export function AddItem(props) {
   //     }
   //   }
 
-  async function affectItemCaller(
-    e,
-    operation,
-    item_type,
-    sentData,
-    dataServer
-  ) {
+  async function affectItemCaller(operation, itemType, sentData, dataServer) {
     toggleSavingItem();
     try {
       var returnedData = await affectItem(
-        e,
         operation,
-        item_type,
+        itemType,
         sentData,
         dataServer
       );
