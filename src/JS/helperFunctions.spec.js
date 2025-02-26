@@ -24,16 +24,27 @@ describe("Helper Functions", () => {
       expect(getApples).toHaveNthReturnedWith(2, 5);
     });
   });
-  describe("Affect Item Test", () => {
-    it("should mock fetch", async () => {
+  describe("Affect Item Tests", () => {
+    it("should fail if it is not a valid route", async () => {
+      var route = "not a valid route";
+      const result = await affectItem(route);
+      expect(result.success).toBe(false);
+    });
+    it("should call fetch for a valid route", async () => {
       const fetch = vi.fn(
-        (route, options) =>
-          new Promise((resolve) => resolve({ success: false }))
+        (route, options) => new Promise((resolve) => resolve({ success: true }))
       );
       window.fetch = fetch;
-      const result = await affectItem();
-      expect(fetch).not.toHaveBeenCalled();
-      expect(result.success).toBe(false);
+      const result = await affectItem("add", "item", {}, "http://localhost");
+      expect(fetch).toHaveBeenCalled();
+    }, 10000);
+    it("should call fetch for a valid route", async () => {
+      const fetch = vi.fn(
+        (route, options) => new Promise((resolve) => resolve({ success: true }))
+      );
+      window.fetch = fetch;
+      const result = await affectItem("add", "item", {}, "http://localhost");
+      expect(fetch).toHaveBeenCalled();
     }, 10000);
   });
   describe("Some other test", () => {

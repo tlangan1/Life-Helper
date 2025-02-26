@@ -14,6 +14,7 @@ import { useGlobalState } from "./GlobalStateProvider";
 import { AddItem } from "./AddItem.jsx";
 
 import { ProjectItemsList } from "./ProjectItemsList.jsx";
+import { WebPushList } from "./WebPushList";
 
 export function LifeHelperApp(props) {
   //   registerServiceWorker();
@@ -46,6 +47,7 @@ export function LifeHelperApp(props) {
               backend_server_url: dataServer,
             })
           }
+          disabled={navigator.serviceWorker.controller}
         >
           Request A Web Push Subscription
         </button>
@@ -65,6 +67,7 @@ export function LifeHelperApp(props) {
         <AddItem parent={parent} />
       </header>
       <ProjectItemsList setParent={setParent} parent={parent} />
+      <WebPushList />
     </section>
   );
 

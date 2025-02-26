@@ -38,7 +38,6 @@ const Other = (props) => (
 );
 
 render(() => {
-  sendMessage("Hello from the Application");
   return (
     <MetaProvider>
       <Meta name="description" content="Life Helper Objective Tracker" />

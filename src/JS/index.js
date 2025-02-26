@@ -5,7 +5,11 @@
 // var swRegistration;
 // var svcWorker;
 
+import { createSignal } from "solid-js";
+
 import { logToConsole } from "./helperFunctions";
+
+export var [webPushList, setWebPushList] = createSignal([]);
 
 export const askWebPushPermission = async (message) => {
   await requestNotificationPermission(message);
@@ -52,11 +56,13 @@ navigator.serviceWorker.addEventListener(
 navigator.serviceWorker.addEventListener("message", (event) => {
   logToConsole("Got a message from the service worker!!!");
   if (event.data.data && event.data.type === "Push Notification") {
-    logToConsole(
-      `Push Notification received from task with task_id ${
-        event.data.data.task_id ? event.data.data.task_id : "No task_id"
-      }`
-    );
+    var webPushMessage = `Web Push: ${
+      //   event.data.data.task_id ? event.data.data.task_id : "No task_id"
+      JSON.stringify(event.data.data)
+    }`;
+    logToConsole(webPushMessage);
+    webPushList().push({ message: webPushMessage });
+    setWebPushList(structuredClone(webPushList()));
     document.title = event.data.data.name;
     // I am going to use the strategy of forcing a data refresh from the
     // database to give the visual effect of updating cache (for now).

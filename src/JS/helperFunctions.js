@@ -65,6 +65,7 @@ export async function affectItem(affectType, itemType, data, dataServer, user) {
       headers: {
         "Content-Type": "application/json",
       },
+      //   signal: AbortSignal.timeout(15000),
     };
 
     // send POST request
