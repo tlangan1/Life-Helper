@@ -10,13 +10,15 @@ export function Header(props) {
   fetchIsProduction();
   return (
     <>
-      <header>
+      <header
+        classList={{
+          "not-production": !isProduction(),
+        }}
+      >
         <nav
           classList={{
             "nav-using-flex": true,
-            "not-production": !isProduction(),
           }}
-          //   class="nav-using-flex"
         >
           <a
             class="navlink"

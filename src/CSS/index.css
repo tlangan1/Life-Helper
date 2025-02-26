@@ -37,18 +37,6 @@ textarea {
   display: none;
 }
 
-nav.not-production::before {
-  content: "You are not in production!";
-  position: absolute;
-  top: 4rem;
-  left: 10%;
-  font-size: 2rem;
-  z-index: 1;
-  background-color: var(--secondary-color);
-  background-color: red;
-  box-shadow: 5px 5px 5px 0px #78a1bc;
-}
-
 nav.nav-using-flex {
   display: flex;
   flex-direction: row;
@@ -76,6 +64,24 @@ a.navlink:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.not-production::before,
+.not-production::after {
+  content: "";
+  position: absolute;
+  width: 100vw;
+  height: 1rem;
+  top: 50%;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='50px' width='150px'><text x='0' y='15' fill='red' font-size='1rem'>Not Production!</text></svg>");
+}
+
+.not-production::before {
+  transform: rotate(45deg);
+}
+
+.not-production::after {
+  transform: rotate(-45deg);
 }
 
 .route > h2 {
