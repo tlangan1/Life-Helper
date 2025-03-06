@@ -7,7 +7,8 @@ import {
   registerServiceWorker,
 } from "./JS/index.js";
 
-import { createSignal, createEffect } from "solid-js";
+import { createSignal, createEffect, Switch } from "solid-js";
+import { useParams } from "@solidjs/router";
 
 import { useGlobalState } from "./GlobalStateProvider";
 
@@ -16,21 +17,27 @@ import { AddItem } from "./AddItem.jsx";
 import { ProjectItemsList } from "./ProjectItemsList.jsx";
 import { WebPushList } from "./WebPushList";
 
+import "./CSS/context-menu.css";
+
+import { setupContextMenu } from "./JS/helperFunctions";
+
 export function LifeHelperApp(props) {
-  //   registerServiceWorker();
-  // *** dataServer is the URL of the server that provides the data.
+  setupContextMenu();
   var {
     itemType,
     setItemType,
     parent,
     setParent,
     toggleRefreshData,
-    dataServer,
+    setItemsView,
   } = useGlobalState();
 
-  // *** pageTitleEffect is a signal that is used to set the page title and
-  // *** is triggered by changes to props.type.
-  createEffect(pageTitleEffect);
+  var { viewType } = useParams();
+  setItemsView(viewType);
+
+  //   createEffect(pageTitleEffect);
+  createEffect(() => (viewType == undefined ? pageTitleEffect() : null));
+
   var [pageTitle, setPageTitle] = createSignal("");
 
   // *** visibleClassValue is a signal that is used to toggle the visibility of the return button.
@@ -39,35 +46,42 @@ export function LifeHelperApp(props) {
   return (
     <section class="route">
       <header class="life-helper-header">
-        <button
-          class="action-button web-push-subscription-button"
-          onClick={(e) =>
-            registerServiceWorker({
-              type: "Backend Server URL",
-              backend_server_url: dataServer,
-            })
-          }
-          disabled={navigator.serviceWorker.controller}
-        >
-          Request A Web Push Subscription
-        </button>
-        <button
-          class="action-button"
-          onClick={(e) => sendMessage("Test message from Life Helper App")}
-        >
-          Send Message To Service Worker
-        </button>
-        <div class="header-title">
-          <h1 class={`${itemType()}_header`}>{pageTitle()}</h1>
-          <button
-            class={`return ${visibleClassValue()}`}
-            onClick={returnToParent}
-          ></button>
-        </div>
-        <AddItem parent={parent} />
+        <Switch>
+          <Match when={viewType == undefined}>
+            {" "}
+            <div class="header-title">
+              <h1 class={`${itemType()}_header`}>{pageTitle()}</h1>
+              <button
+                class={`return ${visibleClassValue()}`}
+                onClick={returnToParent}
+              ></button>
+            </div>
+            <AddItem parent={parent} />
+          </Match>
+          <Match when={viewType == "my-tasks-view"}>
+            {" "}
+            <div class="header-title">
+              <h1 class={`${itemType()}_header`}>Tasks Assigned To You</h1>
+            </div>
+          </Match>
+        </Switch>
       </header>
-      <ProjectItemsList setParent={setParent} parent={parent} />
+      <ProjectItemsList
+        setParent={setParent}
+        parent={parent}
+        viewType={viewType}
+      />
       <WebPushList />
+      <div id="contextMenu" classList={{ "context-menu": true, hide: true }}>
+        <ul>
+          <li>
+            <a href="#">Production (life-helper DB)</a>
+          </li>
+          <li>
+            <a href="#">Development (test-life-helper DB)</a>
+          </li>
+        </ul>
+      </div>
     </section>
   );
 
@@ -92,28 +106,32 @@ export function LifeHelperApp(props) {
   }
 
   function pageTitleEffect() {
-    switch (itemType()) {
-      case "objective":
-        setPageTitle("Overall Objectives");
-        setVisibleClassValue("");
-        break;
-      case "goal":
-        setPageTitle(
-          `Goals to achieve objective "${
-            parent()[parent().length - 1].item_name
-          }"`
-        );
-        setVisibleClassValue("visible");
-        break;
-      case "task":
-        setPageTitle(
-          `Tasks to achieve goal "${parent()[parent().length - 1].item_name}"`
-        );
-        setVisibleClassValue("visible");
+    if (viewType == "my-tasks-view") {
+      setPageTitle("Tasks Assigned To You");
+    } else {
+      switch (itemType()) {
+        case "objective":
+          setPageTitle("Overall Objectives");
+          setVisibleClassValue("");
+          break;
+        case "goal":
+          setPageTitle(
+            `Goals to achieve objective "${
+              parent()[parent().length - 1].item_name
+            }"`
+          );
+          setVisibleClassValue("visible");
+          break;
+        case "task":
+          setPageTitle(
+            `Tasks to achieve goal "${parent()[parent().length - 1].item_name}"`
+          );
+          setVisibleClassValue("visible");
 
-        break;
-      default:
-        setPageTitle("Unknown Page Item");
+          break;
+        default:
+          setPageTitle("Unknown Page Item");
+      }
     }
   }
 }

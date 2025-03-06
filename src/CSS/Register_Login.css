@@ -1,9 +1,11 @@
 /* *** The fieldset related CSS rules *** */
 
-fieldset {
+.register_login {
   width: 20rem;
   background-color: var(--emphasis-background-color);
+  border: solid;
   border-radius: 0.5rem;
+  padding: 1rem;
 
   label {
     display: block;
@@ -52,9 +54,9 @@ textarea:user-invalid {
   margin-bottom: 0.5rem;
 }
 
-/* *** The separated-label-wrapper class CSS rules *** */
+/* *** The label-above-wrapper class CSS rules *** */
 
-.separated-label-wrapper {
+.label-above-wrapper {
   position: relative;
 
   > span {

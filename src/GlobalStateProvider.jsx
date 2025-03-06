@@ -4,7 +4,6 @@ import { createSignal, createContext, useContext } from "solid-js";
 const GlobalStateContext = createContext();
 
 export function GlobalStateProvider(props) {
-  var [loggedIn, setLoggedIn] = createSignal(false);
   var [user, setUser] = createSignal({});
   var [itemType, setItemType] = createSignal("objective");
   // *** refreshData is a signal that is used to initiate a data refresh
@@ -29,13 +28,15 @@ export function GlobalStateProvider(props) {
     deleted_items: "no",
   });
 
+  var [itemsView, setItemsView] = createSignal("");
+
   const globalState = {
-    loggedIn: loggedIn,
-    setLoggedIn: setLoggedIn,
     user: user,
     setUser: setUser,
+    loggedIn: function loggedIn() {
+      return Object.keys(user()).length > 0;
+    },
     passwordPattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{10,}$",
-    setLoggedIn: setLoggedIn,
     itemType: itemType,
     parent: parent,
     setParent: setParent,
@@ -48,6 +49,11 @@ export function GlobalStateProvider(props) {
     filters: filters,
     setFilters: setFilters,
     mode: "dev",
+    // *** The last view the user used to display the items.
+    // *** As of 3/5/2025 there are only two views:
+    // *** the default view "/" and the my-tasks view "/my-tasks-view".
+    itemsView: itemsView,
+    setItemsView: setItemsView,
   };
 
   return (

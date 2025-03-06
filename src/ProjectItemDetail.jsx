@@ -23,7 +23,10 @@ export function ProjectItemDetail(props) {
                   event.target,
                   "start",
                   itemType(),
-                  { task_id: props.item().item_id },
+                  {
+                    task_id: props.item().item_id,
+                    user_login_id: user().user_login_id,
+                  },
                   dataServer
                 )
               }

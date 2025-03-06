@@ -4,18 +4,32 @@ import "./CSS/Filters.css";
 import { useGlobalState } from "./GlobalStateProvider";
 
 export function Filters(props) {
-  var { toggleRefreshData, filters, setFilters } = useGlobalState();
+  var { toggleRefreshData, filters, setFilters, user, itemsView } =
+    useGlobalState();
+
   return (
     <div class="route">
-      <div class="grouping">
+      <div class="label-left-wrapper">
         <h2>Filters</h2>
-        <h3>State Filters</h3>
-        <div>
-          <div>
-            <label htmlFor="chkAssignedToUser">Assigned to me: </label>
-            <input type="checkbox" />
+        <fieldset class="label-left-wrapper">
+          <legend>Assignment Filters</legend>
+          <div class="control">
+            <label htmlFor="chkAssignedToMe">Assigned to me: </label>
+            <input
+              type="checkbox"
+              name="chkAssignedToMe"
+              id="chkAssignedToMe"
+              disabled={Object.keys(user()) == 0}
+              checked={filters().assigned_to_me}
+              onChange={(e) =>
+                setFilters(appendFilter("assigned_to_me", e.target.checked))
+              }
+            />
           </div>
-          <div>
+        </fieldset>
+        <fieldset class="label-left-wrapper">
+          <legend>State Filters</legend>
+          <div class="control">
             <label htmlFor="selCompleted">Completed Items: </label>
             <select
               name="selCompleted"
@@ -30,7 +44,7 @@ export function Filters(props) {
               <option value="no">No</option>
             </select>
           </div>
-          <div>
+          <div class="control">
             <label htmlFor="selStarted">Started Items: </label>
             <select
               name="selStarted"
@@ -45,11 +59,11 @@ export function Filters(props) {
               <option value="no">No</option>
             </select>
           </div>
-          <div>
+          <div class="control">
             <label htmlFor="selDeleted">Deleted Items: </label>
             <select
               name="selDeleted"
-              id="Deleted"
+              id="selDeleted"
               value={filters().deleted_items}
               onChange={(e) =>
                 setFilters(appendFilter("deleted_items", e.target.value))
@@ -60,8 +74,8 @@ export function Filters(props) {
               <option value="no">No</option>
             </select>
           </div>
-        </div>
-        <a href="./">
+        </fieldset>
+        <a href={itemsView() == undefined ? "/" : itemsView()}>
           <button onClick={toggleRefreshData} class="action-button">
             Apply
           </button>

@@ -1,0 +1,26 @@
+/* *** The label-left-wrapper class CSS rules *** */
+
+.label-left-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background-color: var(--emphasis-background-color);
+  border: solid;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.label-left-wrapper h2,
+.label-left-wrapper a {
+  text-align: center;
+}
+
+.label-left-wrapper > .control {
+  justify-self: start;
+}
+
+.control {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}

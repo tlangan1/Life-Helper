@@ -9,19 +9,19 @@ div.grouping > * {
   padding: 4px;
 }
 
-div.grouping > div > div {
+div.grouping > fieldset > div {
   padding: 2px;
 }
 
-div.grouping > div > div {
+div.grouping > fieldset > div {
   display: flex;
   justify-content: space-between;
 }
 
-div.grouping > div > div:has(input[type="checkbox"]) {
+div.grouping > fieldset > div:has(input[type="checkbox"]) {
   justify-content: start;
 }
 
-div.grouping > div > div :nth-child(1) {
+div.grouping > fieldset > div :nth-child(1) {
   padding-right: 4px;
 }

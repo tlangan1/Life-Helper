@@ -63,15 +63,18 @@
 
 ## Service Workers:
 
-- Remember that if you go to the Application tab of Chrome Dev Tools you can see the service worker associated with that tab. You can also do things like `Stop` it and `Unregister` it.
-- To reset the permissions for the service worker do the following:
-  - Open the browser settings
-  - Click on `Privacy and Security`
-  - Click on `Site Settings`
-  - Scroll to the appropriate URL, for example, https://127.0.0.1:3000 or https://localhost:3000 or both
-  - Click the right-pointing triangle
-  - Change Notifications from "Allow" to "Ask"
-- You do not need to reset the permissions to release a new version of a service worker. You would only do this to test the web push subscription process.
+- The service worker associated with a route can be viewed on the Application tab of Chrome Dev Tools. You can also do things like `Stop` it and `Unregister` it.
+- To completely reset a service worker installation process do the following:
+  - Unregister/Delete the service worker: Go to the Application tab of Chrome Dev Tools and click the unregister link.
+  - Reset permissions for the service worker:
+    - Open the browser settings
+    - Click on `Privacy and Security`
+    - Click on `Site Settings`
+    - Click on `Notifications`
+    - Scroll to the appropriate URL, for example, https://192.168.1.10:3000
+    - Click the right-pointing triangle
+    - Change Notifications from "Allow" to "Ask (default)"
+- You do not need to reset the permissions to release a new version of a service worker. You would only reset the permissions to test the web push subscription process.
 
 ### Enable vite-plugin-pwa
 

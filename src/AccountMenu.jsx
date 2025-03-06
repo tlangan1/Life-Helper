@@ -1,16 +1,16 @@
-import "./CSS/Account.css";
+import "./CSS/Menu.css";
 import { useGlobalState } from "./GlobalStateProvider";
 
 export function AccountMenu(props) {
-  var { setLoggedIn, setUser } = useGlobalState();
+  var { setUser, filters, setFilters } = useGlobalState();
   return (
-    <div class="account-menu">
+    <div class="menu">
       <a href="/account">Account</a>
       <a
         onClick={() => {
-          setLoggedIn(false);
           setUser({});
           props.setAccountMenu(false);
+          setFilters(delete filters().assigned_to_me);
         }}
         href="/"
       >
