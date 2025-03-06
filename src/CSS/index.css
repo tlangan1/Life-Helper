@@ -37,6 +37,18 @@ textarea {
   display: none;
 }
 
+.menu-container {
+  position: relative;
+}
+
+.menu-container:hover > .menu {
+  position: relative;
+}
+
+.menu a {
+  white-space: nowrap;
+}
+
 nav.nav-using-flex {
   display: flex;
   flex-direction: row;
@@ -45,13 +57,32 @@ nav.nav-using-flex {
   padding: 4px;
   background-color: var(--secondary-color);
   border-bottom: 1px solid #e6e6e6;
+  margin-bottom: 1rem;
 }
 
 nav a.navlink {
+  display: flex;
+  align-items: center;
   text-decoration: none;
   color: var(--primary-font-color);
   padding: 4px;
   border-radius: 4px;
+}
+
+nav a.navlink img {
+  padding-right: 1rem;
+}
+
+nav a.navlink span {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+@media screen and (max-width: 600px) {
+  nav a.navlink span {
+    font-size: 1rem;
+    font-weight: normal;
+  }
 }
 
 a.navlink:hover {
@@ -70,9 +101,10 @@ a.navlink:hover {
 .not-production::after {
   content: "";
   position: absolute;
-  width: 100vw;
+  width: 60vw;
   height: 1rem;
-  top: 50%;
+  top: 50vh;
+  right: 20vw;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='50px' width='150px'><text x='0' y='15' fill='red' font-size='1rem'>Not Production!</text></svg>");
 }
 

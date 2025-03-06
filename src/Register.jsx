@@ -47,10 +47,11 @@ export function Register(props) {
       <h2>Register</h2>
 
       <form id="formRegister">
-        <fieldset
+        <div
           id="register_user_name_creation"
           classList={{
             hidden: step() != "user name creation",
+            register_login: true,
           }}
         >
           <div class="form-control-wrapper">
@@ -58,7 +59,7 @@ export function Register(props) {
             <label for="register_full_name">
               Full Name (10-100 characters)
             </label>
-            <div class="separated-label-wrapper">
+            <div class="label-above-wrapper">
               <input
                 id="register_full_name"
                 required
@@ -77,7 +78,7 @@ export function Register(props) {
             <label for="register_display_name">
               Display Name (1-30 characters)
             </label>
-            <div class="separated-label-wrapper">
+            <div class="label-above-wrapper">
               <input
                 id="register_display_name"
                 required
@@ -94,7 +95,7 @@ export function Register(props) {
           </div>
           <div class="form-control-wrapper">
             <label for="register_email_address">Email Address</label>
-            <div class="separated-label-wrapper">
+            <div class="label-above-wrapper">
               <input
                 id="register_email_address"
                 type="text"
@@ -115,7 +116,7 @@ export function Register(props) {
             </label>
             {/* If you use this label it will not suggest an email address */}
             {/* <label for="register_user_name">User Name</label> */}
-            <div class="separated-label-wrapper">
+            <div class="label-above-wrapper">
               <input
                 id="register_user_name"
                 required
@@ -137,11 +138,12 @@ export function Register(props) {
           >
             Continue
           </button>
-        </fieldset>
-        <fieldset
+        </div>
+        <div
           id="register_password_creation"
           classList={{
             hidden: step() == "user name creation",
+            register_login: true,
           }}
         >
           <div class="form-control-wrapper">
@@ -229,7 +231,7 @@ export function Register(props) {
               Sign Up
             </button>
           </div>
-        </fieldset>
+        </div>
       </form>
     </section>
   );
@@ -299,7 +301,7 @@ export function Register(props) {
           return;
 
         var span = document.querySelector(
-          `.separated-label-wrapper > #${input.id} + span`
+          `.label-above-wrapper > #${input.id} + span`
         );
         if (!valid) {
           if (input.value.length > 0)

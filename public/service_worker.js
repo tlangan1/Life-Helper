@@ -222,8 +222,7 @@ async function obtainPushSubscription() {
     );
     const options = { applicationServerKey, userVisibleOnly: true };
     const subscription = await self.registration.pushManager.subscribe(options);
-    subscription.domain = backendURL;
-    logToConsole("Before calling saveSubscription");
+
     const response = await saveSubscription(subscription);
     logToConsole(response);
   } catch (err) {
@@ -248,7 +247,7 @@ const urlB64ToUint8Array = (base64String) => {
 
 // saveSubscription saves the subscription to the backend
 const saveSubscription = async (subscription) => {
-  const SERVER_URL = `${subscription.domain}/add/web_push_subscription`;
+  const SERVER_URL = `${backendURL}/add/web_push_subscription`;
   logToConsole(
     `Before fetch call to save the web push subscription: SERVER_URL is ${SERVER_URL}`
   );

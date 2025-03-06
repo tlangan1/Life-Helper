@@ -5,7 +5,7 @@ import { affectItem } from "./JS/helperFunctions";
 import { useGlobalState } from "./GlobalStateProvider";
 
 export function Login(props) {
-  var { setLoggedIn, setUser, passwordPattern, dataServer } = useGlobalState();
+  var { setUser, passwordPattern, dataServer } = useGlobalState();
   var [passwordVisible, setPasswordVisible] = createSignal(false);
 
   return (
@@ -18,7 +18,7 @@ export function Login(props) {
       </h2>
 
       <form id="formLogin">
-        <fieldset>
+        <div class="register_login">
           <div class="form-control-wrapper">
             <div class="embedded-label-wrapper">
               <input
@@ -59,7 +59,7 @@ export function Login(props) {
               </span>
             </div>
           </div>
-        </fieldset>
+        </div>
       </form>
       <button
         class="action-button"
@@ -86,12 +86,10 @@ export function Login(props) {
       dataServer
     );
 
-    // TODO: Enhance this code.
     if (returnedData.success) {
-      setLoggedIn(true);
       setUser(returnedData);
-      //   history.pushState({}, "", "./");
     } else {
+      // TODO: Enhance this code. Use the DOM to display the error message.
       alert("Login failed. Please try again.");
     }
   }

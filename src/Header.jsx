@@ -1,11 +1,11 @@
 /** @jsxImportSource solid-js */
 import { useGlobalState } from "./GlobalStateProvider";
-import { createSignal, Show } from "solid-js";
+import { createSignal } from "solid-js";
 import { AccountMenu } from "./AccountMenu";
+import { OptionsMenu } from "./OptionsMenu";
 
 export function Header(props) {
   var { user, setItemType, dataServer } = useGlobalState();
-  var [accountMenu, setAccountMenu] = createSignal(false);
   var [isProduction, setIsProduction] = createSignal(false);
   fetchIsProduction();
   return (
@@ -15,36 +15,22 @@ export function Header(props) {
           "not-production": !isProduction(),
         }}
       >
-        <nav
-          classList={{
-            "nav-using-flex": true,
-          }}
-        >
-          <a
-            class="navlink"
-            id="linkHome"
-            onClick={() => setItemType("objective")}
-            href="/"
-          >
-            <img src="/home.svg" />{" "}
+        <nav class="nav-using-flex">
+          <a class="navlink" onClick={() => setItemType("objective")} href="/">
+            <img src="/home.svg" />
+            <span>Life Helper</span>
           </a>
-          <h1>
+          <div class="menu-container">
             <a class="navlink" href="/filters">
-              Filters
+              <span>Options</span>
             </a>
-          </h1>
-          <div>
-            <a
-              class="navlink"
-              id="linkAccount"
-              href="/account"
-              onPointerEnter={() => setAccountMenu(true)}
-            >
-              <img src="/account.svg" /> {user().display_name}
+            <OptionsMenu />
+          </div>
+          <div class="menu-container">
+            <a class="navlink" href="/account">
+              <img src="/account.svg" /> <span>{user().display_name}</span>
             </a>
-            <Show when={accountMenu()}>
-              <AccountMenu setAccountMenu={setAccountMenu} />
-            </Show>
+            <AccountMenu />
           </div>
         </nav>
       </header>

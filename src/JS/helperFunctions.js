@@ -96,3 +96,27 @@ export async function affectItem(affectType, itemType, data, dataServer, user) {
     return { success: false };
   }
 }
+
+/* *** Preliminary Context Menu Stuff *** */
+export function setupContextMenu() {
+  document.onclick = hideMenu;
+  document.oncontextmenu = rightClick;
+
+  function hideMenu() {
+    document.getElementById("contextMenu").classList.add("hide");
+  }
+
+  function rightClick(e) {
+    e.preventDefault();
+
+    if (!document.getElementById("contextMenu").classList.contains("hide"))
+      hideMenu();
+    else {
+      let menu = document.getElementById("contextMenu");
+
+      document.getElementById("contextMenu").classList.remove("hide");
+      menu.style.left = e.pageX + "px";
+      menu.style.top = e.pageY + "px";
+    }
+  }
+}

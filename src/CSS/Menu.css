@@ -1,0 +1,15 @@
+.menu {
+  display: none;
+}
+
+.menu-container:hover > .menu {
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  gap: 1rem;
+  flex-direction: column;
+  border: solid;
+  padding: 1rem;
+  background-color: var(--popup-background-color);
+  z-index: 1;
+}
