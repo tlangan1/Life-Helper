@@ -1,13 +1,17 @@
 /** @jsxImportSource solid-js */
 import { useGlobalState } from "./GlobalStateProvider";
-import { createSignal } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
 import { AccountMenu } from "./AccountMenu";
 import { OptionsMenu } from "./OptionsMenu";
 
 export function Header(props) {
-  var { user, setItemType, dataServer } = useGlobalState();
-  var [isProduction, setIsProduction] = createSignal(false);
-  fetchIsProduction();
+  //   var { user, setItemType, isProduction, dataServer } = useGlobalState();
+  var { user, setItemType, dataSource } = useGlobalState();
+  var [isProduction, setIsProduction] = createSignal();
+  createEffect(() =>
+    setIsProduction(dataSource() == "life_helper" ? true : false)
+  );
+
   return (
     <>
       <header
@@ -37,18 +41,4 @@ export function Header(props) {
       {props.children}
     </>
   );
-
-  async function fetchIsProduction() {
-    var response = await fetch(
-      dataServer + `/isProduction` // *** The route to check if the server is in production
-    );
-    if (!response.ok) {
-      alert(
-        `Server Error: status is ${response.status} reason is ${response.statusText}`
-      );
-    } else {
-      var data = await response.json();
-      setIsProduction(data.isProduction);
-    }
-  }
 }

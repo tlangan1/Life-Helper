@@ -1,9 +1,15 @@
 /** @jsxImportSource solid-js */
-import { createSignal, createContext, useContext } from "solid-js";
+import {
+  createSignal,
+  createContext,
+  useContext,
+  createEffect,
+} from "solid-js";
 
 const GlobalStateContext = createContext();
 
 export function GlobalStateProvider(props) {
+  var dataServer = "https://192.168.1.10:3001";
   var [user, setUser] = createSignal({});
   var [itemType, setItemType] = createSignal("objective");
   // *** refreshData is a signal that is used to initiate a data refresh
@@ -30,6 +36,10 @@ export function GlobalStateProvider(props) {
 
   var [itemsView, setItemsView] = createSignal("");
 
+  fetchDataSource();
+
+  var [dataSource, setDataSource] = createSignal("life_helper");
+
   const globalState = {
     user: user,
     setUser: setUser,
@@ -42,10 +52,10 @@ export function GlobalStateProvider(props) {
     setParent: setParent,
     setItemType: setItemType,
     refreshData: refreshData,
-    toggleRefreshData: function toggleRefreshData() {
-      setRefreshData((refreshData() + 1) % 2);
-    },
-    dataServer: "https://192.168.1.10:3001",
+    toggleRefreshData: toggleRefreshData,
+    dataServer: dataServer,
+    dataSource: dataSource,
+    setDataSource: setDataSource,
     filters: filters,
     setFilters: setFilters,
     mode: "dev",
@@ -61,6 +71,25 @@ export function GlobalStateProvider(props) {
       {props.children}
     </GlobalStateContext.Provider>
   );
+  /* *** Helper functions *** */
+
+  function toggleRefreshData() {
+    setRefreshData((refreshData() + 1) % 2);
+  }
+
+  async function fetchDataSource() {
+    var response = await fetch(
+      dataServer + `/data_source` // *** The route to check if the server is in production
+    );
+    if (!response.ok) {
+      alert(
+        `Server Error: status is ${response.status} reason is ${response.statusText}`
+      );
+    } else {
+      var data = await response.json();
+      setDataSource(data.dataSource);
+    }
+  }
 }
 
 export function useGlobalState() {

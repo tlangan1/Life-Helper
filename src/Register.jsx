@@ -5,6 +5,14 @@ import { useGlobalState } from "./GlobalStateProvider";
 import { useNavigate } from "@solidjs/router";
 
 export function Register(props) {
+  var registerUserNameControlGroup;
+  var registerPasswordControlGroup;
+  var registerFullName;
+  var registerDisplayName;
+  var registerEmailAddress;
+  var registerUserName;
+  var registerPassword;
+  var registerPasswordConfirmation;
   var [step, setStep] = createSignal("user name creation");
   var { passwordPattern, dataServer } = useGlobalState();
   var [userFieldsValid, setUserFieldsValid] = createSignal({});
@@ -29,12 +37,11 @@ export function Register(props) {
   // until the fields are rendered.
   // *** ************************************************* ***
   onMount(() => {
-    initFieldSetValidator("register_user_name_creation", setUserFieldsValid);
-    initFieldSetValidator("register_password_creation", setPwdFieldsValid);
-    function initFieldSetValidator(fieldsetID, setter) {
+    initControlGroupValidator(registerUserNameControlGroup, setUserFieldsValid);
+    initControlGroupValidator(registerPasswordControlGroup, setPwdFieldsValid);
+    function initControlGroupValidator(controlGroupRef, setter) {
       var validityObject = {};
-      var fieldset = document.getElementById(fieldsetID);
-      var inputs = fieldset.querySelectorAll("input");
+      var inputs = controlGroupRef.querySelectorAll("input");
       inputs.forEach((input) => {
         validityObject[input.id] = input.checkValidity();
       });
@@ -48,19 +55,19 @@ export function Register(props) {
 
       <form id="formRegister">
         <div
-          id="register_user_name_creation"
+          ref={registerUserNameControlGroup}
           classList={{
             hidden: step() != "user name creation",
             register_login: true,
           }}
         >
           <div class="form-control-wrapper">
-            {/* <label for="register_full_name" data-default_value="Full Name"> */}
             <label for="register_full_name">
               Full Name (10-100 characters)
             </label>
             <div class="label-above-wrapper">
               <input
+                ref={registerFullName}
                 id="register_full_name"
                 required
                 type="text"
@@ -80,6 +87,7 @@ export function Register(props) {
             </label>
             <div class="label-above-wrapper">
               <input
+                ref={registerDisplayName}
                 id="register_display_name"
                 required
                 type="text"
@@ -97,6 +105,7 @@ export function Register(props) {
             <label for="register_email_address">Email Address</label>
             <div class="label-above-wrapper">
               <input
+                ref={registerEmailAddress}
                 id="register_email_address"
                 type="text"
                 autocomplete="email"
@@ -114,10 +123,13 @@ export function Register(props) {
             <label for="register_user_name">
               User Name or Email (10-30 characters)
             </label>
-            {/* If you use this label it will not suggest an email address */}
+            {/* If you use this label the browser will not suggest an email address */}
+            {/* It turns out that the mere presence of the work "Email" in the label */}
+            {/* text is enough to elicit this behavior in thr browser */}
             {/* <label for="register_user_name">User Name</label> */}
             <div class="label-above-wrapper">
               <input
+                ref={registerUserName}
                 id="register_user_name"
                 required
                 type="text"
@@ -140,7 +152,7 @@ export function Register(props) {
           </button>
         </div>
         <div
-          id="register_password_creation"
+          ref={registerPasswordControlGroup}
           classList={{
             hidden: step() == "user name creation",
             register_login: true,
@@ -149,6 +161,7 @@ export function Register(props) {
           <div class="form-control-wrapper">
             <div class="embedded-label-wrapper">
               <input
+                ref={registerPassword}
                 id="register_password"
                 required
                 type={passwordVisible() ? "text" : "password"}
@@ -189,6 +202,7 @@ export function Register(props) {
           <div class="form-control-wrapper">
             <div class="embedded-label-wrapper">
               <input
+                ref={registerPasswordConfirmation}
                 id="register_password_confirmation"
                 required
                 type={passwordVisible() ? "text" : "password"}
@@ -253,11 +267,11 @@ export function Register(props) {
     // *** ************************************************* ***
 
     var sentData = {
-      user_name: document.getElementById("register_user_name").value,
-      password: document.getElementById("register_password").value,
-      full_name: document.getElementById("register_full_name").value,
-      display_name: document.getElementById("register_display_name").value,
-      email_address: document.getElementById("register_email_address").value,
+      user_name: registerUserName.value,
+      password: registerPassword.value,
+      full_name: registerFullName.value,
+      display_name: registerDisplayName.value,
+      email_address: registerEmailAddress.value,
     };
 
     var returnedData = await affectItem(
@@ -291,7 +305,7 @@ export function Register(props) {
     // *** Helper functions for this function
     function formatInputFeedback(input) {
       formatPasswordFeedback(input);
-      checkPasswordsMatch();
+      checkPasswordsMatch(registerPassword, registerPasswordConfirmation);
 
       // *** Helper functions for this function
       function formatPasswordFeedback(input) {
@@ -314,10 +328,10 @@ export function Register(props) {
     }
   }
 
-  function checkPasswordsMatch() {
-    if (document.getElementById("register_password")) {
+  function checkPasswordsMatch(password, confirmation) {
+    if (password) {
       var passwordMatch;
-      if (document.getElementById("register_password_confirmation").value == "")
+      if (confirmation.value == "")
         passwordMatch = {
           passwordMismatchClass: "error-message",
           passwordMismatchMessage: "",
@@ -325,13 +339,11 @@ export function Register(props) {
       else {
         passwordMatch = {
           passwordMismatchClass:
-            document.getElementById("register_password").value ===
-            document.getElementById("register_password_confirmation").value
+            password.value === confirmation.value
               ? "success-message"
               : "error-message",
           passwordMismatchMessage:
-            document.getElementById("register_password").value ===
-            document.getElementById("register_password_confirmation").value
+            password.value === confirmation.value
               ? "Passwords match!"
               : "Passwords do not match.",
         };

@@ -24,7 +24,7 @@ export function ProjectItemDetail(props) {
                   "start",
                   itemType(),
                   {
-                    task_id: props.item().item_id,
+                    item_id: props.item().item_id,
                     user_login_id: user().user_login_id,
                   },
                   dataServer
@@ -42,7 +42,7 @@ export function ProjectItemDetail(props) {
                   event.target,
                   "pause",
                   itemType(),
-                  { task_id: props.item().item_id },
+                  { item_id: props.item().item_id },
                   dataServer
                 )
               }
@@ -62,7 +62,7 @@ export function ProjectItemDetail(props) {
                   event.target,
                   "complete",
                   itemType(),
-                  { task_id: props.item().item_id },
+                  { item_id: props.item().item_id },
                   dataServer
                 )
               }

@@ -150,3 +150,7 @@ button.action-button:hover:not(:disabled) {
 .item-list-container footer {
   align-self: start;
 }
+
+.max-paragraph-width {
+  max-width: 300px;
+}
