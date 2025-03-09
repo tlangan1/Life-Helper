@@ -3,15 +3,17 @@ import { reformatMySQLDate } from "./JS/helperFunctions";
 
 import "./CSS/Input_Controls.css";
 
+import { sendMessage, registerServiceWorker } from "./JS/index.js";
+
 export function AccountForm() {
-  var { user } = useGlobalState();
+  var { user, dataServer } = useGlobalState();
 
   return (
     <>
       <h1>Account</h1>
       <div class="label-left-wrapper">
         <div class="control">
-          <label for="name">Full Name</label>
+          <label for="full_name">Full Name</label>
           <input
             type="text"
             name="full_name"
@@ -20,7 +22,7 @@ export function AccountForm() {
           />
         </div>
         <div class="control">
-          <label for="name">Display Name</label>
+          <label for="display_name">Display Name</label>
           <input
             type="text"
             name="display_name"
@@ -50,8 +52,8 @@ export function AccountForm() {
           class="action-button web-push-subscription-button"
           onClick={(e) =>
             registerServiceWorker({
-              type: "Backend Server URL",
-              backend_server_url: dataServer,
+              type: "Data Server URL",
+              dataServer: dataServer,
             })
           }
           disabled={navigator.serviceWorker.controller}

@@ -71,8 +71,6 @@ navigator.serviceWorker.addEventListener("message", (event) => {
     logToConsole(
       "The service worker is notifying the page that it is activated."
     );
-    document.title = "Activated";
-    document.querySelector(".web-push-subscription-button").disabled = true;
   }
 });
 

@@ -3,7 +3,7 @@
 const version = 1.76;
 var cachePrefix = "life-helper";
 var cacheName = `${cachePrefix}-${version}`;
-var backendURL;
+var dataServer;
 
 // *** Service Worker Event Listeners ***
 
@@ -62,8 +62,8 @@ async function onMessage(event) {
         event.source.url.length - 6
       )}`
     );
-    if (event.data.message.type == "Backend Server URL") {
-      backendURL = event.data.message.backend_server_url;
+    if (event.data.message.type == "Data Server URL") {
+      dataServer = event.data.message.dataServer;
       obtainPushSubscription();
     }
   }
@@ -247,11 +247,11 @@ const urlB64ToUint8Array = (base64String) => {
 
 // saveSubscription saves the subscription to the backend
 const saveSubscription = async (subscription) => {
-  const SERVER_URL = `${backendURL}/add/web_push_subscription`;
+  const DATA_SERVER_URL = `${dataServer}/add/web_push_subscription`;
   logToConsole(
-    `Before fetch call to save the web push subscription: SERVER_URL is ${SERVER_URL}`
+    `Before fetch call to save the web push subscription: SERVER_URL is ${DATA_SERVER_URL}`
   );
-  const response = await fetch(SERVER_URL, {
+  const response = await fetch(DATA_SERVER_URL, {
     method: "post",
     headers: {
       "Content-Type": "application/json",

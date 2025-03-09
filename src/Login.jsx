@@ -5,6 +5,8 @@ import { affectItem } from "./JS/helperFunctions";
 import { useGlobalState } from "./GlobalStateProvider";
 
 export function Login(props) {
+  var loginUserID;
+  var loginPassword;
   var { setUser, passwordPattern, dataServer } = useGlobalState();
   var [passwordVisible, setPasswordVisible] = createSignal(false);
 
@@ -22,6 +24,7 @@ export function Login(props) {
           <div class="form-control-wrapper">
             <div class="embedded-label-wrapper">
               <input
+                ref={loginUserID}
                 id="login_user_id"
                 required
                 type="text"
@@ -38,6 +41,7 @@ export function Login(props) {
           <div class="form-control-wrapper">
             <div class="embedded-label-wrapper">
               <input
+                ref={loginPassword}
                 id="login_password"
                 required
                 type={passwordVisible() ? "text" : "password"}
@@ -75,8 +79,8 @@ export function Login(props) {
   // *** Helper functions for the code above
   async function affectItemCaller(operation, itemType, dataServer) {
     var sentData = {
-      user_name: document.getElementById("login_user_id").value,
-      password: document.getElementById("login_password").value,
+      user_name: loginUserID.value,
+      password: loginPassword.value,
     };
 
     var returnedData = await affectItem(

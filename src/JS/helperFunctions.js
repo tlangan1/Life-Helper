@@ -103,7 +103,8 @@ export function setupContextMenu() {
   document.oncontextmenu = rightClick;
 
   function hideMenu() {
-    document.getElementById("contextMenu").classList.add("hide");
+    if (document.getElementById("contextMenu"))
+      document.getElementById("contextMenu").classList.add("hide");
   }
 
   function rightClick(e) {
