@@ -156,11 +156,11 @@ export function AddItem(props) {
   //     }
   //   }
 
-  async function affectItemCaller(operation, itemType, sentData, dataServer) {
+  async function affectItemCaller(action, itemType, sentData, dataServer) {
     toggleSavingItem();
     try {
       var returnedData = await affectItem(
-        operation,
+        action,
         itemType,
         sentData,
         dataServer

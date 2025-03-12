@@ -40,7 +40,7 @@ export function ProjectItemDetail(props) {
               onClick={(event) =>
                 affectItemCaller(
                   event.target,
-                  "pause",
+                  event.target.checked ? "pause" : "resume",
                   itemType(),
                   { item_id: props.item().item_id },
                   dataServer
@@ -161,13 +161,14 @@ export function ProjectItemDetail(props) {
 
   async function affectItemCaller(
     target,
-    operation,
+    updateType,
     itemType,
     sentData,
     dataServer
   ) {
+    sentData.update_type = updateType;
     var returnedData = await affectItem(
-      operation,
+      "update",
       itemType,
       sentData,
       dataServer,
@@ -177,7 +178,7 @@ export function ProjectItemDetail(props) {
     // Return the success or failure of the update operation.
     // If successful, fetch the item and update the item signal.
     if (returnedData.success) {
-      if (fullRefreshRequired(operation, filters)) {
+      if (fullRefreshRequired(updateType, filters)) {
         toggleRefreshData();
       } else {
         var updatedItem = await fetchItemDetails();

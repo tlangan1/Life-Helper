@@ -251,7 +251,7 @@ export function Register(props) {
   );
 
   // *** Helper functions for the code above
-  async function affectItemCaller(operation, itemType, dataServer) {
+  async function affectItemCaller(action, itemType, dataServer) {
     // *** ************************************************* ***
     // *** This is crucially important to prevent the form from
     // *** being submitted and the page from being reloaded.
@@ -274,12 +274,7 @@ export function Register(props) {
       email_address: registerEmailAddress.value,
     };
 
-    var returnedData = await affectItem(
-      operation,
-      itemType,
-      sentData,
-      dataServer
-    );
+    var returnedData = await affectItem(action, itemType, sentData, dataServer);
     console.log("After affectItem Call");
     // TODO: replace the alert with a more user-friendly message
     // in the DOM, not an alert.

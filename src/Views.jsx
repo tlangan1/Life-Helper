@@ -44,9 +44,4 @@ export function Views(props) {
       'input[name="view-type"]:checked'
     ).value;
   }
-
-  // TODO
-  // write a function that takes the event object passed to the function
-  // that is assigned to onChange and sets the selectedView signal to the
-  // value of the input element that is checked.
 }

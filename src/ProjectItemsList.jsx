@@ -11,7 +11,8 @@ import {
 export function ProjectItemsList(props) {
   // *** The SolidJS resource items is used to store the objectives, goals or tasks
   // *** retrieved from the server depending on the context.
-  var { itemType, refreshData, dataServer, filters, user } = useGlobalState();
+  var { itemType, setItemType, refreshData, dataServer, filters, user } =
+    useGlobalState();
   const [items, { mutate, refetch }] = createResource(refreshData, fetchItems);
 
   logToConsole(`In ProjectItemsList rendering items of type '${itemType()}'`);
@@ -74,6 +75,7 @@ export function ProjectItemsList(props) {
     if (props.viewType == "my-tasks-view") {
       searchParams.assigned_to = user().user_login_id;
       searchParams.view = props.viewType;
+      setItemType("task");
     } else {
       if (filters().assigned_to_me) {
         searchParams.assigned_to = user().user_login_id;

@@ -1,15 +1,5 @@
 "use strict";
 
-var affectTypes = new Set([
-  "add",
-  "pause",
-  "start",
-  "complete",
-  "cancel_delete",
-  "update",
-  "check",
-]);
-
 export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -49,14 +39,13 @@ export function childItemType(parentType) {
   else return "task";
 }
 
-export async function affectItem(affectType, itemType, data, dataServer, user) {
+export async function affectItem(action, itemType, data, dataServer, user) {
   var endPoint;
 
   try {
-    if (!affectTypes.has(affectType)) {
-      return { success: false };
-    }
-    endPoint = `/${affectType}/${itemType}`;
+    endPoint = `/${action}/${itemType}`;
+
+    if (user) data.user_login_id = user().user_login_id;
 
     // request options
     const options = {

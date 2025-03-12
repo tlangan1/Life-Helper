@@ -93,11 +93,11 @@ export function AddNote(props) {
     setSavingNote(!savingNote());
   }
 
-  async function affectItemCaller(operation, itemType, sentData, dataServer) {
+  async function affectItemCaller(action, itemType, sentData, dataServer) {
     toggleSavingNote();
     try {
       var returnedData = await affectItem(
-        operation,
+        action,
         itemType,
         sentData,
         dataServer
