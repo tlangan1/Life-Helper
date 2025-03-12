@@ -133,57 +133,65 @@
 
 ### Associate users with tasks
 
-- Before I go any farther I need to know what gets stored in he database for authentication methods other than conventional user_name/password.
+- Before I go any farther I need to know what gets stored in the database for authentication methods other than conventional user_name/password.
   - Continue with the tutorial.
 - Backup the database before implementing these changes.
 - Schema changes required to accomplish the following enhancements
 
-  - Change the following column name everywhere
-    - create_dtm to created_dtm
-    - Implement the test_life_helper database upgrade and testing strategy for just this change
-    - At this point I am installing vitest in this project.
-  - Add the following columns to the task table
-    - created_user
-    - completed_user
-    - deleted_user
   - Create the work_log table with the following columns
-    - work_log_id auto-increment
-    - user_identifier varchar(100)...we need to accommodate the pass key and other identifiers
-    - task_id
-    - started_work_dtm
-    - ended_work_dtm
-    - elapsed_time_in_minutes
-  - Add foreign key relationships from task to user for
-    - created_user
-    - completed_user
-    - deleted_user
-    - remember to update p_add_all_foreign_keys
-  - Add foreign key relationships from work_log to user for
-    - user_name
-  - Add foreign key relationships from work_log to task for
-    - task_id
+
+    - Columns:
+      - work_log_id auto-increment
+      - task_id
+      - user_login_id
+      - started_work_dtm
+      - stopped_work_dtm
+      - created_dtm
+      - last_update_dtm
+    - Add this entity to the load_table_creation_sps.sh script
+    - Foreign Keys:
+      - Add a foreign key relationship from work_log to user for user_login_id
+      - Add a foreign key relationship from work_log to task for task_id
+      - Add these foreign keys to p_add_all_foreign_keys stored procedure
+      - Add these foreign keys to load_foreign_keys_sps.sh script
+    - Enhance the following stored procedures
+      - p_start_task
+      - p_cancel_delete_item
+      - p_update_item
+    - Perhaps create a view which calculates the elapsed_time for each entry
+    - Actions
+      - Task Starting:
+        - A row should be inserted into the `work log` entity memorializing the started_dtm, or now(), into a started_work_dtm column and null into the ended_work_dtm column.
+      - Task Pausing:
+        - When a user pauses a task the row with a null paused_dtm associated with this task should be updated with the paused_dtm value.
+      - Task Resume:
+        - A row should be inserted into `work log` entity memorializing the now() into a started_work_dtm column and null into the ended_work_dtm column.
+      - Task Completion:
+        - When a user completes a task the row with a null paused_dtm associated with this task should be updated with the completed_dtm, or now(), value.
+      - Task Cancellation/Deletion:
+        - When a user cancel/deletes a task the row with a null paused_dtm associated with this task, IF ONE EXISTS, should be updated with the delete_dtm, or now(), value.
+
+- Add the following columns to the task table
+  - creating_user
+  - completing_user
+  - deleting_user
+  - Add foreign key relationships from task to user for these new columns
   - Enhance the following stored procedures
     - p_add_task
-    - p_cancel_delete_item
-    - p_update_item
     - p_migrate_task
     - p_create_task
+    - p_start_task
+    - p_cancel_delete_item
+    - p_update_item
+    - p_attach_item
     - p_task_and_goal_trigger_test_1
     - p_task_and_goal_trigger_test_2
     - trigger_task_update
-
-- Task Creation:
-  - When a user creates a task the user_name of that user should be put into the created_user column.
-- Task Starting:
-  - When a user starts a task the user_name of that user should be put into the started_user column.
-  - A row should be inserted into the `work log` entity memorializing the started_dtm, or now(), into a started_work_dtm column and null into the ended_work_dtm column.
-- Task Pausing:
-  - When a user pauses a task the row with a null paused_dtm associated with this task should be updated with the paused_dtm value.
-- Task Un-Pausing:
-  - A row should be inserted into `work log` entity memorializing the now() into a started_work_dtm column and null into the ended_work_dtm column.
-- Task Completion:
-  - When a user completes a task the user_name of that user should be put into the completed_user column.
-  - When a user completes a task the row with a null paused_dtm associated with this task, IF ONE EXISTS, should be updated with the completed_dtm, or now(), value.
-- Task Cancellation/Deletion:
-  - When a user cancel/deletes a task the user_name of that user should be put into the delete_user column.
-  - When a user cancel/deletes a task the row with a null paused_dtm associated with this task, IF ONE EXISTS, should be updated with the delete_dtm, or now(), value.
+    - p_add_all_foreign_keys
+  - Actions
+    - Task Creation:
+      - When a user creates a task the user_name of that user should be put into the creating_user column.
+    - Task Completion:
+      - When a user completes a task the user_name of that user should be put into the completing_user column.
+    - Task Cancellation/Deletion:
+      - When a user cancel/deletes a task the user_name of that user should be put into the deleting_user column.

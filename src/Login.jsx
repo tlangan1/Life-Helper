@@ -77,18 +77,13 @@ export function Login(props) {
   );
 
   // *** Helper functions for the code above
-  async function affectItemCaller(operation, itemType, dataServer) {
+  async function affectItemCaller(action, itemType, dataServer) {
     var sentData = {
       user_name: loginUserID.value,
       password: loginPassword.value,
     };
 
-    var returnedData = await affectItem(
-      operation,
-      itemType,
-      sentData,
-      dataServer
-    );
+    var returnedData = await affectItem(action, itemType, sentData, dataServer);
 
     if (returnedData.success) {
       setUser(returnedData);
