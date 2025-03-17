@@ -39,6 +39,27 @@ export function childItemType(parentType) {
   else return "task";
 }
 
+export async function login(sentData, setUser, dataServer) {
+  //   var sentData = {
+  //     user_name: loginUserID.value,
+  //     password: loginPassword.value,
+  //   };
+
+  var returnedData = await affectItem(
+    "check",
+    "user_login",
+    sentData,
+    dataServer
+  );
+
+  if (returnedData.success) {
+    setUser(returnedData);
+  } else {
+    // TODO: Enhance this code. Use the DOM to display the error message.
+    alert("Login failed. Please try again.");
+  }
+}
+
 export async function affectItem(action, itemType, data, dataServer, user) {
   var endPoint;
 
@@ -105,8 +126,13 @@ export function setupContextMenu() {
       let menu = document.getElementById("contextMenu");
 
       document.getElementById("contextMenu").classList.remove("hide");
-      menu.style.left = e.pageX + "px";
-      menu.style.top = e.pageY + "px";
+      // These are the coordinates of the mouse click.
+      // which can be used if the menu is absolute relative to the window
+      //   menu.style.left = e.pageX + "px";
+      //   menu.style.top = e.pageY + "px";
+      // If the menu is relative to the parent element, use these coordinates
+      menu.style.left = e.offsetX + "px";
+      menu.style.top = e.offsetY + "px";
     }
   }
 }

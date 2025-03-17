@@ -1,4 +1,5 @@
 {
   "workbench.colorTheme": "Hop Light",
-  "cSpell.words": ["navlink", "unstart"]
+  "cSpell.words": ["navlink", "unstart"],
+  "liveServer.settings.port": 3005
 }

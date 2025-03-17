@@ -16,7 +16,7 @@ export function NoteList(props) {
       {notes.state == "ready" && (
         <ol reversed>
           <For each={notes()}>
-            {(note) => <li class="note">{note.note}</li>}
+            {(note) => <li class="note" innerHTML={note.note}></li>}
           </For>
         </ol>
       )}

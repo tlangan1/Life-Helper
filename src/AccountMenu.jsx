@@ -10,7 +10,8 @@ export function AccountMenu(props) {
       <a
         onClick={() => {
           setUser({});
-          setFilters(delete filters().assigned_to_me);
+          filters().assigned_to_me = false;
+          setFilters(new Object(filters()));
         }}
         href="/"
       >

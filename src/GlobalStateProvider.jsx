@@ -32,6 +32,7 @@ export function GlobalStateProvider(props) {
     completed_items: "no",
     started_items: "either",
     deleted_items: "no",
+    assigned_to_me: false,
   });
 
   var [itemsView, setItemsView] = createSignal("");
