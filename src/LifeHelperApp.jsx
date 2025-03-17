@@ -14,10 +14,11 @@ import { WebPushList } from "./WebPushList";
 
 import "./CSS/context-menu.css";
 
-import { setupContextMenu } from "./JS/helperFunctions";
+import { login, setupContextMenu } from "./JS/helperFunctions";
 
 export function LifeHelperApp(props) {
-  setupContextMenu();
+  //   setupContextMenu();
+  requestCredentials();
   var {
     itemType,
     setItemType,
@@ -25,6 +26,8 @@ export function LifeHelperApp(props) {
     setParent,
     toggleRefreshData,
     setItemsView,
+    setUser,
+    dataServer,
   } = useGlobalState();
 
   var { viewType } = useParams();
@@ -67,7 +70,7 @@ export function LifeHelperApp(props) {
         viewType={viewType}
       />
       <WebPushList />
-      <div id="contextMenu" classList={{ "context-menu": true, hide: true }}>
+      {/* <div id="contextMenu" classList={{ "context-menu": true, hide: true }}>
         <ul>
           <li>
             <a href="#">Production (life-helper DB)</a>
@@ -76,7 +79,7 @@ export function LifeHelperApp(props) {
             <a href="#">Development (test-life-helper DB)</a>
           </li>
         </ul>
-      </div>
+      </div> */}
     </section>
   );
 
@@ -127,6 +130,31 @@ export function LifeHelperApp(props) {
         default:
           setPageTitle("Unknown Page Item");
       }
+    }
+  }
+
+  function requestCredentials() {
+    if (navigator.credentials) {
+      navigator.credentials
+        .get({ password: true /*, mediation: "silent" */ })
+        .then((credentials) => {
+          if (credentials) {
+            console.log("Auto login with credentials", credentials);
+            // Use the credentials to log the user in
+            // export async function login(action, itemType, sentData, setUser, dataServer) {
+            login(
+              {
+                user_name: credentials.id,
+                password: credentials.password,
+              },
+              setUser,
+              dataServer
+            );
+          }
+        })
+        .catch((err) => {
+          console.error("Could not retrieve credentials", err);
+        });
     }
   }
 }

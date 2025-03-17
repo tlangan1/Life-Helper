@@ -15,3 +15,10 @@
   content: "✔";
   color: green;
 }
+
+.label-with-hint {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}

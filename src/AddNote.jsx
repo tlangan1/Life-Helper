@@ -1,6 +1,6 @@
 import "./CSS/AddNote.css";
 
-import { createEffect, createSignal } from "solid-js";
+import { createEffect, createSignal, onMount } from "solid-js";
 import { Show } from "solid-js/web";
 
 import { useGlobalState } from "./GlobalStateProvider";
@@ -9,6 +9,8 @@ import { affectItem } from "./JS/helperFunctions";
 
 export function AddNote(props) {
   var noteText;
+  var hint;
+
   var [addingNote, setAddingNote] = createSignal(false);
   var [savingNote, setSavingNote] = createSignal(false);
   var { loggedIn, dataServer, itemType } = useGlobalState();
@@ -18,6 +20,33 @@ export function AddNote(props) {
   var [noteLength, setNoteLength] = createSignal(0);
   var minTextLength = 15;
   var maxTextLength = 1000;
+
+  var [showHint, setShowHint] = createSignal(false);
+
+  var range, start, end;
+
+  document.addEventListener("selectionchange", (event) => {
+    console.log(
+      "Input control selected text: ",
+      window.getSelection().toString()
+    );
+    range = window.getSelection().getRangeAt(0);
+    console.log(window.getSelection().getRangeAt(0).toString());
+    start = window.getSelection().getRangeAt(0).startOffset;
+    end = window.getSelection().getRangeAt(0).endOffset;
+    console.log(`Selected range starts at ${start} and ends at ${end - 1}`);
+    console.log(
+      `The parent element is ${
+        window.getSelection().focusNode.parentElement.id
+      }`
+    );
+  });
+
+  createEffect(() => {
+    if (addingNote()) {
+      addPasteOption();
+    }
+  });
 
   return (
     <>
@@ -33,21 +62,39 @@ export function AddNote(props) {
       </div>
       <Show when={addingNote()}>
         <dialog class="popup">
-          <label htmlFor="note_text" class="block">
-            Note Text (Required):
-          </label>
-          <textarea
+          <div class="label-with-hint">
+            <label htmlFor="note_text" class="block">
+              Note Text (Required):
+            </label>
+            <img
+              ref={hint}
+              src="lightbulb.svg"
+              title="Highlight, right-mouse click and paste to insert hyperlink"
+              onClick={() => setShowHint(!showHint())}
+              alt="Hint"
+            ></img>
+          </div>
+          <div
             ref={noteText}
             name="note_text"
             id="note_text"
+            class="text-area-like"
             required
             autofocus
             minLength={minTextLength}
             maxLength={maxTextLength}
-            onKeyUp={(e) => setNoteLength(e.target.value.length)}
-            rows="5"
-            cols="50"
-          ></textarea>
+            onKeyUp={(e) => setNoteLength(e.target.innerText.length)}
+            contentEditable="true"
+          >
+            {/* <div contentEditable="false">
+              <a
+                href="https://mermaid.js.org/syntax/entityRelationshipDiagram.html"
+                target="_blank"
+              >
+                ERDs
+              </a>
+            </div> */}
+          </div>
           <span class="block">
             {noteLength() < minTextLength
               ? `${minTextLength - noteLength()} more characters required`
@@ -63,7 +110,7 @@ export function AddNote(props) {
                   {
                     item_type: itemType(),
                     parent_id: props.item().item_id,
-                    note_text: noteText.value,
+                    note_text: noteText.innerHTML,
                   },
                   dataServer
                 );
@@ -75,11 +122,69 @@ export function AddNote(props) {
             <button class="action-button" onClick={toggleAddingNote}>
               Cancel
             </button>
+            <Show when={showHint()}>
+              <div class="hint">
+                Highlight, right-mouse click and paste to insert hyperlink
+              </div>
+            </Show>
           </div>
         </dialog>
       </Show>
     </>
   );
+
+  function addPasteOption() {
+    document.getElementById("note_text").addEventListener("paste", (event) => {
+      event.preventDefault();
+      //   var stuff = navigator.clipboard.readText();
+      //   navigator.clipboard
+      //     .readText()
+      //     .then((clipText) => doPaste(clipText, event));
+      //   navigator.clipboard.readText().then((clipText) => console.log(clipText));
+      navigator.clipboard.readText().then((clipText) => {
+        console.log(clipText);
+        doPaste(clipText, event);
+      });
+      if (window.getSelection().toString()) {
+        let paste = (event.clipboardData || window.clipboardData).getData(
+          "text"
+        );
+        doPaste(paste, event);
+      }
+
+      function isValidHttpUrl(string) {
+        let url;
+
+        try {
+          url = new URL(string);
+        } catch (_) {
+          return false;
+        }
+
+        return url.protocol === "http:" || url.protocol === "https:";
+      }
+
+      function doPaste(paste, event) {
+        if (isValidHttpUrl(paste)) {
+          var span = document.createElement("span");
+          span.setAttribute("contenteditable", "false");
+          var a = document.createElement("a");
+          a.href = paste;
+          a.title = paste;
+          a.target = "_blank";
+          a.innerText = "frog";
+          range.surroundContents(a);
+          range.surroundContents(span);
+          //   if (window.getSelection().toString().length > 0) {
+          //     window.getSelection().getRangeAt(0).surroundContents(a);
+          //     window.getSelection().getRangeAt(0).surroundContents(span);
+          //   } else {
+          //     document.getElementById("note_text").appendChild(a);
+          //   }
+        }
+      }
+    });
+  }
 
   function toggleAddingNote() {
     setAddingNote(!addingNote());

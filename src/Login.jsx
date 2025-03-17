@@ -1,7 +1,7 @@
 /** @jsxImportSource solid-js */
 import { createSignal } from "solid-js";
 
-import { affectItem } from "./JS/helperFunctions";
+import { /* affectItem, */ login } from "./JS/helperFunctions";
 import { useGlobalState } from "./GlobalStateProvider";
 
 export function Login(props) {
@@ -68,7 +68,11 @@ export function Login(props) {
       <button
         class="action-button"
         onClick={(e) => {
-          affectItemCaller("check", "user_login", dataServer);
+          login(
+            { user_name: loginUserID.value, password: loginPassword.value },
+            setUser,
+            dataServer
+          );
         }}
       >
         Login
@@ -77,19 +81,4 @@ export function Login(props) {
   );
 
   // *** Helper functions for the code above
-  async function affectItemCaller(action, itemType, dataServer) {
-    var sentData = {
-      user_name: loginUserID.value,
-      password: loginPassword.value,
-    };
-
-    var returnedData = await affectItem(action, itemType, sentData, dataServer);
-
-    if (returnedData.success) {
-      setUser(returnedData);
-    } else {
-      // TODO: Enhance this code. Use the DOM to display the error message.
-      alert("Login failed. Please try again.");
-    }
-  }
 }

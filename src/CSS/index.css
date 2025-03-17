@@ -154,3 +154,10 @@ button.action-button:hover:not(:disabled) {
 .max-paragraph-width {
   max-width: 300px;
 }
+
+.text-area-like {
+  width: 20rem;
+  height: 10rem;
+  background-color: var(--primary-background-color);
+  border: none;
+}
