@@ -71,6 +71,20 @@ nav a.navlink {
 
 nav a.navlink img {
   padding-right: 1rem;
+  padding-left: 1rem;
+}
+
+nav a.navlink .working-indicator {
+  position: relative;
+}
+
+nav a.navlink .working-indicator svg {
+  position: absolute;
+  left: 25%;
+}
+
+nav a.navlink .working-indicator div {
+  text-align: center;
 }
 
 nav a.navlink span {
@@ -160,4 +174,8 @@ button.action-button:hover:not(:disabled) {
   height: 10rem;
   background-color: var(--primary-background-color);
   border: none;
+}
+
+.failure {
+  color: red;
 }

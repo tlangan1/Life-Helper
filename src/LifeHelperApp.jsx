@@ -18,7 +18,6 @@ import { login, setupContextMenu } from "./JS/helperFunctions";
 
 export function LifeHelperApp(props) {
   //   setupContextMenu();
-  requestCredentials();
   var {
     itemType,
     setItemType,
@@ -27,8 +26,11 @@ export function LifeHelperApp(props) {
     toggleRefreshData,
     setItemsView,
     setUser,
+    loggedIn,
     dataServer,
   } = useGlobalState();
+
+  if (!loggedIn()) requestCredentials();
 
   var { viewType } = useParams();
   setItemsView(viewType);
@@ -141,7 +143,6 @@ export function LifeHelperApp(props) {
           if (credentials) {
             console.log("Auto login with credentials", credentials);
             // Use the credentials to log the user in
-            // export async function login(action, itemType, sentData, setUser, dataServer) {
             login(
               {
                 user_name: credentials.id,

@@ -1,4 +1,4 @@
-import { Show, For, createResource } from "solid-js";
+import { Show, For, createResource, createEffect } from "solid-js";
 import { ProjectItem } from "./ProjectItem.jsx";
 import { useGlobalState } from "./GlobalStateProvider.jsx";
 
@@ -6,7 +6,9 @@ import {
   logToConsole,
   startedButNotCompletedCount,
   completedCount,
+  isolateItem,
 } from "./JS/helperFunctions.js";
+import { webPushList } from "./JS/index.js";
 
 export function ProjectItemsList(props) {
   // *** The SolidJS resource items is used to store the objectives, goals or tasks
@@ -16,6 +18,16 @@ export function ProjectItemsList(props) {
   const [items, { mutate, refetch }] = createResource(refreshData, fetchItems);
 
   logToConsole(`In ProjectItemsList rendering items of type '${itemType()}'`);
+
+  createEffect(() => {
+    if (itemType() == "task") {
+      var pushedItem = webPushList()[webPushList().length - 1];
+      if (pushedItem == undefined) return;
+      console.log(`pushedItem is ${JSON.stringify(pushedItem)}`);
+      var task = isolateItem(items, pushedItem);
+      console.log(JSON.stringify(task));
+    }
+  });
 
   return (
     <div class="item-list-container">

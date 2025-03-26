@@ -5,23 +5,17 @@ import {
   reformatMySQLDate,
   startedButNotCompletedCount,
   affectItem,
+  isolateItem,
 } from "./helperFunctions";
 
 describe("Helper Functions", () => {
-  describe("test from vitest documentation", () => {
-    it("should return 0", () => {
-      const getApples = vi.fn(() => 0);
-
-      getApples();
-
-      expect(getApples).toHaveBeenCalled();
-      expect(getApples).toHaveReturnedWith(0);
-
-      getApples.mockReturnValueOnce(5);
-
-      const res = getApples();
-      expect(res).toBe(5);
-      expect(getApples).toHaveNthReturnedWith(2, 5);
+  describe("It should find the item associated with the web push", () => {
+    it("should return 2", () => {
+      function items() {
+        return [{ item_id: 2 }, { item_id: 3 }];
+      }
+      var webPush = { item_id: 2 };
+      expect(isolateItem(items, webPush)).toStrictEqual({ item_id: 2 });
     });
   });
   describe("Affect Item Tests", () => {
