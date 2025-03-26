@@ -7,6 +7,7 @@ export function AccountMenu(props) {
     <div class="menu">
       <a href="/account">Account</a>
       <a href="/data_source">Data Source</a>
+      <a href="/task_stack">Task Stack</a>
       <a
         onClick={() => {
           setUser({});

@@ -61,9 +61,9 @@ navigator.serviceWorker.addEventListener("message", (event) => {
       JSON.stringify(event.data.data)
     }`;
     logToConsole(webPushMessage);
-    webPushList().push({ message: webPushMessage });
+    webPushList().push(event.data.data);
     setWebPushList(structuredClone(webPushList()));
-    document.title = event.data.data.name;
+    // document.title = event.data.data.name;
     // I am going to use the strategy of forcing a data refresh from the
     // database to give the visual effect of updating cache (for now).
   }

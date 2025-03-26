@@ -6,8 +6,15 @@ import { affectItem } from "./JS/helperFunctions";
 import { NoteList } from "./NotesList";
 
 export function ProjectItemDetail(props) {
-  var { loggedIn, user, itemType, dataServer, toggleRefreshData, filters } =
-    useGlobalState();
+  var {
+    loggedIn,
+    user,
+    setUser,
+    itemType,
+    dataServer,
+    toggleRefreshData,
+    filters,
+  } = useGlobalState();
   var [notesRequested, setNotesRequested] = createSignal(false);
 
   return (
@@ -15,86 +22,98 @@ export function ProjectItemDetail(props) {
       <div class="item-controls">
         {itemType() == "task" ? (
           <div class="non-cancel-item-controls">
-            <input
-              type="checkbox"
-              id={`start_item_${props.item().item_id}`}
-              onClick={(event) =>
-                affectItemCaller(
-                  event.target,
-                  "start",
-                  itemType(),
-                  {
-                    item_id: props.item().item_id,
-                    user_login_id: user().user_login_id,
-                  },
-                  dataServer
-                )
-              }
-              disabled={props.item().started_dtm || !loggedIn()}
-              checked={props.item().started_dtm}
-            ></input>
-            <label for={`start_item_${props.item().item_id}`}>Start</label>
-            <input
-              type="checkbox"
-              id={`pause_item_${props.item().item_id}`}
-              onClick={(event) =>
-                affectItemCaller(
-                  event.target,
-                  event.target.checked ? "pause" : "resume",
-                  itemType(),
-                  { item_id: props.item().item_id },
-                  dataServer
-                )
-              }
-              disabled={
-                props.item().completed_dtm ||
-                props.item().deleted_dtm ||
-                !loggedIn()
-              }
-              checked={props.item().paused_dtm}
-            ></input>
-            <label for={`pause_item_${props.item().item_id}`}>Pause</label>
-            <input
-              type="checkbox"
-              id={`complete_item_${props.item().item_id}`}
-              onClick={(event) =>
-                affectItemCaller(
-                  event.target,
-                  "complete",
-                  itemType(),
-                  { item_id: props.item().item_id },
-                  dataServer
-                )
-              }
-              disabled={
-                props.item().completed_dtm ||
-                props.item().deleted_dtm ||
-                !loggedIn()
-              }
-              checked={props.item().completed_dtm}
-            ></input>
-            <label for={`complete_item_${props.item().item_id}`}>
-              Complete
-            </label>
+            <div>
+              <input
+                type="checkbox"
+                id={`start_item_${props.item().item_id}`}
+                onClick={(event) =>
+                  affectItemCaller(
+                    event.target,
+                    "start",
+                    itemType(),
+                    {
+                      item_id: props.item().item_id,
+                      user_login_id: user().user_login_id,
+                    },
+                    dataServer
+                  )
+                }
+                disabled={props.item().started_dtm || !loggedIn()}
+                checked={props.item().started_dtm}
+              ></input>
+              <label for={`start_item_${props.item().item_id}`}>Start</label>
+            </div>
+            <div>
+              <input
+                type="checkbox"
+                id={`pause_item_${props.item().item_id}`}
+                onClick={(event) =>
+                  affectItemCaller(
+                    event.target,
+                    event.target.checked ? "pause" : "resume",
+                    itemType(),
+                    { item_id: props.item().item_id },
+                    dataServer
+                  )
+                }
+                disabled={
+                  props.item().completed_dtm ||
+                  props.item().deleted_dtm ||
+                  !loggedIn()
+                }
+                checked={props.item().paused_dtm}
+              ></input>
+              <label for={`pause_item_${props.item().item_id}`}>Pause</label>
+            </div>
+            <div>
+              <input
+                type="checkbox"
+                id={`complete_item_${props.item().item_id}`}
+                onClick={(event) =>
+                  affectItemCaller(
+                    event.target,
+                    "complete",
+                    itemType(),
+                    { item_id: props.item().item_id },
+                    dataServer
+                  )
+                }
+                disabled={
+                  props.item().completed_dtm ||
+                  props.item().deleted_dtm ||
+                  !loggedIn()
+                }
+                checked={props.item().completed_dtm}
+              ></input>
+              <label for={`complete_item_${props.item().item_id}`}>
+                Complete
+              </label>
+            </div>
           </div>
         ) : (
           <div class="non-cancel-item-controls">
-            <input
-              type="checkbox"
-              id={`started_item_${props.item().item_id}`}
-              disabled
-              checked={props.item().started_dtm}
-            ></input>
-            <label for={`started_item_${props.item().item_id}`}>Started</label>
-            <input
-              type="checkbox"
-              id={`completed_item_${props.item().item_id}`}
-              disabled
-              checked={props.item().completed_dtm}
-            ></input>
-            <label for={`completed_item_${props.item().item_id}`}>
-              Completed
-            </label>
+            <div>
+              <input
+                type="checkbox"
+                id={`started_item_${props.item().item_id}`}
+                disabled
+                checked={props.item().started_dtm}
+              ></input>
+              <label for={`started_item_${props.item().item_id}`}>
+                Started
+              </label>
+            </div>
+            <div>
+              <input
+                type="checkbox"
+                id={`completed_item_${props.item().item_id}`}
+                disabled
+                checked={props.item().completed_dtm}
+              ></input>
+              <label for={`completed_item_${props.item().item_id}`}>
+                Completed
+              </label>
+            </div>
           </div>
         )}
         <div class="cancel-item-control">
@@ -184,6 +203,27 @@ export function ProjectItemDetail(props) {
         var updatedItem = await fetchItemDetails();
         props.setItem(updatedItem[0]);
       }
+      var property_name = "user_working";
+      var property_value = user().user_working;
+      switch (updateType) {
+        case "start":
+          property_value = true;
+          break;
+        case "pause":
+          property_value = false;
+          break;
+        case "resume":
+          property_value = true;
+          break;
+        case "complete":
+          property_value = false;
+          break;
+        case "cancel_delete":
+          break;
+        default:
+          break;
+      }
+      setUser(updateUser(property_name, property_value));
     } else {
       target.checked = false;
     }
@@ -192,7 +232,15 @@ export function ProjectItemDetail(props) {
   function fullRefreshRequired(operation, filters) {
     return (
       operation == "cancel_delete" ||
+      operation == "start" ||
+      operation == "resume" ||
       (operation == "complete" && !filters().include_completed_items)
     );
+  }
+
+  function updateUser(property_name, property_value) {
+    var new_user = { ...user() };
+    new_user[property_name] = property_value;
+    return new_user;
   }
 }

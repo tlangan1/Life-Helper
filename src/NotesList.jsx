@@ -4,7 +4,7 @@ import { useGlobalState } from "./GlobalStateProvider";
 import { AddNote } from "./AddNote";
 
 export function NoteList(props) {
-  var { itemType, dataServer } = useGlobalState();
+  var { mode, itemType, dataServer } = useGlobalState();
   var [refreshNotes, setRefreshNotes] = createSignal(0);
   const [notes, { mutate, refetch }] = createResource(refreshNotes, fetchNotes);
 
@@ -16,7 +16,14 @@ export function NoteList(props) {
       {notes.state == "ready" && (
         <ol reversed>
           <For each={notes()}>
-            {(note) => <li class="note" innerHTML={note.note}></li>}
+            {(note) => (
+              <li
+                class="note"
+                innerHTML={`${note.note} (${
+                  mode == "dev" ? note.note_id : ""
+                })`}
+              ></li>
+            )}
           </For>
         </ol>
       )}

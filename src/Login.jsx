@@ -7,8 +7,10 @@ import { useGlobalState } from "./GlobalStateProvider";
 export function Login(props) {
   var loginUserID;
   var loginPassword;
-  var { setUser, passwordPattern, dataServer } = useGlobalState();
+  var { setUser, loggedIn, passwordPattern, dataServer } = useGlobalState();
   var [passwordVisible, setPasswordVisible] = createSignal(false);
+  var [credentialsValid, setCredentialsValid] = createSignal(false);
+  var [loginFailed, setLoginFailed] = createSignal(false);
 
   return (
     <section class="route">
@@ -33,6 +35,7 @@ export function Login(props) {
                 title="Enter your ID."
                 minLength="10"
                 maxLength="30"
+                onInput={checkCredentialsValidity}
               />
               <label for="login_user_id">User ID</label>
               <span></span>
@@ -53,6 +56,7 @@ export function Login(props) {
                 placeholder=""
                 title="The password must be at least 10 characters long and contain at least one lowercase letter, uppercase letter and number."
                 pattern={passwordPattern}
+                onInput={checkCredentialsValidity}
               />
               <label for="login_password">Password</label>
               <span
@@ -67,18 +71,29 @@ export function Login(props) {
       </form>
       <button
         class="action-button"
-        onClick={(e) => {
-          login(
+        onClick={async (e) => {
+          await login(
             { user_name: loginUserID.value, password: loginPassword.value },
             setUser,
             dataServer
           );
+          if (!loggedIn()) {
+            setLoginFailed(true);
+          }
         }}
+        disabled={!credentialsValid()}
       >
         Login
       </button>
+      <Show when={loginFailed()}>
+        <h1>Login Failed...please try again.</h1>
+      </Show>
     </section>
   );
 
   // *** Helper functions for the code above
+  function checkCredentialsValidity() {
+    var form = document.getElementById("formLogin");
+    setCredentialsValid(form.checkValidity());
+  }
 }

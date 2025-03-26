@@ -52,12 +52,22 @@ export async function login(sentData, setUser, dataServer) {
     dataServer
   );
 
+  returnedData.user_working == "true"
+    ? (returnedData.user_working = true)
+    : (returnedData.user_working = false);
+
   if (returnedData.success) {
     setUser(returnedData);
-  } else {
-    // TODO: Enhance this code. Use the DOM to display the error message.
-    alert("Login failed. Please try again.");
   }
+}
+
+export function fetchUserElapsedDailyWorkTime(user_login_id) {
+  var data = {
+    user_login_id: user_login_id,
+  };
+
+  var returnedData = affectItem("get", "user_daily_work_time", data);
+  return returnedData;
 }
 
 export async function affectItem(action, itemType, data, dataServer, user) {
@@ -134,5 +144,12 @@ export function setupContextMenu() {
       menu.style.left = e.offsetX + "px";
       menu.style.top = e.offsetY + "px";
     }
+  }
+}
+
+export function isolateItem(items, pushedItem) {
+  var task = items().filter((item) => pushedItem.item_id == item.item_id);
+  if (task.length > 0) {
+    return task[0];
   }
 }

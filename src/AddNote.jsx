@@ -85,16 +85,7 @@ export function AddNote(props) {
             maxLength={maxTextLength}
             onKeyUp={(e) => setNoteLength(e.target.innerText.length)}
             contentEditable="true"
-          >
-            {/* <div contentEditable="false">
-              <a
-                href="https://mermaid.js.org/syntax/entityRelationshipDiagram.html"
-                target="_blank"
-              >
-                ERDs
-              </a>
-            </div> */}
-          </div>
+          ></div>
           <span class="block">
             {noteLength() < minTextLength
               ? `${minTextLength - noteLength()} more characters required`
