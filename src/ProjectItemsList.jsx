@@ -82,6 +82,7 @@ export function ProjectItemsList(props) {
       return value;
     }
 
+    // var searchParams = { sort: filters().sort, order: filters().order };
     var searchParams = {};
 
     if (props.viewType == "my-tasks-view") {
@@ -91,6 +92,8 @@ export function ProjectItemsList(props) {
     } else {
       if (filters().assigned_to_me) {
         searchParams.assigned_to = user().user_login_id;
+        searchParams.view = "my-tasks-view";
+        setItemType("task");
       } else {
         searchParams.parent_id =
           itemType() == "objective"

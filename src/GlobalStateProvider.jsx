@@ -33,6 +33,8 @@ export function GlobalStateProvider(props) {
     started_items: "either",
     deleted_items: "no",
     assigned_to_me: false,
+    sort: "item_name",
+    order: "asc",
   });
 
   var [itemsView, setItemsView] = createSignal("");

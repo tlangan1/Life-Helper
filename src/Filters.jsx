@@ -75,6 +75,35 @@ export function Filters(props) {
             </select>
           </div>
         </fieldset>
+        <fieldset class="label-left-wrapper">
+          <legend>Sort Options</legend>
+          <div class="control">
+            <label htmlFor="selSortBy">Sort by: </label>
+            <select
+              name="selSortBy"
+              id="selSortBy"
+              value={filters().sort}
+              onChange={(e) => setFilters(appendFilter("sort", e.target.value))}
+            >
+              <option value="item_name">Item Name</option>
+              <option value="order_id">Order ID</option>
+            </select>
+          </div>
+          <div class="control">
+            <label htmlFor="selOrder">Order: </label>
+            <select
+              name="selOrder"
+              id="selOrder"
+              value={filters().order}
+              onChange={(e) =>
+                setFilters(appendFilter("order", e.target.value))
+              }
+            >
+              <option value="asc">Ascending</option>
+              <option value="desc">Descending</option>
+            </select>
+          </div>
+        </fieldset>
         <a href={itemsView() == undefined ? "/" : itemsView()}>
           <button onClick={toggleRefreshData} class="action-button">
             Apply

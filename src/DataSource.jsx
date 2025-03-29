@@ -1,7 +1,9 @@
+import { createSignal } from "solid-js";
 import { useGlobalState } from "./GlobalStateProvider";
 
 export function DataSource(props) {
   var { dataSource, setDataSource, dataServer } = useGlobalState();
+  var [updateOccurring, setUpdateOccurring] = createSignal(false);
 
   var selectedDataSource = dataSource();
 
@@ -34,6 +36,7 @@ export function DataSource(props) {
         <button
           class="action-button"
           onClick={() => setSelectedDataSource(selectedDataSource)}
+          disabled={updateOccurring()}
         >
           Apply
         </button>
@@ -55,6 +58,7 @@ export function DataSource(props) {
 
   /* *** Helper functions *** */
   async function setSelectedDataSource(databaseName) {
+    setUpdateOccurring(true);
     var result = await fetch(`${dataServer}/set/data_source`, {
       method: "POST",
       headers: {
@@ -63,6 +67,7 @@ export function DataSource(props) {
       body: JSON.stringify({ database: databaseName }),
     });
 
+    setUpdateOccurring(false);
     if (result.ok) {
       setDataSource(databaseName);
       window.location.href = "/";
