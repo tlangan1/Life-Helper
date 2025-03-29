@@ -27,6 +27,7 @@ export function LifeHelperApp(props) {
     setItemsView,
     setUser,
     loggedIn,
+    filters,
     dataServer,
   } = useGlobalState();
 
@@ -72,16 +73,6 @@ export function LifeHelperApp(props) {
         viewType={viewType}
       />
       <WebPushList />
-      {/* <div id="contextMenu" classList={{ "context-menu": true, hide: true }}>
-        <ul>
-          <li>
-            <a href="#">Production (life-helper DB)</a>
-          </li>
-          <li>
-            <a href="#">Development (test-life-helper DB)</a>
-          </li>
-        </ul>
-      </div> */}
     </section>
   );
 
@@ -123,8 +114,13 @@ export function LifeHelperApp(props) {
           setVisibleClassValue("visible");
           break;
         case "task":
+          // TODO: if this is a my-tasks-view, then make that the label.
           setPageTitle(
-            `Tasks to achieve goal "${parent()[parent().length - 1].item_name}"`
+            filters().view == "my-tasks-view"
+              ? "Your tasks"
+              : `Tasks to achieve goal "${
+                  parent()[parent().length - 1].item_name
+                }"`
           );
           setVisibleClassValue("visible");
 

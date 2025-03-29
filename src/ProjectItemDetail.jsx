@@ -225,7 +225,7 @@ export function ProjectItemDetail(props) {
       }
       setUser(updateUser(property_name, property_value));
     } else {
-      target.checked = false;
+      target.checked = updateType == "resume" ? true : false;
     }
   }
 

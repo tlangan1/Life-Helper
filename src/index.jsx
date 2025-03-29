@@ -14,7 +14,6 @@ import { Header } from "./Header";
 import { Account } from "./Account";
 import { Login } from "./Login";
 import { Register } from "./Register";
-import { TaskStack } from "./TaskStack";
 import { NotFound } from "./NotFound";
 
 const root = document.getElementById("root");
@@ -45,7 +44,6 @@ render(() => {
           <Route path="/filters" component={Filters} />
           <Route path="/views" component={Views} />
           <Route path="/data_source" component={DataSource} />
-          <Route path="/task_stack" component={TaskStack} />
           <Route path="*" component={NotFound} />
         </Router>
       </GlobalStateProvider>

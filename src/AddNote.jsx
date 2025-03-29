@@ -127,11 +127,9 @@ export function AddNote(props) {
   function addPasteOption() {
     document.getElementById("note_text").addEventListener("paste", (event) => {
       event.preventDefault();
-      //   var stuff = navigator.clipboard.readText();
-      //   navigator.clipboard
-      //     .readText()
-      //     .then((clipText) => doPaste(clipText, event));
-      //   navigator.clipboard.readText().then((clipText) => console.log(clipText));
+      /* *** Important Note *** */
+      // If you use the debugger here you will loose focus and the readText will not work
+      /* *** Important Note *** */
       navigator.clipboard.readText().then((clipText) => {
         console.log(clipText);
         doPaste(clipText, event);
