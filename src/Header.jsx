@@ -7,8 +7,7 @@ import { OptionsMenu } from "./OptionsMenu";
 import { fetchUserElapsedDailyWorkTime } from "./JS/helperFunctions.js";
 
 export function Header(props) {
-  //   var { user, setItemType, isProduction, dataServer } = useGlobalState();
-  var { user, loggedIn, setItemType, dataSource } = useGlobalState();
+  var { user, loggedIn, setItemType, dataSource, itemsView } = useGlobalState();
   var [isProduction, setIsProduction] = createSignal();
   var [userWorking, setUserWorking] = createSignal(user().user_working);
   createEffect(() =>
@@ -25,7 +24,15 @@ export function Header(props) {
         }}
       >
         <nav class="nav-using-flex">
-          <a class="navlink" onClick={() => setItemType("objective")} href="/">
+          <a
+            class="navlink"
+            onClick={() =>
+              itemsView() == "my-tasks-view"
+                ? setItemType("task")
+                : setItemType("objective")
+            }
+            href={itemsView()}
+          >
             <img src="/home.svg" />
             <span>Life Helper</span>
           </a>

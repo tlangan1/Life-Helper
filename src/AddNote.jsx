@@ -26,20 +26,9 @@ export function AddNote(props) {
   var range, start, end;
 
   document.addEventListener("selectionchange", (event) => {
-    console.log(
-      "Input control selected text: ",
-      window.getSelection().toString()
-    );
     range = window.getSelection().getRangeAt(0);
-    console.log(window.getSelection().getRangeAt(0).toString());
     start = window.getSelection().getRangeAt(0).startOffset;
     end = window.getSelection().getRangeAt(0).endOffset;
-    console.log(`Selected range starts at ${start} and ends at ${end - 1}`);
-    console.log(
-      `The parent element is ${
-        window.getSelection().focusNode.parentElement.id
-      }`
-    );
   });
 
   createEffect(() => {
@@ -161,15 +150,8 @@ export function AddNote(props) {
           a.href = paste;
           a.title = paste;
           a.target = "_blank";
-          a.innerText = "frog";
           range.surroundContents(a);
           range.surroundContents(span);
-          //   if (window.getSelection().toString().length > 0) {
-          //     window.getSelection().getRangeAt(0).surroundContents(a);
-          //     window.getSelection().getRangeAt(0).surroundContents(span);
-          //   } else {
-          //     document.getElementById("note_text").appendChild(a);
-          //   }
         }
       }
     });

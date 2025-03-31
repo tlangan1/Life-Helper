@@ -3,8 +3,7 @@ import { createSignal } from "solid-js";
 import { useGlobalState } from "./GlobalStateProvider";
 
 export function Views(props) {
-  var { itemsView } = useGlobalState();
-  var [selectedView, setSelectedView] = createSignal(itemsView());
+  var { itemsView, setItemsView, setItemType } = useGlobalState();
   return (
     <div class="route">
       <div class="label-left-wrapper">
@@ -15,9 +14,12 @@ export function Views(props) {
             type="radio"
             id="default"
             name="view-type"
-            value="/"
-            checked={itemsView() == undefined}
-            onChange={() => setSelectedView("/")}
+            value="default-view"
+            checked={itemsView() == "default-view"}
+            onChange={() => {
+              setItemsView("default-view");
+              setItemType("objective");
+            }}
           />
         </div>
         <div class="control">
@@ -28,20 +30,16 @@ export function Views(props) {
             name="view-type"
             value="/my-tasks-view"
             checked={itemsView() == "my-tasks-view"}
-            onChange={() => setSelectedView("my-tasks-view")}
+            onChange={() => {
+              setItemsView("my-tasks-view");
+              setItemType("task");
+            }}
           />
         </div>
-        <a href={selectedView()}>
+        <a href={itemsView()}>
           <button class="action-button">Apply</button>
         </a>
       </div>
     </div>
   );
-
-  /* *** Helper functions *** */
-  function setSelectedView() {
-    var selectedView = document.querySelector(
-      'input[name="view-type"]:checked'
-    ).value;
-  }
 }
