@@ -12,22 +12,6 @@ export function Filters(props) {
       <div class="label-left-wrapper">
         <h2>Filters</h2>
         <fieldset class="label-left-wrapper">
-          <legend>Assignment Filters</legend>
-          <div class="control">
-            <label htmlFor="chkAssignedToMe">Assigned to me: </label>
-            <input
-              type="checkbox"
-              name="chkAssignedToMe"
-              id="chkAssignedToMe"
-              disabled={Object.keys(user()) == 0}
-              checked={filters().assigned_to_me}
-              onChange={(e) =>
-                setFilters(appendFilter("assigned_to_me", e.target.checked))
-              }
-            />
-          </div>
-        </fieldset>
-        <fieldset class="label-left-wrapper">
           <legend>State Filters</legend>
           <div class="control">
             <label htmlFor="selCompleted">Completed Items: </label>

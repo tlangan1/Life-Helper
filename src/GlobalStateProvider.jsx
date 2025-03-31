@@ -9,7 +9,8 @@ import {
 const GlobalStateContext = createContext();
 
 export function GlobalStateProvider(props) {
-  var dataServer = "https://192.168.1.10:3001";
+  //   var dataServer = "https://192.168.1.10:3001";
+  var dataServer = "https://192.168.1.159:3001";
   var [user, setUser] = createSignal({});
   var [itemType, setItemType] = createSignal("objective");
   // *** refreshData is a signal that is used to initiate a data refresh
@@ -32,12 +33,11 @@ export function GlobalStateProvider(props) {
     completed_items: "no",
     started_items: "either",
     deleted_items: "no",
-    assigned_to_me: false,
     sort: "item_name",
     order: "asc",
   });
 
-  var [itemsView, setItemsView] = createSignal("");
+  var [itemsView, setItemsView] = createSignal("default-view");
 
   fetchDataSource();
 

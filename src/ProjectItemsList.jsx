@@ -13,8 +13,15 @@ import { webPushList } from "./JS/index.js";
 export function ProjectItemsList(props) {
   // *** The SolidJS resource items is used to store the objectives, goals or tasks
   // *** retrieved from the server depending on the context.
-  var { itemType, setItemType, refreshData, dataServer, filters, user } =
-    useGlobalState();
+  var {
+    itemType,
+    setItemType,
+    refreshData,
+    dataServer,
+    filters,
+    user,
+    itemsView,
+  } = useGlobalState();
   const [items, { mutate, refetch }] = createResource(refreshData, fetchItems);
 
   logToConsole(`In ProjectItemsList rendering items of type '${itemType()}'`);
@@ -85,21 +92,15 @@ export function ProjectItemsList(props) {
     // var searchParams = { sort: filters().sort, order: filters().order };
     var searchParams = {};
 
-    if (props.viewType == "my-tasks-view") {
+    if (itemsView() == "my-tasks-view") {
       searchParams.assigned_to = user().user_login_id;
-      searchParams.view = props.viewType;
+      searchParams.view = itemsView();
       setItemType("task");
     } else {
-      if (filters().assigned_to_me) {
-        searchParams.assigned_to = user().user_login_id;
-        searchParams.view = "my-tasks-view";
-        setItemType("task");
-      } else {
-        searchParams.parent_id =
-          itemType() == "objective"
-            ? 0
-            : props.parent()[props.parent().length - 1].item_id;
-      }
+      searchParams.parent_id =
+        itemType() == "objective"
+          ? 0
+          : props.parent()[props.parent().length - 1].item_id;
     }
 
     delete filters().assigned_to_me;

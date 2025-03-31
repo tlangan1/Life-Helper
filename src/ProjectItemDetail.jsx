@@ -59,7 +59,8 @@ export function ProjectItemDetail(props) {
                 disabled={
                   props.item().completed_dtm ||
                   props.item().deleted_dtm ||
-                  !loggedIn()
+                  !loggedIn() ||
+                  props.item().user_login_id != user().user_login_id
                 }
                 checked={props.item().paused_dtm}
               ></input>
@@ -81,7 +82,8 @@ export function ProjectItemDetail(props) {
                 disabled={
                   props.item().completed_dtm ||
                   props.item().deleted_dtm ||
-                  !loggedIn()
+                  !loggedIn() ||
+                  props.item().user_login_id != user().user_login_id
                 }
                 checked={props.item().completed_dtm}
               ></input>
@@ -135,7 +137,8 @@ export function ProjectItemDetail(props) {
             disabled={
               props.item().completed_dtm ||
               props.item().deleted_dtm ||
-              !loggedIn()
+              !loggedIn() ||
+              props.item().user_login_id != user().user_login_id
             }
             checked={props.item().deleted_dtm}
           ></input>

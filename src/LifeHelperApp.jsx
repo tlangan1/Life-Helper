@@ -24,6 +24,7 @@ export function LifeHelperApp(props) {
     parent,
     setParent,
     toggleRefreshData,
+    itemsView,
     setItemsView,
     setUser,
     loggedIn,
@@ -37,7 +38,7 @@ export function LifeHelperApp(props) {
   setItemsView(viewType);
 
   //   createEffect(pageTitleEffect);
-  createEffect(() => (viewType == undefined ? pageTitleEffect() : null));
+  createEffect(() => (viewType == "default-view" ? pageTitleEffect() : null));
 
   var [pageTitle, setPageTitle] = createSignal("");
 
@@ -48,7 +49,7 @@ export function LifeHelperApp(props) {
     <section class="route">
       <header class="life-helper-header">
         <Switch>
-          <Match when={viewType == undefined}>
+          <Match when={itemsView() == "default-view"}>
             {" "}
             <div class="header-title">
               <h1 class={`${itemType()}_header`}>{pageTitle()}</h1>
@@ -59,7 +60,7 @@ export function LifeHelperApp(props) {
             </div>
             <AddItem parent={parent} />
           </Match>
-          <Match when={viewType == "my-tasks-view"}>
+          <Match when={itemsView() == "my-tasks-view"}>
             {" "}
             <div class="header-title">
               <h1 class={`${itemType()}_header`}>Tasks Assigned To You</h1>
@@ -67,11 +68,7 @@ export function LifeHelperApp(props) {
           </Match>
         </Switch>
       </header>
-      <ProjectItemsList
-        setParent={setParent}
-        parent={parent}
-        viewType={viewType}
-      />
+      <ProjectItemsList setParent={setParent} parent={parent} />
       <WebPushList />
     </section>
   );
@@ -97,7 +94,7 @@ export function LifeHelperApp(props) {
   }
 
   function pageTitleEffect() {
-    if (viewType == "my-tasks-view") {
+    if (itemType() == "my-tasks-view") {
       setPageTitle("Tasks Assigned To You");
     } else {
       switch (itemType()) {
@@ -114,9 +111,8 @@ export function LifeHelperApp(props) {
           setVisibleClassValue("visible");
           break;
         case "task":
-          // TODO: if this is a my-tasks-view, then make that the label.
           setPageTitle(
-            filters().view == "my-tasks-view"
+            viewType == "my-tasks-view"
               ? "Your tasks"
               : `Tasks to achieve goal "${
                   parent()[parent().length - 1].item_name

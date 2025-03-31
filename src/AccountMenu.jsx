@@ -7,13 +7,13 @@ export function AccountMenu(props) {
     <div class="menu">
       <a href="/account">Account</a>
       <a href="/data_source">Data Source</a>
+      <a href="/thought_stack">Thought Stack</a>
       <a
         onClick={() => {
           setUser({});
-          filters().assigned_to_me = false;
           setFilters(new Object(filters()));
         }}
-        href="/"
+        href="/default-view"
       >
         Log Out
       </a>
