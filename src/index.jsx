@@ -14,7 +14,7 @@ import { Header } from "./Header";
 import { Account } from "./Account";
 import { Login } from "./Login";
 import { Register } from "./Register";
-import { ThoughtStack } from "./ThoughStack";
+import { ThoughtStack } from "./ThoughtStack";
 import { NotFound } from "./NotFound";
 
 const root = document.getElementById("root");
@@ -37,7 +37,7 @@ render(() => {
       <Meta name="description" content="Life Helper Objective Tracker" />
       <GlobalStateProvider>
         <Router root={Header}>
-          {/* <Route path="/" component={LifeHelperApp} /> */}
+          <Route path="/" component={LifeHelperApp} />
           <Route path="/:viewType" component={LifeHelperApp} />
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />

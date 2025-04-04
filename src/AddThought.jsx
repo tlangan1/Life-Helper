@@ -11,11 +11,12 @@ export function AddThought(props) {
   var thoughtText;
   var hint;
 
-  var [addingThought, setAddingThought] = createSignal(false);
+  //   var [addingThought, setAddingThought] = createSignal(false);
   var [savingThought, setSavingThought] = createSignal(false);
-  var { loggedIn, dataServer, itemType } = useGlobalState();
+  var { dataServer } = useGlobalState();
   createEffect(() => {
-    if (addingThought()) document.querySelector("dialog").showModal();
+    if (props.addOrUpdateRequested())
+      document.querySelector("dialog").showModal();
   });
   var [thoughtLength, setThoughtLength] = createSignal(0);
   var minTextLength = 15;
@@ -32,7 +33,7 @@ export function AddThought(props) {
   });
 
   createEffect(() => {
-    if (addingThought()) {
+    if (["add", "update"].includes(props.addOrUpdateRequested())) {
       addPasteOption();
     }
   });
@@ -43,12 +44,15 @@ export function AddThought(props) {
         <button
           class="action-button"
           title="Click here to add a new thought"
-          onClick={toggleAddingThought}
+          onClick={() => {
+            props.setAddOrUpdateRequested("add");
+            props.setThoughtToEdit({});
+          }}
         >
           ✏️ Add a thought
         </button>
       </div>
-      <Show when={addingThought()}>
+      <Show when={["add", "update"].includes(props.addOrUpdateRequested())}>
         <dialog class="popup">
           <div class="label-with-hint">
             <label htmlFor="note_text" class="block">
@@ -69,6 +73,11 @@ export function AddThought(props) {
             class="text-area-like"
             required
             autofocus
+            innerHTML={
+              props.addOrUpdateRequested() == "update"
+                ? props.thoughtToEdit().thought
+                : ""
+            }
             minLength={minTextLength}
             maxLength={maxTextLength}
             onKeyUp={(e) => setThoughtLength(e.target.innerText.length)}
@@ -84,10 +93,15 @@ export function AddThought(props) {
               class="action-button"
               onClick={(e) => {
                 affectItemCaller(
-                  "add",
+                  props.addOrUpdateRequested(),
                   "thought",
                   {
-                    thought_text: thoughtText.innerHTML,
+                    thought_id:
+                      props.addOrUpdateRequested() == "update"
+                        ? props.thoughtToEdit().thought_id
+                        : null,
+                    thought: thoughtText.innerHTML,
+                    update_type: props.addOrUpdateRequested(),
                   },
                   dataServer
                 );
@@ -96,7 +110,12 @@ export function AddThought(props) {
             >
               Save Thought
             </button>
-            <button class="action-button" onClick={toggleAddingThought}>
+            <button
+              class="action-button"
+              onClick={() => {
+                props.setAddOrUpdateRequested(false);
+              }}
+            >
               Cancel
             </button>
             <Show when={showHint()}>
@@ -156,14 +175,7 @@ export function AddThought(props) {
       });
   }
 
-  function toggleAddingThought() {
-    setAddingThought(!addingThought());
-    if (!addingThought()) {
-      thoughtText.value = "";
-      setThoughtLength(0);
-    }
-  }
-
+  // Disable the button while in the process of adding or updating a thought
   function toggleSavingThought() {
     setSavingThought(!savingThought());
   }
@@ -178,10 +190,10 @@ export function AddThought(props) {
         dataServer
       );
       if (returnedData.success) {
-        toggleAddingThought();
-        props.toggleRefreshThoughts();
+        props.setAddOrUpdateRequested(false);
       }
     } finally {
+      props.toggleRefreshThoughts();
       toggleSavingThought();
     }
   }

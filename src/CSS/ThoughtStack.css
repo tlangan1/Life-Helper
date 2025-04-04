@@ -1,0 +1,9 @@
+.complex-list-item {
+  display: flex;
+  justify-content: space-between;
+}
+
+.complex-list-item > button {
+  color: red;
+  cursor: pointer;
+}

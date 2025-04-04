@@ -8,9 +8,15 @@ import {
 
 const GlobalStateContext = createContext();
 
+console.log(
+  `${window.location.hostname}:${parseInt(window.location.port) + 1}`
+);
+
 export function GlobalStateProvider(props) {
-  //   var dataServer = "https://192.168.1.10:3001";
-  var dataServer = "https://192.168.1.159:3001";
+  var dataServer = `https://${window.location.hostname}:${
+    parseInt(window.location.port) + 1
+  }`;
+  //   var dataServer = "https://192.168.1.159:3001";
   var [user, setUser] = createSignal({});
   var [itemType, setItemType] = createSignal("objective");
   // *** refreshData is a signal that is used to initiate a data refresh
@@ -37,7 +43,7 @@ export function GlobalStateProvider(props) {
     order: "asc",
   });
 
-  var [itemsView, setItemsView] = createSignal("default-view");
+  var [itemsView, setItemsView] = createSignal("/");
 
   fetchDataSource();
 

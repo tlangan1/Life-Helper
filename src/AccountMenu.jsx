@@ -13,7 +13,7 @@ export function AccountMenu(props) {
           setUser({});
           setFilters(new Object(filters()));
         }}
-        href="/default-view"
+        href="/"
       >
         Log Out
       </a>

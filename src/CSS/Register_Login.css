@@ -7,14 +7,18 @@
   border-radius: 0.5rem;
   padding: 1rem;
 
-  label {
+  /* [WARNING] A nested style rule cannot start with "label" because it looks like the start of a declaration [css-syntax-error] */
+  /* This is the message I received from the Vite build so I used the :is() pseudo class to resolve it */
+  :is(label) {
     display: block;
     width: 100%;
     padding: 0.5rem;
     border-radius: 0.5rem;
   }
 
-  input {
+  /* [WARNING] A nested style rule cannot start with "input" because it looks like the start of a declaration [css-syntax-error] */
+  /* This is the message I received from the Vite build so I used the :is() pseudo class to resolve it */
+  :is(input) {
     display: inline-block;
     width: 100%;
     padding: 0.5rem;
