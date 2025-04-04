@@ -14,10 +14,10 @@ export function Views(props) {
             type="radio"
             id="default"
             name="view-type"
-            value="default-view"
-            checked={itemsView() == "default-view"}
+            value="/"
+            checked={itemsView() == "/"}
             onChange={() => {
-              setItemsView("default-view");
+              setItemsView("/");
               setItemType("objective");
             }}
           />

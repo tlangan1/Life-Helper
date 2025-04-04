@@ -35,10 +35,13 @@ export function LifeHelperApp(props) {
   if (!loggedIn()) requestCredentials();
 
   var { viewType } = useParams();
+  if (!viewType) {
+    viewType = "/";
+  }
   setItemsView(viewType);
 
   //   createEffect(pageTitleEffect);
-  createEffect(() => (viewType == "default-view" ? pageTitleEffect() : null));
+  createEffect(() => (viewType == "/" ? pageTitleEffect() : null));
 
   var [pageTitle, setPageTitle] = createSignal("");
 
@@ -49,7 +52,7 @@ export function LifeHelperApp(props) {
     <section class="route">
       <header class="life-helper-header">
         <Switch>
-          <Match when={itemsView() == "default-view"}>
+          <Match when={itemsView() == "/"}>
             {" "}
             <div class="header-title">
               <h1 class={`${itemType()}_header`}>{pageTitle()}</h1>
