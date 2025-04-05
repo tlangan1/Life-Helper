@@ -153,3 +153,52 @@ export function isolateItem(items, pushedItem) {
     return task[0];
   }
 }
+
+export function addPasteOption(htmlElement) {
+  var range /*, start, end */;
+
+  document.addEventListener("selectionchange", (event) => {
+    range = window.getSelection().getRangeAt(0);
+    // start = window.getSelection().getRangeAt(0).startOffset;
+    // end = window.getSelection().getRangeAt(0).endOffset;
+  });
+
+  //   document.getElementById("note_text").addEventListener("paste", (event) => {
+  htmlElement.addEventListener("paste", (event) => {
+    /* *** Important Note *** */
+    // If you use the debugger here you will loose focus and the readText will not work
+    /* *** Important Note *** */
+    if (window.getSelection().toString()) {
+      event.preventDefault();
+
+      console.log("paste called from getSelection");
+      let paste = (event.clipboardData || window.clipboardData).getData("text");
+      doPaste(paste, event);
+    }
+
+    function isValidHttpUrl(string) {
+      let url;
+
+      try {
+        url = new URL(string);
+      } catch (_) {
+        return false;
+      }
+
+      return url.protocol === "http:" || url.protocol === "https:";
+    }
+
+    function doPaste(paste, event) {
+      if (isValidHttpUrl(paste)) {
+        var span = document.createElement("span");
+        span.setAttribute("contenteditable", "false");
+        var a = document.createElement("a");
+        a.href = paste;
+        a.title = paste;
+        a.target = "_blank";
+        range.surroundContents(a);
+        range.surroundContents(span);
+      }
+    }
+  });
+}

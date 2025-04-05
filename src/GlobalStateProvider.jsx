@@ -45,9 +45,9 @@ export function GlobalStateProvider(props) {
 
   var [itemsView, setItemsView] = createSignal("/");
 
-  fetchDataSource();
+  var [dataSource, setDataSource] = createSignal("unknown");
 
-  var [dataSource, setDataSource] = createSignal("life_helper");
+  fetchDataSource();
 
   const globalState = {
     user: user,
@@ -64,7 +64,6 @@ export function GlobalStateProvider(props) {
     toggleRefreshData: toggleRefreshData,
     dataServer: dataServer,
     dataSource: dataSource,
-    setDataSource: setDataSource,
     filters: filters,
     setFilters: setFilters,
     mode: "dev",

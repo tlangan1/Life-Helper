@@ -5,7 +5,7 @@ import { Show } from "solid-js/web";
 
 import { useGlobalState } from "./GlobalStateProvider";
 
-import { affectItem } from "./JS/helperFunctions";
+import { affectItem, addPasteOption } from "./JS/helperFunctions";
 
 export function AddThought(props) {
   var thoughtText;
@@ -13,7 +13,7 @@ export function AddThought(props) {
 
   //   var [addingThought, setAddingThought] = createSignal(false);
   var [savingThought, setSavingThought] = createSignal(false);
-  var { dataServer } = useGlobalState();
+  var { user, dataServer } = useGlobalState();
   createEffect(() => {
     if (props.addOrUpdateRequested())
       document.querySelector("dialog").showModal();
@@ -24,17 +24,9 @@ export function AddThought(props) {
 
   var [showHint, setShowHint] = createSignal(false);
 
-  var range, start, end;
-
-  document.addEventListener("selectionchange", (event) => {
-    range = window.getSelection().getRangeAt(0);
-    start = window.getSelection().getRangeAt(0).startOffset;
-    end = window.getSelection().getRangeAt(0).endOffset;
-  });
-
   createEffect(() => {
     if (["add", "update"].includes(props.addOrUpdateRequested())) {
-      addPasteOption();
+      addPasteOption(thoughtText);
     }
   });
 
@@ -53,7 +45,7 @@ export function AddThought(props) {
         </button>
       </div>
       <Show when={["add", "update"].includes(props.addOrUpdateRequested())}>
-        <dialog class="popup">
+        <dialog class="popup" onDblClick={(e) => e.stopPropagation()}>
           <div class="label-with-hint">
             <label htmlFor="note_text" class="block">
               Thought Text (Required):
@@ -96,6 +88,7 @@ export function AddThought(props) {
                   props.addOrUpdateRequested(),
                   "thought",
                   {
+                    user_login_id: user().user_login_id,
                     thought_id:
                       props.addOrUpdateRequested() == "update"
                         ? props.thoughtToEdit().thought_id
@@ -128,52 +121,6 @@ export function AddThought(props) {
       </Show>
     </>
   );
-
-  function addPasteOption() {
-    document
-      .getElementById("thought_text")
-      .addEventListener("paste", (event) => {
-        event.preventDefault();
-        /* *** Important Note *** */
-        // If you use the debugger here you will loose focus and the readText will not work
-        /* *** Important Note *** */
-        navigator.clipboard.readText().then((clipText) => {
-          console.log(clipText);
-          doPaste(clipText, event);
-        });
-        if (window.getSelection().toString()) {
-          let paste = (event.clipboardData || window.clipboardData).getData(
-            "text"
-          );
-          doPaste(paste, event);
-        }
-
-        function isValidHttpUrl(string) {
-          let url;
-
-          try {
-            url = new URL(string);
-          } catch (_) {
-            return false;
-          }
-
-          return url.protocol === "http:" || url.protocol === "https:";
-        }
-
-        function doPaste(paste, event) {
-          if (isValidHttpUrl(paste)) {
-            var span = document.createElement("span");
-            span.setAttribute("contenteditable", "false");
-            var a = document.createElement("a");
-            a.href = paste;
-            a.title = paste;
-            a.target = "_blank";
-            range.surroundContents(a);
-            range.surroundContents(span);
-          }
-        }
-      });
-  }
 
   // Disable the button while in the process of adding or updating a thought
   function toggleSavingThought() {

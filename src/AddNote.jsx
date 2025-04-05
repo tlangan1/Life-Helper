@@ -5,7 +5,7 @@ import { Show } from "solid-js/web";
 
 import { useGlobalState } from "./GlobalStateProvider";
 
-import { affectItem } from "./JS/helperFunctions";
+import { affectItem, addPasteOption } from "./JS/helperFunctions";
 
 export function AddNote(props) {
   var noteText;
@@ -23,17 +23,9 @@ export function AddNote(props) {
 
   var [showHint, setShowHint] = createSignal(false);
 
-  var range, start, end;
-
-  document.addEventListener("selectionchange", (event) => {
-    range = window.getSelection().getRangeAt(0);
-    start = window.getSelection().getRangeAt(0).startOffset;
-    end = window.getSelection().getRangeAt(0).endOffset;
-  });
-
   createEffect(() => {
     if (addingNote()) {
-      addPasteOption();
+      addPasteOption(noteText);
     }
   });
 
@@ -50,7 +42,7 @@ export function AddNote(props) {
         </button>
       </div>
       <Show when={addingNote()}>
-        <dialog class="popup">
+        <dialog class="popup" onDblClick={(e) => e.stopPropagation()}>
           <div class="label-with-hint">
             <label htmlFor="note_text" class="block">
               Note Text (Required):
@@ -112,50 +104,6 @@ export function AddNote(props) {
       </Show>
     </>
   );
-
-  function addPasteOption() {
-    document.getElementById("note_text").addEventListener("paste", (event) => {
-      event.preventDefault();
-      /* *** Important Note *** */
-      // If you use the debugger here you will loose focus and the readText will not work
-      /* *** Important Note *** */
-      navigator.clipboard.readText().then((clipText) => {
-        console.log(clipText);
-        doPaste(clipText, event);
-      });
-      if (window.getSelection().toString()) {
-        let paste = (event.clipboardData || window.clipboardData).getData(
-          "text"
-        );
-        doPaste(paste, event);
-      }
-
-      function isValidHttpUrl(string) {
-        let url;
-
-        try {
-          url = new URL(string);
-        } catch (_) {
-          return false;
-        }
-
-        return url.protocol === "http:" || url.protocol === "https:";
-      }
-
-      function doPaste(paste, event) {
-        if (isValidHttpUrl(paste)) {
-          var span = document.createElement("span");
-          span.setAttribute("contenteditable", "false");
-          var a = document.createElement("a");
-          a.href = paste;
-          a.title = paste;
-          a.target = "_blank";
-          range.surroundContents(a);
-          range.surroundContents(span);
-        }
-      }
-    });
-  }
 
   function toggleAddingNote() {
     setAddingNote(!addingNote());

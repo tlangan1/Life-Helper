@@ -120,6 +120,9 @@ a.navlink:hover {
   top: 50vh;
   right: 20vw;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='50px' width='150px'><text x='0' y='15' fill='red' font-size='1rem'>Not Production!</text></svg>");
+
+  /* This prevents the big X from blocking click events */
+  pointer-events: none;
 }
 
 .not-production::before {

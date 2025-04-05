@@ -8,11 +8,6 @@ import { fetchUserElapsedDailyWorkTime } from "./JS/helperFunctions.js";
 
 export function Header(props) {
   var { user, loggedIn, setItemType, dataSource, itemsView } = useGlobalState();
-  var [isProduction, setIsProduction] = createSignal();
-  var [userWorking, setUserWorking] = createSignal(user().user_working);
-  createEffect(() =>
-    setIsProduction(dataSource() == "life_helper" ? true : false)
-  );
 
   createEffect((user) => console.log("user updated"));
 
@@ -20,7 +15,7 @@ export function Header(props) {
     <>
       <header
         classList={{
-          "not-production": !isProduction(),
+          "not-production": dataSource() == "prod" ? false : true,
         }}
       >
         <nav class="nav-using-flex">
