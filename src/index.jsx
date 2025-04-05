@@ -9,7 +9,6 @@ import { Router, Route } from "@solidjs/router";
 import { LifeHelperApp } from "./LifeHelperApp";
 import { Filters } from "./Filters";
 import { Views } from "./Views";
-import { DataSource } from "./DataSource";
 import { Header } from "./Header";
 import { Account } from "./Account";
 import { Login } from "./Login";
@@ -44,7 +43,6 @@ render(() => {
           <Route path="/account" component={Account} />
           <Route path="/filters" component={Filters} />
           <Route path="/views" component={Views} />
-          <Route path="/data_source" component={DataSource} />
           <Route path="/thought_stack" component={ThoughtStack} />
           <Route path="*" component={NotFound} />
         </Router>

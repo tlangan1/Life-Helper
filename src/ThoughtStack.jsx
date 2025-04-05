@@ -8,7 +8,7 @@ import { AddThought } from "./AddThought";
 import { affectItem } from "./JS/helperFunctions";
 
 export function ThoughtStack(props) {
-  var { mode, dataServer } = useGlobalState();
+  var { user, dataServer } = useGlobalState();
   var [refreshThoughts, setRefreshThoughts] = createSignal(true);
   const [thoughts, { mutate, refetch }] = createResource(
     refreshThoughts,
@@ -91,7 +91,7 @@ export function ThoughtStack(props) {
       return value;
     }
 
-    var searchParams = {};
+    var searchParams = { user_login_id: user().user_login_id };
 
     var response = await fetch(
       `${dataServer}/thoughts?params=${JSON.stringify(searchParams)}`
