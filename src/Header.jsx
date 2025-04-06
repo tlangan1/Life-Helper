@@ -7,7 +7,14 @@ import { OptionsMenu } from "./OptionsMenu";
 import { fetchUserElapsedDailyWorkTime } from "./JS/helperFunctions.js";
 
 export function Header(props) {
-  var { user, loggedIn, setItemType, dataSource, itemsView } = useGlobalState();
+  var {
+    user,
+    loggedIn,
+    setItemType,
+    toggleRefreshData,
+    dataSource,
+    itemsView,
+  } = useGlobalState();
 
   createEffect((user) => console.log("user updated"));
 
@@ -24,7 +31,7 @@ export function Header(props) {
             onClick={() =>
               itemsView() == "my-tasks-view"
                 ? setItemType("task")
-                : setItemType("objective")
+                : setItemType("objective") && toggleRefreshData()
             }
             href={itemsView()}
           >

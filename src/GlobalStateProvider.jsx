@@ -40,7 +40,7 @@ export function GlobalStateProvider(props) {
     started_items: "either",
     deleted_items: "no",
     sort: "item_name",
-    order: "asc",
+    direction: "asc",
   });
 
   var [itemsView, setItemsView] = createSignal("/");

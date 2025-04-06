@@ -1,7 +1,7 @@
 {
-  "name": "vite-template-solid",
-  "version": "0.0.0",
-  "description": "",
+  "name": "life-helper",
+  "version": "0.1.0",
+  "description": "Multi-user objective/goal/task management app",
   "scripts": {
     "start": "vite",
     "dev": "vite --host",
@@ -11,9 +11,12 @@
     "test": "vitest --ui"
   },
   "scripts-comments": {
+    "start": "Starts Vite in development mode",
     "dev": "Starts Vite in development mode with HMR and --host exposes the dev server to your local network",
+    "preview": "Previews the production build",
     "build": "Compiles and minifies for production",
-    "serve": "Locally preview production build"
+    "serve": "Locally preview production build",
+    "test": "Runs tests using Vitest"
   },
   "license": "MIT",
   "devDependencies": {

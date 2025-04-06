@@ -39,7 +39,7 @@ export function ProjectItem(props) {
             paused: item().paused_dtm,
           }}
         >
-          {item().item_name} ({mode == "dev" ? item().item_id : ""})
+          {item().item_name} ({item().item_id})
         </label>
 
         {itemType() != "task" ? (
