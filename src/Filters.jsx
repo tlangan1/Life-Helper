@@ -70,17 +70,18 @@ export function Filters(props) {
               onChange={(e) => setFilters(appendFilter("sort", e.target.value))}
             >
               <option value="item_name">Item Name</option>
+              <option value="item_id">Item ID</option>
               <option value="order_id">Order ID</option>
             </select>
           </div>
           <div class="control">
-            <label htmlFor="selOrder">Order: </label>
+            <label htmlFor="selDirection">Direction: </label>
             <select
-              name="selOrder"
-              id="selOrder"
-              value={filters().order}
+              name="selDirection"
+              id="selDirection"
+              value={filters().direction}
               onChange={(e) =>
-                setFilters(appendFilter("order", e.target.value))
+                setFilters(appendFilter("direction", e.target.value))
               }
             >
               <option value="asc">Ascending</option>
