@@ -44,7 +44,7 @@ export function NoteList(props) {
     var searchParams = { item_id: props.item().item_id, item_type: itemType() };
 
     var response = await fetch(
-      `${dataServer}/notes?params=${JSON.stringify(searchParams)}`
+      `${dataServer}/get_items/notes?params=${JSON.stringify(searchParams)}`
     );
     if (!response.ok) {
       alert(
