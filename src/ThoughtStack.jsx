@@ -94,7 +94,7 @@ export function ThoughtStack(props) {
     var searchParams = { user_login_id: user().user_login_id };
 
     var response = await fetch(
-      `${dataServer}/thoughts?params=${JSON.stringify(searchParams)}`
+      `${dataServer}/get_items/thoughts?params=${JSON.stringify(searchParams)}`
     );
     if (!response.ok) {
       alert(

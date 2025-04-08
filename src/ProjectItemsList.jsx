@@ -107,7 +107,10 @@ export function ProjectItemsList(props) {
     searchParams = { ...searchParams, ...filters() };
 
     var response = await fetch(
-      dataServer + `/${itemType()}s` + "?params=" + JSON.stringify(searchParams)
+      dataServer +
+        `/get_items/${itemType()}s` +
+        "?params=" +
+        JSON.stringify(searchParams)
     );
     if (!response.ok) {
       alert(

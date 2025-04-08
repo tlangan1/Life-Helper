@@ -87,7 +87,7 @@ export function GlobalStateProvider(props) {
 
   async function fetchDataSource() {
     var response = await fetch(
-      dataServer + `/data_source` // *** The route to check if the server is in production
+      dataServer + `/get_item/data_source` // *** The route to check if the server is in production
     );
     if (!response.ok) {
       alert(

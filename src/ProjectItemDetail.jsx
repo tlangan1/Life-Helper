@@ -164,12 +164,12 @@ export function ProjectItemDetail(props) {
   // *** Helper functions for the code above
   async function fetchItemDetails() {
     var searchParams = JSON.stringify({
-      parent_id: props.parent()[props.parent().length - 1].item_id,
+      //   parent_id: props.parent()[props.parent().length - 1].item_id,
       item_id: props.item().item_id,
     });
 
     var response = await fetch(
-      dataServer + `/${itemType()}s` + "?params=" + searchParams
+      dataServer + `/get_item/${itemType()}` + "?params=" + searchParams
     );
     if (!response.ok) {
       alert(
