@@ -23,6 +23,7 @@ export function LifeHelperApp(props) {
     setItemType,
     parent,
     setParent,
+    refreshData,
     toggleRefreshData,
     itemsView,
     setItemsView,
@@ -36,9 +37,8 @@ export function LifeHelperApp(props) {
 
   var { viewType } = useParams();
   if (!viewType) {
-    viewType = "/";
+    setItemsView("/");
   }
-  setItemsView(viewType);
 
   //   createEffect(pageTitleEffect);
   createEffect(() => (viewType == "/" ? pageTitleEffect() : null));
@@ -130,27 +130,35 @@ export function LifeHelperApp(props) {
     }
   }
 
-  function requestCredentials() {
+  async function requestCredentials() {
     if (navigator.credentials) {
-      navigator.credentials
-        .get({ password: true /*, mediation: "silent" */ })
-        .then((credentials) => {
-          if (credentials) {
-            console.log("Auto login with credentials", credentials);
-            // Use the credentials to log the user in
-            login(
-              {
-                user_name: credentials.id,
-                password: credentials.password,
-              },
-              setUser,
-              dataServer
-            );
-          }
-        })
-        .catch((err) => {
-          console.error("Could not retrieve credentials", err);
+      try {
+        var credentials = await navigator.credentials.get({
+          password: true,
+          mediation: "silent",
         });
+
+        if (credentials) {
+          console.log(
+            `Auto login of type ${credentials.type} for user ${credentials.id}`
+          );
+          // Use the credentials to log the user in
+          await login(
+            {
+              user_name: credentials.id,
+              password: credentials.password,
+            },
+            setUser,
+            dataServer
+          );
+          console.log("calling toggleRefreshData()");
+          console.log(`refreshData before toggle: ${refreshData()}`);
+          toggleRefreshData();
+          console.log(`refreshData after toggle: ${refreshData()}`);
+        }
+      } catch (err) {
+        console.error("Could not retrieve credentials", err);
+      }
     }
   }
 }

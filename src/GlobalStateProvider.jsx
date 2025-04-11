@@ -38,7 +38,7 @@ export function GlobalStateProvider(props) {
   var [filters, setFilters] = createSignal({
     completed_items: "no",
     started_items: "either",
-    deleted_items: "no",
+    aborted_items: "no",
     sort: "item_name",
     direction: "asc",
   });

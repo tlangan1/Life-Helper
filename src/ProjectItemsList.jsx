@@ -85,6 +85,7 @@ export function ProjectItemsList(props) {
 
   // *** Helper functions for the code above
   async function fetchItems(source, { value, refetching }) {
+    console.log(`Fetching data with user ${user().user_login_id}`);
     if (refetching) {
       return value;
     }

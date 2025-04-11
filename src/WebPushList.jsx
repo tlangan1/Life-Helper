@@ -35,8 +35,8 @@ export function WebPushList(props) {
         return "started";
       case "complete":
         return "completed";
-      case "cancel_delete":
-        return "canceled/deleted";
+      case "abort":
+        return "aborted";
       default:
         return verb;
     }
