@@ -44,13 +44,13 @@ export function Filters(props) {
             </select>
           </div>
           <div class="control">
-            <label htmlFor="selDeleted">Deleted Items: </label>
+            <label htmlFor="selAborted">Aborted Items: </label>
             <select
-              name="selDeleted"
-              id="selDeleted"
-              value={filters().deleted_items}
+              name="selAborted"
+              id="selAborted"
+              value={filters().aborted_items}
               onChange={(e) =>
-                setFilters(appendFilter("deleted_items", e.target.value))
+                setFilters(appendFilter("aborted_items", e.target.value))
               }
             >
               <option value="either">Either</option>

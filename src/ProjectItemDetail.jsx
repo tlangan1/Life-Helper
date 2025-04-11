@@ -21,7 +21,7 @@ export function ProjectItemDetail(props) {
     <div class="project-item-detail">
       <div class="item-controls">
         {itemType() == "task" ? (
-          <div class="non-cancel-item-controls">
+          <div class="non-abort-item-controls">
             <div>
               <input
                 type="checkbox"
@@ -58,7 +58,7 @@ export function ProjectItemDetail(props) {
                 }
                 disabled={
                   props.item().completed_dtm ||
-                  props.item().deleted_dtm ||
+                  props.item().aborted_dtm ||
                   !loggedIn() ||
                   props.item().user_login_id != user().user_login_id
                 }
@@ -81,7 +81,7 @@ export function ProjectItemDetail(props) {
                 }
                 disabled={
                   props.item().completed_dtm ||
-                  props.item().deleted_dtm ||
+                  props.item().aborted_dtm ||
                   !loggedIn() ||
                   props.item().user_login_id != user().user_login_id
                 }
@@ -93,7 +93,7 @@ export function ProjectItemDetail(props) {
             </div>
           </div>
         ) : (
-          <div class="non-cancel-item-controls">
+          <div class="non-abort-item-controls">
             <div>
               <input
                 type="checkbox"
@@ -118,17 +118,15 @@ export function ProjectItemDetail(props) {
             </div>
           </div>
         )}
-        <div class="cancel-item-control">
-          <label for={`cancel_delete_item_${props.item().item_id}`}>
-            Cancel/Delete
-          </label>
+        <div class="abort-item-control">
+          <label for={`abort_item_${props.item().item_id}`}>Abort</label>
           <input
             type="checkbox"
-            id={`cancel_delete_item_${props.item().item_id}`}
+            id={`abort_item_${props.item().item_id}`}
             onClick={(event) =>
               affectItemCaller(
                 event.target,
-                "cancel_delete",
+                "abort",
                 itemType(),
                 { item_type: itemType(), item_id: props.item().item_id },
                 dataServer
@@ -136,11 +134,11 @@ export function ProjectItemDetail(props) {
             }
             disabled={
               props.item().completed_dtm ||
-              props.item().deleted_dtm ||
+              props.item().aborted_dtm ||
               !loggedIn() ||
               props.item().user_login_id != user().user_login_id
             }
-            checked={props.item().deleted_dtm}
+            checked={props.item().aborted_dtm}
           ></input>
         </div>
       </div>
@@ -221,7 +219,7 @@ export function ProjectItemDetail(props) {
         case "complete":
           property_value = false;
           break;
-        case "cancel_delete":
+        case "abort":
           break;
         default:
           break;
@@ -234,7 +232,7 @@ export function ProjectItemDetail(props) {
 
   function fullRefreshRequired(operation, filters) {
     return (
-      operation == "cancel_delete" ||
+      operation == "abort" ||
       operation == "start" ||
       operation == "resume" ||
       (operation == "complete" && !filters().include_completed_items)

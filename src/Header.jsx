@@ -16,7 +16,7 @@ export function Header(props) {
     itemsView,
   } = useGlobalState();
 
-  createEffect((user) => console.log("user updated"));
+  //   createEffect((user) => console.log("user updated"));
 
   return (
     <>
