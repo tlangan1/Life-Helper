@@ -41,7 +41,7 @@ export function LifeHelperApp(props) {
   }
 
   //   createEffect(pageTitleEffect);
-  createEffect(() => (viewType == "/" ? pageTitleEffect() : null));
+  createEffect(() => (itemsView() == "/" ? pageTitleEffect() : null));
 
   var [pageTitle, setPageTitle] = createSignal("");
 
@@ -115,7 +115,7 @@ export function LifeHelperApp(props) {
           break;
         case "task":
           setPageTitle(
-            viewType == "my-tasks-view"
+            itemsView() == "my-tasks-view"
               ? "Your tasks"
               : `Tasks to achieve goal "${
                   parent()[parent().length - 1].item_name

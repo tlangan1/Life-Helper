@@ -12,7 +12,8 @@ export function AddItem(props) {
   var [savingItem, setSavingItem] = createSignal(false);
   var [AddExistingItem, setAddExistingItem] = createSignal(false);
   //   var indefiniteArticle = setAppropriateIndefiniteArticle;
-  var { loggedIn, toggleRefreshData, dataServer, itemType } = useGlobalState();
+  var { loggedIn, toggleRefreshData, user, dataServer, itemType } =
+    useGlobalState();
   var minTextLength = 10;
   var maxTextLength = 50;
   var [descriptionLength, setDescriptionLength] = createSignal(0);
@@ -97,6 +98,7 @@ export function AddItem(props) {
                     parent_id: parentID(),
                     item_name: itemName.value,
                     item_description: itemDescription.value,
+                    user_login_id: user().user_login_id,
                   },
                   dataServer
                 );
