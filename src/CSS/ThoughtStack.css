@@ -1,6 +1,7 @@
 .complex-list-item {
   display: flex;
   justify-content: space-between;
+  width: min(700px, 90vw);
 }
 
 .complex-list-item > button {
