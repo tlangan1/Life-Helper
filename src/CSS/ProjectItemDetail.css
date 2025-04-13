@@ -48,13 +48,13 @@ input.editable {
   display: block;
 }
 
-.non-abort-item-controls {
+.non-cancel-item-controls {
   display: flex;
   flex-direction: row;
 }
 
 @media screen and (max-width: 400px) {
-  .non-abort-item-controls {
+  .non-cancel-item-controls {
     display: flex;
     flex-direction: column;
   }
