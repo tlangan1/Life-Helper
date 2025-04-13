@@ -35,7 +35,7 @@ export function ProjectItem(props) {
           classList={{
             completed: item().completed_dtm,
             started: item().started_dtm,
-            aborted: item().aborted_dtm,
+            canceled: item().aborted_dtm,
             paused: item().paused_dtm,
           }}
         >
