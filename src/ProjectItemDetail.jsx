@@ -52,7 +52,11 @@ export function ProjectItemDetail(props) {
                     event.target,
                     event.target.checked ? "pause" : "resume",
                     itemType(),
-                    { item_id: props.item().item_id },
+                    {
+                      item_id: props.item().item_id,
+                      user_login_id: user().user_login_id,
+                    },
+
                     dataServer
                   )
                 }
@@ -75,7 +79,10 @@ export function ProjectItemDetail(props) {
                     event.target,
                     "complete",
                     itemType(),
-                    { item_id: props.item().item_id },
+                    {
+                      item_id: props.item().item_id,
+                      user_login_id: user().user_login_id,
+                    },
                     dataServer
                   )
                 }
@@ -128,7 +135,11 @@ export function ProjectItemDetail(props) {
                 event.target,
                 "cancel",
                 itemType(),
-                { item_type: itemType(), item_id: props.item().item_id },
+                {
+                  item_type: itemType(),
+                  item_id: props.item().item_id,
+                  user_login_id: user().user_login_id,
+                },
                 dataServer
               )
             }
@@ -167,7 +178,7 @@ export function ProjectItemDetail(props) {
     });
 
     var response = await fetch(
-      dataServer + `/get_item/${itemType()}` + "?params=" + searchParams
+      dataServer + `/get_items/${itemType()}` + "?params=" + searchParams
     );
     if (!response.ok) {
       alert(
@@ -175,7 +186,7 @@ export function ProjectItemDetail(props) {
       );
     } else {
       var data = await response.json();
-      return data;
+      return data[0];
     }
   }
 
