@@ -8,3 +8,7 @@
   color: red;
   cursor: pointer;
 }
+
+.complex-list-item > div {
+  display: flex;
+}
