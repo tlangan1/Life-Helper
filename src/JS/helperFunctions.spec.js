@@ -10,7 +10,7 @@ import {
 
 describe("Helper Functions", () => {
   describe("It should find the item associated with the web push", () => {
-    it("should return 2", () => {
+    it("should return 2", ({ expect }) => {
       function items() {
         return [{ item_id: 2 }, { item_id: 3 }];
       }
@@ -41,9 +41,6 @@ describe("Helper Functions", () => {
       expect(fetch).toHaveBeenCalled();
     }, 10000);
   });
-  describe("Some other test", () => {
-    it.todo();
-  });
   describe("Capitalize First Letter", () => {
     it("should capitalize the first letter of a string", () => {
       expect(capitalizeFirstLetter("hello")).toBe("Hello");
@@ -73,5 +70,11 @@ describe("Helper Functions", () => {
     it("should return the count of started items that are not completed", () => {
       expect(startedButNotCompletedCount(items)).toBe(2);
     });
+  });
+});
+
+describe("Vitest Experiments", () => {
+  describe("Some other test", () => {
+    it.todo();
   });
 });

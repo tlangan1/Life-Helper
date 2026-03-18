@@ -75,7 +75,7 @@ export function Login(props) {
           await login(
             { user_name: loginUserID.value, password: loginPassword.value },
             setUser,
-            dataServer
+            dataServer,
           );
           if (!loggedIn()) {
             setLoginFailed(true);
