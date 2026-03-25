@@ -8,16 +8,19 @@ export function AccountMenu(props) {
       <a href="/account">Account</a>
       <Show when={loggedIn()}>
         <a href="/thought_stack">Thought Stack</a>
+        <a
+          onClick={() => {
+            setUser({});
+            setFilters(new Object(filters()));
+          }}
+          href="/"
+        >
+          Log Out
+        </a>
       </Show>
-      <a
-        onClick={() => {
-          setUser({});
-          setFilters(new Object(filters()));
-        }}
-        href="/"
-      >
-        Log Out
-      </a>
+      <Show when={!loggedIn()}>
+        <a href="/login">Log In</a>
+      </Show>
     </div>
   );
 }

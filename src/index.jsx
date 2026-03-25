@@ -1,4 +1,3 @@
-/** @jsxImportSource solid-js */
 /* @refresh reload */
 import "./CSS/index.css";
 
@@ -26,7 +25,7 @@ logToConsole(`window.location.hostname is ${window.location.hostname}`);
 // @ts-ignore
 if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   throw new Error(
-    "Root element not found. Did you forget to add it to your index.html? Or maybe the id attribute got misspelled?"
+    "Root element not found. Did you forget to add it to your index.html? Or maybe the id attribute got misspelled?",
   );
 }
 

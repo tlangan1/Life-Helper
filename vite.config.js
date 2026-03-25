@@ -33,9 +33,14 @@ export default defineConfig({
     }),
   ],
   server: {
-    port: 3002,
+    port: 3000,
   },
   build: {
     target: "esnext",
+  },
+  test: {
+    globals: true,
+    environment: "jsdom",
+    include: ["src/**/*.{test,spec}.{js,jsx,ts,tsx}"],
   },
 });

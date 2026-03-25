@@ -1,4 +1,3 @@
-/** @jsxImportSource solid-js */
 import "./CSS/NotFound.css";
 
 export const NotFound = (props) => {

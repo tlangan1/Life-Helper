@@ -1,4 +1,3 @@
-/** @jsxImportSource solid-js */
 import { createSignal, onMount } from "solid-js";
 import { affectItem } from "./JS/helperFunctions";
 import { useGlobalState } from "./GlobalStateProvider";
@@ -14,7 +13,7 @@ export function Register(props) {
   var registerPassword;
   var registerPasswordConfirmation;
   var [step, setStep] = createSignal("user name creation");
-  var { passwordPattern, dataServer } = useGlobalState();
+  var { passwordPattern, dataServer, showToast } = useGlobalState();
   var [userFieldsValid, setUserFieldsValid] = createSignal({});
   var [pwdFieldsValid, setPwdFieldsValid] = createSignal({});
   var checkUserValidity = initValidityChecker(userFieldsValid);
@@ -274,12 +273,10 @@ export function Register(props) {
       email_address: registerEmailAddress.value,
     };
 
-    var returnedData = await affectItem(action, itemType, sentData, dataServer);
+    var result = await affectItem(action, itemType, sentData, dataServer);
     console.log("After affectItem Call");
-    // TODO: replace the alert with a more user-friendly message
-    // in the DOM, not an alert.
-    if (returnedData.success) navigate("/account");
-    else alert("Registration failed.");
+    if (result.success) navigate("/account");
+    else showToast(result.error || "Registration failed.");
   }
 
   function initValidityChecker(signal) {
@@ -310,7 +307,7 @@ export function Register(props) {
           return;
 
         var span = document.querySelector(
-          `.label-above-wrapper > #${input.id} + span`
+          `.label-above-wrapper > #${input.id} + span`,
         );
         if (!valid) {
           if (input.value.length > 0)
@@ -349,7 +346,7 @@ export function Register(props) {
 
   function setPasswordFocusClass() {
     var passwordFields = Array.from(
-      document.querySelectorAll(`input[autocomplete="new-password"]`)
+      document.querySelectorAll(`input[autocomplete="new-password"]`),
     );
     passwordFields.forEach((input) => {
       input.classList.add("password_focus");

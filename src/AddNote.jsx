@@ -13,7 +13,7 @@ export function AddNote(props) {
 
   var [addingNote, setAddingNote] = createSignal(false);
   var [savingNote, setSavingNote] = createSignal(false);
-  var { loggedIn, dataServer, itemType } = useGlobalState();
+  var { loggedIn, dataServer, itemType, showToast } = useGlobalState();
   createEffect(() => {
     if (addingNote()) document.querySelector("dialog").showModal();
   });
@@ -84,7 +84,7 @@ export function AddNote(props) {
                     parent_id: props.item().item_id,
                     note_text: noteText.innerHTML,
                   },
-                  dataServer
+                  dataServer,
                 );
               }}
               disabled={noteLength() < minTextLength || savingNote()}
@@ -120,15 +120,12 @@ export function AddNote(props) {
   async function affectItemCaller(action, itemType, sentData, dataServer) {
     toggleSavingNote();
     try {
-      var returnedData = await affectItem(
-        action,
-        itemType,
-        sentData,
-        dataServer
-      );
-      if (returnedData.success) {
+      var result = await affectItem(action, itemType, sentData, dataServer);
+      if (result.success) {
         toggleAddingNote();
         props.toggleRefreshNotes();
+      } else {
+        showToast(result.error);
       }
     } finally {
       toggleSavingNote();
