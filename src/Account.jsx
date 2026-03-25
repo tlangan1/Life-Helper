@@ -1,4 +1,3 @@
-/** @jsxImportSource solid-js */
 import "./CSS/Register_Login.css";
 
 import { useGlobalState } from "./GlobalStateProvider";

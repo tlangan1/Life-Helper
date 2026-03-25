@@ -21,6 +21,7 @@ export function ProjectItemsList(props) {
     filters,
     user,
     itemsView,
+    showToast,
   } = useGlobalState();
   const [items, { mutate, refetch }] = createResource(refreshData, fetchItems);
 
@@ -111,11 +112,11 @@ export function ProjectItemsList(props) {
       dataServer +
         `/get_items/${itemType()}s` +
         "?params=" +
-        JSON.stringify(searchParams)
+        JSON.stringify(searchParams),
     );
     if (!response.ok) {
-      alert(
-        `Server Error: status is ${response.status} reason is ${response.statusText}`
+      showToast(
+        `Server Error: status is ${response.status} reason is ${response.statusText}`,
       );
     } else {
       return await response.json();

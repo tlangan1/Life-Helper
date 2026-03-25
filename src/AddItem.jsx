@@ -12,7 +12,7 @@ export function AddItem(props) {
   var [savingItem, setSavingItem] = createSignal(false);
   var [AddExistingItem, setAddExistingItem] = createSignal(false);
   //   var indefiniteArticle = setAppropriateIndefiniteArticle;
-  var { loggedIn, toggleRefreshData, user, dataServer, itemType } =
+  var { loggedIn, toggleRefreshData, user, dataServer, itemType, showToast } =
     useGlobalState();
   var minTextLength = 10;
   var maxTextLength = 50;
@@ -100,7 +100,7 @@ export function AddItem(props) {
                     item_description: itemDescription.value,
                     user_login_id: user().user_login_id,
                   },
-                  dataServer
+                  dataServer,
                 );
               }}
             >
@@ -161,15 +161,12 @@ export function AddItem(props) {
   async function affectItemCaller(action, itemType, sentData, dataServer) {
     toggleSavingItem();
     try {
-      var returnedData = await affectItem(
-        action,
-        itemType,
-        sentData,
-        dataServer
-      );
-      if (returnedData.success) {
+      var result = await affectItem(action, itemType, sentData, dataServer);
+      if (result.success) {
         toggleAddingItem();
         toggleRefreshData();
+      } else {
+        showToast(result.error);
       }
     } finally {
       toggleSavingItem();

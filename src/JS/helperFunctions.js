@@ -45,20 +45,21 @@ export async function login(sentData, setUser, dataServer) {
   //     password: loginPassword.value,
   //   };
 
-  var returnedData = await affectItem(
-    "check",
-    "user_login",
-    sentData,
-    dataServer
-  );
+  var result = await affectItem("check", "user_login", sentData, dataServer);
 
-  returnedData.user_working == "true"
-    ? (returnedData.user_working = true)
-    : (returnedData.user_working = false);
+  var returnedData = result.data;
 
-  if (returnedData.success) {
-    setUser(returnedData);
+  if (result.success && returnedData) {
+    returnedData.user_working == "true"
+      ? (returnedData.user_working = true)
+      : (returnedData.user_working = false);
+
+    if (returnedData.success) {
+      setUser(returnedData);
+    }
   }
+
+  return result;
 }
 
 export function fetchUserElapsedDailyWorkTime(user_login_id) {
@@ -70,51 +71,82 @@ export function fetchUserElapsedDailyWorkTime(user_login_id) {
   return returnedData;
 }
 
-export async function affectItem(action, itemType, data, dataServer, user) {
-  var endPoint;
-
+export async function affectItem(action, itemType, payload, dataServer, user) {
   try {
-    endPoint = `/${action}/${itemType}`;
-
-    if (user) data.user_login_id = user().user_login_id;
+    const endPoint = `/${action}/${itemType}`;
+    const requestPayload = user
+      ? { ...payload, user_login_id: user().user_login_id }
+      : payload;
+    const timeoutSignal =
+      typeof AbortSignal !== "undefined" &&
+      typeof AbortSignal.timeout === "function"
+        ? AbortSignal.timeout(15000)
+        : undefined;
 
     // request options
     const options = {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify(requestPayload),
       headers: {
         "Content-Type": "application/json",
       },
-      //   signal: AbortSignal.timeout(15000),
+      signal: timeoutSignal,
     };
 
     // send POST request
-    var response = await fetch(dataServer + endPoint, options);
-    var contentType = response.headers.get("content-type");
-    var data;
-    if (contentType && contentType.includes("application/json")) {
-      data = await response.json();
-    } else {
-      data = await response.text(); // Handle non-JSON response
-      if (data == "OK") {
-        data = { success: true };
+    const response = await fetch(dataServer + endPoint, options);
+    const contentType = response.headers.get("content-type") || "";
+    let responseData = null;
+    let responseText = null;
+
+    if (response.status !== 204) {
+      if (contentType.includes("application/json")) {
+        responseData = await response.json();
+      } else {
+        responseText = await response.text();
+        if (responseText == "OK") {
+          responseData = { success: true };
+        }
       }
     }
-    if (!response.ok) {
-      alert(
-        `An error occurred with this request. Please try again. If the problem persists, contact the system administrator. The response status code is ${response.status}. ${response.statusText}`
-      );
-      return data;
-    } else {
-      return data;
-    }
-  } catch (error) {
-    alert(
-      `An error occurred within the body of the "affectItem" function. Please try again. If the problem persists, contact the system administrator. The error message is ${error.message}`
-    );
 
-    return { success: false };
+    const payloadSuccess =
+      typeof responseData?.success == "boolean"
+        ? responseData.success
+        : response.ok;
+    const success = response.ok && payloadSuccess;
+
+    return {
+      success: success /*  tells you if the business operation succeeded */,
+      ok: response.ok /* tells you if the network/protocol request succeeded */,
+      status: response.status,
+      data: responseData,
+      text: responseText,
+      error: success
+        ? null
+        : buildErrorMessage(response, responseData, responseText),
+    };
+  } catch (error) {
+    return {
+      success: false /*  tells you if the business operation succeeded */,
+      ok: false /* tells you if the network/protocol request succeeded */,
+      status: null,
+      data: null,
+      text: null,
+      error:
+        error?.name == "TimeoutError"
+          ? "The request timed out. Please try again."
+          : `An error occurred within the body of the \"affectItem\" function. Please try again. If the problem persists, contact the system administrator. The error message is ${error.message}`,
+    };
   }
+}
+
+function buildErrorMessage(response, responseData, responseText) {
+  if (responseData?.error) return responseData.error;
+  if (responseData?.message) return responseData.message;
+  if (responseText && responseText != "OK") return responseText;
+
+  return `An error occurred with this request. Please try again. If the problem persists, contact the system administrator. The response status code is ${response.status}. ${response.statusText}`;
 }
 
 /* *** Preliminary Context Menu Stuff *** */

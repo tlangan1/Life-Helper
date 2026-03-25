@@ -1,5 +1,3 @@
-/** @jsxImportSource solid-js */
-
 import "./CSS/LifeHelperApp.css";
 
 import { createSignal, createEffect, Switch } from "solid-js";
@@ -109,7 +107,7 @@ export function LifeHelperApp(props) {
           setPageTitle(
             `Goals to achieve objective "${
               parent()[parent().length - 1].item_name
-            }"`
+            }"`,
           );
           setVisibleClassValue("visible");
           break;
@@ -119,7 +117,7 @@ export function LifeHelperApp(props) {
               ? "Your tasks"
               : `Tasks to achieve goal "${
                   parent()[parent().length - 1].item_name
-                }"`
+                }"`,
           );
           setVisibleClassValue("visible");
 
@@ -140,7 +138,7 @@ export function LifeHelperApp(props) {
 
         if (credentials) {
           console.log(
-            `Auto login of type ${credentials.type} for user ${credentials.id}`
+            `Auto login of type ${credentials.type} for user ${credentials.id}`,
           );
           // Use the credentials to log the user in
           await login(
@@ -149,7 +147,7 @@ export function LifeHelperApp(props) {
               password: credentials.password,
             },
             setUser,
-            dataServer
+            dataServer,
           );
           console.log("calling toggleRefreshData()");
           console.log(`refreshData before toggle: ${refreshData()}`);

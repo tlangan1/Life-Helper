@@ -14,6 +14,7 @@ export function ProjectItemDetail(props) {
     dataServer,
     toggleRefreshData,
     filters,
+    showToast,
   } = useGlobalState();
   var [notesRequested, setNotesRequested] = createSignal(false);
 
@@ -35,7 +36,7 @@ export function ProjectItemDetail(props) {
                       item_id: props.item().item_id,
                       user_login_id: user().user_login_id,
                     },
-                    dataServer
+                    dataServer,
                   )
                 }
                 disabled={props.item().started_dtm || !loggedIn()}
@@ -57,7 +58,7 @@ export function ProjectItemDetail(props) {
                       user_login_id: user().user_login_id,
                     },
 
-                    dataServer
+                    dataServer,
                   )
                 }
                 disabled={
@@ -83,7 +84,7 @@ export function ProjectItemDetail(props) {
                       item_id: props.item().item_id,
                       user_login_id: user().user_login_id,
                     },
-                    dataServer
+                    dataServer,
                   )
                 }
                 disabled={
@@ -140,7 +141,7 @@ export function ProjectItemDetail(props) {
                   item_id: props.item().item_id,
                   user_login_id: user().user_login_id,
                 },
-                dataServer
+                dataServer,
               )
             }
             disabled={
@@ -178,11 +179,11 @@ export function ProjectItemDetail(props) {
     });
 
     var response = await fetch(
-      dataServer + `/get_items/${itemType()}` + "?params=" + searchParams
+      dataServer + `/get_items/${itemType()}` + "?params=" + searchParams,
     );
     if (!response.ok) {
-      alert(
-        `Server Error: status is ${response.status} reason is ${response.statusText}`
+      showToast(
+        `Server Error: status is ${response.status} reason is ${response.statusText}`,
       );
     } else {
       var data = await response.json();
@@ -195,20 +196,20 @@ export function ProjectItemDetail(props) {
     updateType,
     itemType,
     sentData,
-    dataServer
+    dataServer,
   ) {
     sentData.update_type = updateType;
-    var returnedData = await affectItem(
+    var result = await affectItem(
       "update",
       itemType,
       sentData,
       dataServer,
-      user
+      user,
     );
     // Granular update strategy.
     // Return the success or failure of the update operation.
     // If successful, fetch the item and update the item signal.
-    if (returnedData.success) {
+    if (result.success) {
       if (fullRefreshRequired(updateType, filters)) {
         toggleRefreshData();
       } else {
@@ -237,6 +238,7 @@ export function ProjectItemDetail(props) {
       }
       setUser(updateUser(property_name, property_value));
     } else {
+      showToast(result.error);
       target.checked = updateType == "resume" ? true : false;
     }
   }

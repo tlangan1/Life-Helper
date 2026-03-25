@@ -1,4 +1,3 @@
-/** @jsxImportSource solid-js */
 import { createSignal } from "solid-js";
 
 import { /* affectItem, */ login } from "./JS/helperFunctions";
@@ -7,7 +6,8 @@ import { useGlobalState } from "./GlobalStateProvider";
 export function Login(props) {
   var loginUserID;
   var loginPassword;
-  var { setUser, loggedIn, passwordPattern, dataServer } = useGlobalState();
+  var { setUser, loggedIn, passwordPattern, dataServer, showToast } =
+    useGlobalState();
   var [passwordVisible, setPasswordVisible] = createSignal(false);
   var [credentialsValid, setCredentialsValid] = createSignal(false);
   var [loginFailed, setLoginFailed] = createSignal(false);
@@ -72,13 +72,18 @@ export function Login(props) {
       <button
         class="action-button"
         onClick={async (e) => {
-          await login(
+          const result = await login(
             { user_name: loginUserID.value, password: loginPassword.value },
             setUser,
             dataServer,
           );
-          if (!loggedIn()) {
+          if (!result.success) {
             setLoginFailed(true);
+            if (!result.ok && result.error) {
+              showToast(result.error);
+            }
+          } else {
+            setLoginFailed(false);
           }
         }}
         disabled={!credentialsValid()}

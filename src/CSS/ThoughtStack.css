@@ -12,3 +12,11 @@
 .complex-list-item > div {
   display: flex;
 }
+
+ol > li {
+  margin-bottom: 0.5rem;
+}
+
+ol > li:nth-child(2n) {
+  background-color: rgb(240, 240, 240);
+}

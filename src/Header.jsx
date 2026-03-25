@@ -1,4 +1,3 @@
-/** @jsxImportSource solid-js */
 import { useGlobalState } from "./GlobalStateProvider";
 import { createEffect, createSignal } from "solid-js";
 import { AccountMenu } from "./AccountMenu";

@@ -8,7 +8,9 @@
     "preview": "vite preview --host",
     "build": "vite build",
     "serve": "vite preview",
-    "test": "vitest --ui"
+    "test": "vitest run",
+    "test:ui": "vitest --ui",
+    "test:watch": "vitest"
   },
   "scripts-comments": {
     "start": "Starts Vite in development mode",
@@ -16,7 +18,9 @@
     "preview": "Previews the production build",
     "build": "Compiles and minifies for production",
     "serve": "Locally preview production build",
-    "test": "Runs tests using Vitest"
+    "test": "Runs tests once using Vitest",
+    "test:ui": "Runs Vitest with browser UI",
+    "test:watch": "Runs Vitest in watch mode"
   },
   "license": "MIT",
   "devDependencies": {

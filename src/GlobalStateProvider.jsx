@@ -1,15 +1,9 @@
-/** @jsxImportSource solid-js */
-import {
-  createSignal,
-  createContext,
-  useContext,
-  createEffect,
-} from "solid-js";
+import { createSignal, createContext, useContext, onCleanup } from "solid-js";
 
 const GlobalStateContext = createContext();
 
 console.log(
-  `${window.location.hostname}:${parseInt(window.location.port) + 1}`
+  `${window.location.hostname}:${parseInt(window.location.port) + 1}`,
 );
 
 export function GlobalStateProvider(props) {
@@ -46,8 +40,15 @@ export function GlobalStateProvider(props) {
   var [itemsView, setItemsView] = createSignal("/");
 
   var [dataSource, setDataSource] = createSignal("unknown");
+  var [toastMessage, setToastMessage] = createSignal("");
+  var [toastType, setToastType] = createSignal("error");
+  let toastTimerID;
 
   fetchDataSource();
+
+  onCleanup(() => {
+    if (toastTimerID) clearTimeout(toastTimerID);
+  });
 
   const globalState = {
     user: user,
@@ -72,11 +73,21 @@ export function GlobalStateProvider(props) {
     // *** the default view "/" and the my-tasks view "/my-tasks-view".
     itemsView: itemsView,
     setItemsView: setItemsView,
+    showToast: showToast,
   };
 
   return (
     <GlobalStateContext.Provider value={globalState}>
       {props.children}
+      {toastMessage() ? (
+        <div
+          class={`app-toast app-toast-${toastType()}`}
+          role="status"
+          aria-live="polite"
+        >
+          {toastMessage()}
+        </div>
+      ) : null}
     </GlobalStateContext.Provider>
   );
   /* *** Helper functions *** */
@@ -86,17 +97,34 @@ export function GlobalStateProvider(props) {
   }
 
   async function fetchDataSource() {
+    // *** This function checks if the server is pointing to the production
+    // *** database, "life_helper" or the development database, "test_life_helper".
+    // *** This is important because the production database contains
+    // *** real user data such as my plans to enhance this application.
+    // ***
+    // *** the "get_item" part of the route is not actually used by the server
+    // *** it consults the "data_source" portion only.
     var response = await fetch(
-      dataServer + `/get_item/data_source` // *** The route to check if the server is in production
+      dataServer + `/get_item/data_source`, // *** The route to check if the server is in production
     );
     if (!response.ok) {
-      alert(
-        `Server Error: status is ${response.status} reason is ${response.statusText}`
+      showToast(
+        `Server Error: status is ${response.status} reason is ${response.statusText}`,
       );
     } else {
       var data = await response.json();
       setDataSource(data.dataSource);
     }
+  }
+
+  function showToast(message, type = "error") {
+    setToastType(type);
+    setToastMessage(message);
+
+    if (toastTimerID) clearTimeout(toastTimerID);
+    toastTimerID = setTimeout(() => {
+      setToastMessage("");
+    }, 5000);
   }
 }
 

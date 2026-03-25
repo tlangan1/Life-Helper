@@ -4,7 +4,7 @@ import { useGlobalState } from "./GlobalStateProvider";
 import { AddNote } from "./AddNote";
 
 export function NoteList(props) {
-  var { mode, itemType, dataServer } = useGlobalState();
+  var { mode, itemType, dataServer, showToast } = useGlobalState();
   var [refreshNotes, setRefreshNotes] = createSignal(0);
   const [notes, { mutate, refetch }] = createResource(refreshNotes, fetchNotes);
 
@@ -44,11 +44,11 @@ export function NoteList(props) {
     var searchParams = { item_id: props.item().item_id, item_type: itemType() };
 
     var response = await fetch(
-      `${dataServer}/get_items/notes?params=${JSON.stringify(searchParams)}`
+      `${dataServer}/get_items/notes?params=${JSON.stringify(searchParams)}`,
     );
     if (!response.ok) {
-      alert(
-        `Server Error: status is ${response.status} reason is ${response.statusText}`
+      showToast(
+        `Server Error: status is ${response.status} reason is ${response.statusText}`,
       );
     } else {
       var data = await response.json();

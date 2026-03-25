@@ -13,7 +13,7 @@ export function AddThought(props) {
 
   //   var [addingThought, setAddingThought] = createSignal(false);
   var [savingThought, setSavingThought] = createSignal(false);
-  var { user, dataServer } = useGlobalState();
+  var { user, dataServer, showToast } = useGlobalState();
   createEffect(() => {
     if (props.addOrUpdateRequested())
       document.querySelector("dialog").showModal();
@@ -96,7 +96,7 @@ export function AddThought(props) {
                     thought: thoughtText.innerHTML,
                     update_type: props.addOrUpdateRequested(),
                   },
-                  dataServer
+                  dataServer,
                 );
               }}
               disabled={thoughtLength() < minTextLength || savingThought()}
@@ -130,14 +130,11 @@ export function AddThought(props) {
   async function affectItemCaller(action, itemType, sentData, dataServer) {
     toggleSavingThought();
     try {
-      var returnedData = await affectItem(
-        action,
-        itemType,
-        sentData,
-        dataServer
-      );
-      if (returnedData.success) {
+      var result = await affectItem(action, itemType, sentData, dataServer);
+      if (result.success) {
         props.setAddOrUpdateRequested(false);
+      } else {
+        showToast(result.error);
       }
     } finally {
       props.toggleRefreshThoughts();

@@ -8,11 +8,11 @@ import { AddThought } from "./AddThought";
 import { affectItem } from "./JS/helperFunctions";
 
 export function ThoughtStack(props) {
-  var { user, dataServer } = useGlobalState();
+  var { user, dataServer, showToast } = useGlobalState();
   var [refreshThoughts, setRefreshThoughts] = createSignal(true);
   const [thoughts, { mutate, refetch }] = createResource(
     refreshThoughts,
-    fetchThoughts
+    fetchThoughts,
   );
 
   // The signal addOrUpdateRequested has three possible values: "add", "update", or false.
@@ -94,11 +94,11 @@ export function ThoughtStack(props) {
     var searchParams = { user_login_id: user().user_login_id };
 
     var response = await fetch(
-      `${dataServer}/get_items/thoughts?params=${JSON.stringify(searchParams)}`
+      `${dataServer}/get_items/thoughts?params=${JSON.stringify(searchParams)}`,
     );
     if (!response.ok) {
-      alert(
-        `Server Error: status is ${response.status} reason is ${response.statusText}`
+      showToast(
+        `Server Error: status is ${response.status} reason is ${response.statusText}`,
       );
     } else {
       var data = await response.json();
@@ -109,24 +109,17 @@ export function ThoughtStack(props) {
   async function deleteThought(e, thought_id) {
     var dataSent = { thought_id: thought_id, update_type: "delete" };
 
-    var dataReturned = await affectItem(
-      "update",
-      "thought",
-      dataSent,
-      dataServer
-    );
+    var result = await affectItem("update", "thought", dataSent, dataServer);
 
-    if (dataReturned.success) {
+    if (result.success) {
       // Remove the thought from the list
       var newThoughts = thoughts().filter(
-        (thought) => thought.thought_id != thought_id
+        (thought) => thought.thought_id != thought_id,
       );
       mutate(newThoughts);
     }
-    if (!dataReturned.success) {
-      alert(
-        `An error occurred with this request. Please try again. If the problem persists, contact the system administrator. The response status code is ${response.status}. ${response.statusText}`
-      );
+    if (!result.success) {
+      showToast(result.error);
     }
   }
 }

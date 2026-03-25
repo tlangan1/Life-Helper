@@ -23,22 +23,49 @@ describe("Helper Functions", () => {
       var route = "not a valid route";
       const result = await affectItem(route);
       expect(result.success).toBe(false);
+      expect(result.error).toBeTruthy();
     });
     it("should call fetch for a valid route", async () => {
       const fetch = vi.fn(
-        (route, options) => new Promise((resolve) => resolve({ success: true }))
+        () =>
+          new Promise((resolve) =>
+            resolve({
+              ok: true,
+              status: 200,
+              statusText: "OK",
+              headers: {
+                get: () => "application/json",
+              },
+              json: () => Promise.resolve({ success: true }),
+            }),
+          ),
       );
       window.fetch = fetch;
       const result = await affectItem("add", "item", {}, "http://localhost");
       expect(fetch).toHaveBeenCalled();
+      expect(result.success).toBe(true);
+      expect(result.data).toStrictEqual({ success: true });
     }, 10000);
-    it("should call fetch for a valid route", async () => {
+    it("should normalize a text OK response", async () => {
       const fetch = vi.fn(
-        (route, options) => new Promise((resolve) => resolve({ success: true }))
+        () =>
+          new Promise((resolve) =>
+            resolve({
+              ok: true,
+              status: 200,
+              statusText: "OK",
+              headers: {
+                get: () => "text/plain",
+              },
+              text: () => Promise.resolve("OK"),
+            }),
+          ),
       );
       window.fetch = fetch;
       const result = await affectItem("add", "item", {}, "http://localhost");
-      expect(fetch).toHaveBeenCalled();
+      expect(result.success).toBe(true);
+      expect(result.text).toBe("OK");
+      expect(result.data).toStrictEqual({ success: true });
     }, 10000);
   });
   describe("Capitalize First Letter", () => {
