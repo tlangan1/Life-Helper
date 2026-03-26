@@ -10,20 +10,39 @@ import { createSignal } from "solid-js";
 import { logToConsole } from "./helperFunctions";
 
 export var [webPushList, setWebPushList] = createSignal([]);
+export var [isPageControlled, setIsPageControlled] = createSignal(
+  typeof navigator !== "undefined" && !!navigator.serviceWorker?.controller,
+);
 
-export const askWebPushPermission = async (message) => {
-  await requestNotificationPermission(message);
+export const askWebPushPermission = async () => {
+  return await requestNotificationPermission();
 };
 
 export const registerServiceWorker = async (msg) => {
   if (BrowserSupports()) {
     logToConsole("starting registerServiceWorker");
-    if (requestNotificationPermission(msg)) {
-      await navigator.serviceWorker.register("/service_worker.js", {
-        updateViaCache: "none",
-      });
+    if (await requestNotificationPermission()) {
+      const registration = await navigator.serviceWorker.register(
+        "/service_worker.js",
+        {
+          updateViaCache: "none",
+        },
+      );
+      const readyRegistration = await navigator.serviceWorker.ready;
+      const activeWorker =
+        readyRegistration.active || registration.active || registration.waiting;
 
-      logToConsole("Service Worker registered");
+      if (activeWorker) {
+        activeWorker.postMessage({
+          message: msg,
+        });
+        setIsPageControlled(true);
+        logToConsole("Service Worker registered and initialized");
+      } else {
+        logToConsole(
+          "Service Worker registered but no active worker was found",
+        );
+      }
     } else {
       logToConsole("User denied permission to send push notifications");
     }
@@ -49,8 +68,9 @@ navigator.serviceWorker.addEventListener(
   function onControllerChange(event) {
     /* *** Commented out 7/31/2024 *** */
     // svcWorker = navigator.serviceWorker.controller;
+    setIsPageControlled(!!navigator.serviceWorker.controller);
     logToConsole("Controller changed");
-  }
+  },
 );
 
 navigator.serviceWorker.addEventListener("message", (event) => {
@@ -69,7 +89,7 @@ navigator.serviceWorker.addEventListener("message", (event) => {
   }
   if (event.data && event.data.type === "Service Worker Activated") {
     logToConsole(
-      "The service worker is notifying the page that it is activated."
+      "The service worker is notifying the page that it is activated.",
     );
   }
 });
@@ -88,7 +108,7 @@ function BrowserSupports() {
   return true;
 }
 
-async function requestNotificationPermission(msg) {
+async function requestNotificationPermission() {
   logToConsole("starting requestNotificationPermission");
   const permission = await window.Notification.requestPermission();
   // value of permission can be 'granted', 'default', 'denied'
@@ -96,14 +116,5 @@ async function requestNotificationPermission(msg) {
   // default: user has dismissed the notification permission popup by clicking on x
   // denied: user has denied the request.
 
-  // I am sending this message to the service worker to provide the url
-  // to use for the backend server. The service worker needs this to
-  // send the push subscription to the database. I chose to not hard code
-  // this url in both the web site and in the service worker and used this
-  // strategy instead
-  if (permission == "granted") {
-    sendMessage(msg);
-    return true;
-  }
-  return false;
+  return permission == "granted";
 }

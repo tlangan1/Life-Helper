@@ -3,7 +3,11 @@ import { reformatMySQLDate } from "./JS/helperFunctions";
 
 import "./CSS/Input_Controls.css";
 
-import { sendMessage, registerServiceWorker } from "./JS/index.js";
+import {
+  sendMessage,
+  registerServiceWorker,
+  isPageControlled,
+} from "./JS/index.js";
 
 export function AccountForm() {
   var { user, dataServer } = useGlobalState();
@@ -56,7 +60,7 @@ export function AccountForm() {
               dataServer: dataServer,
             })
           }
-          disabled={navigator.serviceWorker.controller}
+          disabled={isPageControlled()}
         >
           Request A Web Push Subscription
         </button>
