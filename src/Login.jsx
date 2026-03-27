@@ -30,7 +30,7 @@ export function Login(props) {
                 id="login_user_id"
                 required
                 type="text"
-                autocomplete="current username"
+                autocomplete="username"
                 placeholder=""
                 title="Enter your ID."
                 minLength="10"
