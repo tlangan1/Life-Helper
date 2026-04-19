@@ -1,9 +1,10 @@
 import "./CSS/ProjectItemDetail.css";
 
 import { useGlobalState } from "./GlobalStateProvider";
-import { createSignal } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import { affectItem } from "./JS/helperFunctions";
 import { NoteList } from "./NotesList";
+import { ReassignTaskModal } from "./ReassignTaskModal";
 
 export function ProjectItemDetail(props) {
   var {
@@ -17,6 +18,9 @@ export function ProjectItemDetail(props) {
     showToast,
   } = useGlobalState();
   var [notesRequested, setNotesRequested] = createSignal(false);
+  var [reassignRequested, setReassignRequested] = createSignal(false);
+  var [reassignUsers, setReassignUsers] = createSignal([]);
+  var [loadingReassignUsers, setLoadingReassignUsers] = createSignal(false);
 
   return (
     <div class="project-item-detail">
@@ -99,6 +103,16 @@ export function ProjectItemDetail(props) {
                 Complete
               </label>
             </div>
+            <div>
+              <button
+                class="action-button inline"
+                title="Reassign this task to another user"
+                onClick={openReassignModal}
+                disabled={!canReassign() || loadingReassignUsers()}
+              >
+                {loadingReassignUsers() ? "Loading users..." : "Reassign"}
+              </button>
+            </div>
           </div>
         ) : (
           <div class="non-cancel-item-controls">
@@ -168,6 +182,15 @@ export function ProjectItemDetail(props) {
           <NoteList item={props.item} />
         </Show>
       </div>
+      <ReassignTaskModal
+        open={reassignRequested}
+        onClose={() => setReassignRequested(false)}
+        task={props.item}
+        users={reassignUsers}
+        currentUser={user}
+        showToast={showToast}
+        onSubmit={submitReassignment}
+      />
     </div>
   );
 
@@ -241,6 +264,62 @@ export function ProjectItemDetail(props) {
       showToast(result.error);
       target.checked = updateType == "resume" ? true : false;
     }
+  }
+
+  function canReassign() {
+    return (
+      itemType() == "task" &&
+      loggedIn() &&
+      !props.item().completed_dtm &&
+      !props.item().canceled_dtm &&
+      props.item().user_login_id == user().user_login_id
+    );
+  }
+
+  async function openReassignModal() {
+    if (!canReassign()) return;
+
+    setLoadingReassignUsers(true);
+    try {
+      await loadAssignableUsers();
+      setReassignRequested(true);
+    } finally {
+      setLoadingReassignUsers(false);
+    }
+  }
+
+  async function loadAssignableUsers() {
+    var response = await fetch(
+      `${dataServer}/get_items/user_logins?params=${JSON.stringify({})}`,
+    );
+    if (!response.ok) {
+      showToast(
+        `Server Error: status is ${response.status} reason is ${response.statusText}`,
+      );
+      setReassignUsers([]);
+      return;
+    }
+
+    var users = await response.json();
+    var normalizedUsers = users.map((u) => ({
+      user_login_id: u.user_login_id,
+      display_name: u.display_name || u.user_name || "Unknown user",
+      email_address: u.email_address || "",
+      active: u.active == undefined ? true : !!u.active,
+      workload: u.workload ?? 0,
+    }));
+
+    setReassignUsers(normalizedUsers);
+  }
+
+  async function submitReassignment(payload) {
+    var result = await affectItem("update", "task", payload, dataServer, user);
+    if (result.success) {
+      toggleRefreshData();
+      return { success: true };
+    }
+
+    return { success: false, error: result.error };
   }
 
   function fullRefreshRequired(operation, filters) {

@@ -3,5 +3,5 @@ dist
 cache-examples
 js/external
 sw.js
-commit-msg.md
+commit-msg*.md
 *.txt
