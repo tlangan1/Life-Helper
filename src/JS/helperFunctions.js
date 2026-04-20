@@ -62,6 +62,8 @@ export async function login(sentData, setUser, dataServer) {
   return result;
 }
 
+/* *** This function is never really used in that it is called *** */
+/* *** on the click event of the icon but the data is not used *** */
 export function fetchUserElapsedDailyWorkTime(user_login_id) {
   var data = {
     user_login_id: user_login_id,

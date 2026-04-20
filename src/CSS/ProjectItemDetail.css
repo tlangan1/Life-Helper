@@ -53,6 +53,44 @@ input.editable {
   flex-direction: row;
 }
 
+.reassign-modal {
+  width: min(42rem, 95vw);
+}
+
+.reassign-summary {
+  margin-bottom: 0.75rem;
+}
+
+.reassign-user-list {
+  max-height: 12rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0.5rem 0 0.75rem;
+}
+
+.reassign-user-option {
+  text-align: left;
+  width: 100%;
+  border: 1px solid #d0d0d0;
+  border-radius: 0.4rem;
+  padding: 0.45rem 0.6rem;
+  background: #ffffff;
+}
+
+.reassign-user-option.selected {
+  border-color: #008fb3;
+  background: #e9f8fc;
+}
+
+.reassign-empty {
+  border: 1px dashed #c9c9c9;
+  border-radius: 0.4rem;
+  padding: 0.6rem;
+  color: #666;
+}
+
 @media screen and (max-width: 400px) {
   .non-cancel-item-controls {
     display: flex;
