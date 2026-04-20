@@ -1,3 +1,6 @@
+/* *** To see what was added or changed relative to the initial implementation of *** */
+/* *** task reassignment run the following command in the terminal                *** */
+// git diff 7019acb 7d10ccc -- src/ProjectItemDetail.jsx > diff.txt
 import "./CSS/ProjectItemDetail.css";
 
 import { useGlobalState } from "./GlobalStateProvider";
@@ -303,9 +306,8 @@ export function ProjectItemDetail(props) {
     var users = await response.json();
     var normalizedUsers = users.map((u) => ({
       user_login_id: u.user_login_id,
-      display_name: u.display_name || u.user_name || "Unknown user",
+      full_name: u.full_name || "Unknown user",
       email_address: u.email_address || "",
-      active: u.active == undefined ? true : !!u.active,
       workload: u.workload ?? 0,
     }));
 

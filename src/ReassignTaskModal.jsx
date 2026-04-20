@@ -4,9 +4,9 @@ export function ReassignTaskModal(props) {
   // props:
   // open() -> boolean
   // onClose() -> void
-  // task() -> { item_id, item_name, user_login_id, display_name, due_dtm, priority }
-  // users() -> [{ user_login_id, display_name, email_address, active, workload }]
-  // currentUser() -> { user_login_id, display_name }
+  // task() -> { item_id, item_name, user_login_id, full_name, due_dtm, priority }
+  // users() -> [{ user_login_id, full_name, email_address, workload }]
+  // currentUser() -> { user_login_id, full_name }
   // showToast(message, type?) -> void
   // onSubmit(payload) -> Promise<{ success, error }>
 
@@ -26,15 +26,11 @@ export function ReassignTaskModal(props) {
     const q = query().trim().toLowerCase();
     return props
       .users()
-      .filter((u) => u.active)
       .filter((u) => u.user_login_id !== props.task()?.user_login_id)
       .filter((u) =>
         q.length === 0
           ? true
-          : [u.display_name, u.email_address]
-              .join(" ")
-              .toLowerCase()
-              .includes(q),
+          : [u.full_name, u.email_address].join(" ").toLowerCase().includes(q),
       )
       .sort((a, b) => (a.workload ?? 0) - (b.workload ?? 0));
   });
@@ -75,14 +71,20 @@ export function ReassignTaskModal(props) {
         reason: reason().trim() || null,
         notify_new_assignee: notifyNewAssignee(),
         notify_previous_assignee: notifyPreviousAssignee(),
-        changed_by_user_login_id: props.currentUser().user_login_id,
+        /*
+          This is not necessary as affectItem will append the current user
+          to the payload, and allowing the client to specify this could lead to spoofing.
+          If there is a need to specify this for auditing purposes
+          , it should be done on the server side based on the authenticated user.
+        */
+        // changed_by_user_login_id: props.currentUser().user_login_id,
       };
 
       const result = await props.onSubmit(payload);
 
       if (result.success) {
         props.showToast(
-          `Task reassigned to ${selectedUser()?.display_name || "new owner"}`,
+          `Task reassigned to ${selectedUser()?.full_name || "new owner"}`,
           "success",
         );
         props.onClose();
@@ -105,7 +107,7 @@ export function ReassignTaskModal(props) {
           </div>
           <div>
             <strong>Current assignee:</strong>{" "}
-            {currentAssignee()?.display_name || "Unassigned"}
+            {currentAssignee()?.full_name || "Unassigned"}
           </div>
         </div>
 
@@ -134,7 +136,7 @@ export function ReassignTaskModal(props) {
                   }`}
                   onClick={() => setNewAssigneeId(u.user_login_id)}
                 >
-                  <div>{u.display_name}</div>
+                  <div>{u.full_name}</div>
                   <small>
                     {u.email_address} • workload: {u.workload ?? 0}
                   </small>
