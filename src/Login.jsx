@@ -1,13 +1,22 @@
 import { createSignal } from "solid-js";
+import { useNavigate } from "@solidjs/router";
 
 import { /* affectItem, */ login } from "./JS/helperFunctions";
 import { useGlobalState } from "./GlobalStateProvider";
 
 export function Login(props) {
+  const navigate = useNavigate();
   var loginUserID;
   var loginPassword;
-  var { setUser, loggedIn, passwordPattern, dataServer, showToast } =
-    useGlobalState();
+  var {
+    setUser,
+    passwordPattern,
+    dataServer,
+    showToast,
+    setItemsView,
+    setItemType,
+    setParent,
+  } = useGlobalState();
   var [passwordVisible, setPasswordVisible] = createSignal(false);
   var [credentialsValid, setCredentialsValid] = createSignal(false);
   var [loginFailed, setLoginFailed] = createSignal(false);
@@ -84,6 +93,10 @@ export function Login(props) {
             }
           } else {
             setLoginFailed(false);
+            setItemsView("/");
+            setItemType("objective");
+            setParent([]);
+            navigate("/", { replace: true });
           }
         }}
         disabled={!credentialsValid()}
