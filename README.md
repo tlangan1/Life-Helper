@@ -10,6 +10,7 @@
     - [Enable caching using vite-plugin-pwa without PWA capabilities](#enable-caching-using-vite-plugin-pwa-without-pwa-capabilities)
   - [Login considerations](#login-considerations)
     - [Chrome bug with pattern attribute](#chrome-bug-with-pattern-attribute)
+  - [Item Search API](#item-search-api)
   - [Additional Software](#additional-software)
     - [Solid Drag and Drop Package](#solid-drag-and-drop-package)
 
@@ -102,6 +103,17 @@
   pattern="^(?!.*\\s).+$"
   ```
 - `ODDLY ENOUGH THIS BUG DOES NOT OCCUR WHEN USING LIVE SERVER`
+
+## Item Search API
+
+- The frontend supports database-backed search through this endpoint:
+  - `GET /get_items/search?params=<json-encoded search string and [entities].[columns] to query>`
+- Required request payload shape:
+  - `search_text`: string
+  - `search_locations`: array of arrays for each entity to search where each array contains an entity name followed by the columns in that entity to query.
+- Expected response shape:
+  - JSON array where each row includes at least [entity name], [column name], [item id] and [text that contains a match]
+- Handled by stored procedure p_search_items
 
 ## Additional Software
 

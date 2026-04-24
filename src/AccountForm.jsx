@@ -67,6 +67,7 @@ export function AccountForm() {
         <button
           class="action-button"
           onClick={(e) => sendMessage("Test message from Life Helper App")}
+          disabled={!isPageControlled()}
         >
           Send Message To Service Worker
         </button>

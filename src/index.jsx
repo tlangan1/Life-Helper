@@ -13,6 +13,7 @@ import { Account } from "./Account";
 import { Login } from "./Login";
 import { Register } from "./Register";
 import { ThoughtStack } from "./ThoughtStack";
+import { Search } from "./Search";
 import { NotFound } from "./NotFound";
 
 const root = document.getElementById("root");
@@ -43,6 +44,7 @@ render(() => {
           <Route path="/filters" component={Filters} />
           <Route path="/views" component={Views} />
           <Route path="/thought_stack" component={ThoughtStack} />
+          <Route path="/search" component={Search} />
           <Route path="*" component={NotFound} />
         </Router>
       </GlobalStateProvider>
