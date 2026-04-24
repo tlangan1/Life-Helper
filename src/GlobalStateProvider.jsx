@@ -38,6 +38,7 @@ export function GlobalStateProvider(props) {
   });
 
   var [itemsView, setItemsView] = createSignal("/");
+  var [searchText, setSearchText] = createSignal("");
 
   var [dataSource, setDataSource] = createSignal("unknown");
   var [toastMessage, setToastMessage] = createSignal("");
@@ -73,6 +74,8 @@ export function GlobalStateProvider(props) {
     // *** the default view "/" and the my-tasks view "/my-tasks-view".
     itemsView: itemsView,
     setItemsView: setItemsView,
+    searchText: searchText,
+    setSearchText: setSearchText,
     showToast: showToast,
   };
 

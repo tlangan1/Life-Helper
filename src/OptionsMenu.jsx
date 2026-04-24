@@ -8,6 +8,7 @@ export function OptionsMenu(props) {
       <a href="/filters">Filters</a>
       <Show when={loggedIn()}>
         <a href="/views">Views</a>
+        <a href="/search">Search</a>
       </Show>
     </div>
   );

@@ -53,13 +53,9 @@ export const registerServiceWorker = async (msg) => {
 
 export function sendMessage(msg) {
   logToConsole("starting sendMessage");
-  if (!navigator.serviceWorker.controller)
-    alert("No service worker is currently active");
-  else {
-    navigator.serviceWorker.controller.postMessage({
-      message: msg,
-    });
-  }
+  navigator.serviceWorker.controller.postMessage({
+    message: msg,
+  });
 }
 
 /* *** Event Listeners *** */
