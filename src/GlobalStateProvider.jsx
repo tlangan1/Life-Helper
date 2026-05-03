@@ -1,4 +1,11 @@
-import { createSignal, createContext, useContext, onCleanup } from "solid-js";
+import {
+  createSignal,
+  createContext,
+  useContext,
+  onCleanup,
+  createEffect,
+} from "solid-js";
+import { fetchUserWorkingStatusToday } from "./JS/helperFunctions";
 
 const GlobalStateContext = createContext();
 
@@ -7,6 +14,7 @@ console.log(
 );
 
 export function GlobalStateProvider(props) {
+  const USER_STATUS_POLL_MS = 30000;
   var dataServer = `https://${window.location.hostname}:${
     parseInt(window.location.port) + 1
   }`;
@@ -44,11 +52,31 @@ export function GlobalStateProvider(props) {
   var [toastMessage, setToastMessage] = createSignal("");
   var [toastType, setToastType] = createSignal("error");
   let toastTimerID;
+  let userStatusTimerID;
+  let userStatusRequestPending = false;
 
   fetchDataSource();
 
+  createEffect(() => {
+    var currentUserLoginId = user().user_login_id;
+
+    if (userStatusTimerID) {
+      clearInterval(userStatusTimerID);
+      userStatusTimerID = undefined;
+    }
+
+    if (!currentUserLoginId) return;
+
+    refreshUserWorkingStatus();
+    userStatusTimerID = setInterval(
+      refreshUserWorkingStatus,
+      USER_STATUS_POLL_MS,
+    );
+  });
+
   onCleanup(() => {
     if (toastTimerID) clearTimeout(toastTimerID);
+    if (userStatusTimerID) clearInterval(userStatusTimerID);
   });
 
   const globalState = {
@@ -128,6 +156,63 @@ export function GlobalStateProvider(props) {
     toastTimerID = setTimeout(() => {
       setToastMessage("");
     }, 5000);
+  }
+
+  async function refreshUserWorkingStatus() {
+    if (!user().user_login_id || userStatusRequestPending) return;
+
+    userStatusRequestPending = true;
+    try {
+      var response = await fetchUserWorkingStatusToday(dataServer, user);
+      if (!response.ok) return;
+
+      var responseData = await response.json();
+      var userPatch = normalizeUserStatusPatch(responseData);
+      if (Object.keys(userPatch).length == 0) return;
+
+      setUser((previousUser) => ({
+        ...previousUser,
+        ...userPatch,
+      }));
+    } catch (error) {
+      console.error("refreshUserWorkingStatus failed", error);
+    } finally {
+      userStatusRequestPending = false;
+    }
+  }
+
+  function normalizeUserStatusPatch(responseData) {
+    var firstRecord = Array.isArray(responseData)
+      ? responseData[0]
+      : responseData;
+    if (!firstRecord || typeof firstRecord != "object") return {};
+
+    var patch = {};
+
+    if (Object.hasOwn(firstRecord, "user_working")) {
+      patch.user_working =
+        firstRecord.user_working === true ||
+        firstRecord.user_working === 1 ||
+        firstRecord.user_working === "1" ||
+        firstRecord.user_working === "true";
+    }
+
+    if (Object.hasOwn(firstRecord, "elapsed_work_time")) {
+      var elapsedHours = Number(firstRecord.elapsed_work_time);
+      if (!Number.isNaN(elapsedHours)) patch.elapsed_work_time = elapsedHours;
+    }
+
+    if (
+      !Object.hasOwn(patch, "elapsed_work_time") &&
+      Object.hasOwn(firstRecord, "elapsed_daily_work_time")
+    ) {
+      var elapsedDailyHours = Number(firstRecord.elapsed_daily_work_time);
+      if (!Number.isNaN(elapsedDailyHours)) {
+        patch.elapsed_work_time = elapsedDailyHours;
+      }
+    }
+
+    return patch;
   }
 }
 
