@@ -40,20 +40,11 @@ export function childItemType(parentType) {
 }
 
 export async function login(sentData, setUser, dataServer) {
-  //   var sentData = {
-  //     user_name: loginUserID.value,
-  //     password: loginPassword.value,
-  //   };
-
   var result = await affectItem("check", "user_login", sentData, dataServer);
 
   var returnedData = result.data;
 
   if (result.success && returnedData) {
-    returnedData.user_working == "true"
-      ? (returnedData.user_working = true)
-      : (returnedData.user_working = false);
-
     if (returnedData.success) {
       setUser(returnedData);
     }
@@ -62,15 +53,14 @@ export async function login(sentData, setUser, dataServer) {
   return result;
 }
 
-/* *** This function is never really used in that it is called *** */
-/* *** on the click event of the icon but the data is not used *** */
-export function fetchUserElapsedDailyWorkTime(user_login_id) {
-  var data = {
-    user_login_id: user_login_id,
+export async function fetchUserWorkingStatusToday(dataServer, user) {
+  var searchParams = {
+    user_login_id: user().user_login_id,
   };
 
-  var returnedData = affectItem("get", "user_daily_work_time", data);
-  return returnedData;
+  return await fetch(
+    `${dataServer}/get_items/user_working_status_today?params=${JSON.stringify(searchParams)}`,
+  );
 }
 
 export async function affectItem(action, itemType, payload, dataServer, user) {

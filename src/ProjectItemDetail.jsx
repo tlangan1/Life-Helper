@@ -242,27 +242,7 @@ export function ProjectItemDetail(props) {
         var updatedItem = await fetchItemDetails();
         props.setItem(updatedItem);
       }
-      var property_name = "user_working";
-      var property_value = user().user_working;
-      switch (updateType) {
-        case "start":
-          property_value = true;
-          break;
-        case "pause":
-          property_value = false;
-          break;
-        case "resume":
-          property_value = true;
-          break;
-        case "complete":
-          property_value = false;
-          break;
-        case "cancel":
-          break;
-        default:
-          break;
-      }
-      setUser(updateUser(property_name, property_value));
+      setUser(updateUser(result.data.returned_result_set[0]));
     } else {
       showToast(result.error);
       target.checked = updateType == "resume" ? true : false;
@@ -333,9 +313,8 @@ export function ProjectItemDetail(props) {
     );
   }
 
-  function updateUser(property_name, property_value) {
-    var new_user = { ...user() };
-    new_user[property_name] = property_value;
+  function updateUser(user_properties) {
+    var new_user = { ...user(), ...(user_properties || {}) };
     return new_user;
   }
 }

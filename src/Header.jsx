@@ -1,9 +1,6 @@
 import { useGlobalState } from "./GlobalStateProvider";
-import { createEffect, createSignal } from "solid-js";
 import { AccountMenu } from "./AccountMenu";
 import { OptionsMenu } from "./OptionsMenu";
-
-import { fetchUserElapsedDailyWorkTime } from "./JS/helperFunctions.js";
 
 export function Header(props) {
   var {
@@ -55,15 +52,8 @@ export function Header(props) {
                       ? "You are currently working on a task"
                       : "You are NOT currently working on a task"
                   }
-                  onClick={() =>
-                    fetchUserElapsedDailyWorkTime(user().user_login_id)
-                  }
                 >
-                  <img
-                    src="working.svg"
-                    // onClick={take the user to the task they are working on}
-                    alt="Working"
-                  ></img>
+                  <img src="working.svg" alt="Working"></img>
                   <svg
                     width="1.5rem"
                     height="1.5rem"
