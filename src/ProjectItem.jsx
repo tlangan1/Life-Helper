@@ -4,15 +4,15 @@ import { createSignal } from "solid-js";
 
 import {
   childItemType,
-  logToConsole,
   capitalizeFirstLetter,
+  isEmptyObject,
 } from "./JS/helperFunctions";
 
 import { useGlobalState } from "./GlobalStateProvider";
 import { ProjectItemDetail } from "./ProjectItemDetail";
 
 export function ProjectItem(props) {
-  var { mode, itemType, setItemType, toggleRefreshData } = useGlobalState();
+  var { itemType, setItemType, toggleRefreshData, user } = useGlobalState();
   var [item, setItem] = createSignal(Object.assign({}, props.item));
 
   //   logToConsole(`In ProjectItem rendering item with name ${item().item_name}`);
@@ -37,9 +37,12 @@ export function ProjectItem(props) {
             started: item().started_dtm,
             canceled: item().canceled_dtm,
             paused: item().paused_dtm,
+            owned: isEmptyObject(user())
+              ? false
+              : user().user_login_id == item().user_login_id,
           }}
         >
-          {item().item_name} ({item().item_id})
+          {item().item_name} ({item().item_id}, parent goal: {item().goal_id})
         </label>
 
         {itemType() != "task" ? (

@@ -49,6 +49,10 @@ button.children:hover {
   padding: 0.5rem;
 }
 
+.owned.started:not(.paused) {
+  color: green;
+}
+
 /* This is useful */
 /* If the item.started_dtm is true, then the class "started" is added to the div */
 /* and the main label is bolded */
