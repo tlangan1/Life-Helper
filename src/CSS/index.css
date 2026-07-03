@@ -49,13 +49,19 @@ textarea {
   white-space: nowrap;
 }
 
+header.main-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
 nav.nav-using-flex {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
   padding: 4px;
-  background-color: var(--secondary-color);
+  background-color: var(--primary-background-color);
   border-bottom: 1px solid #e6e6e6;
   margin-bottom: 1rem;
 }
