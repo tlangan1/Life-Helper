@@ -19,6 +19,7 @@ export function Header(props) {
       <header
         classList={{
           "not-production": dataSource() == "prod" ? false : true,
+          "main-header": true,
         }}
       >
         <nav class="nav-using-flex">
