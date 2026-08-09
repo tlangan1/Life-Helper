@@ -18,7 +18,7 @@ export function Header(props) {
     <>
       <header
         classList={{
-          "not-production": dataSource() == "prod" ? false : true,
+          "not-production": dataSource() == "life_helper_prod" ? false : true,
           "main-header": true,
         }}
       >
