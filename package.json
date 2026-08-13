@@ -4,10 +4,11 @@
   "description": "Multi-user objective/goal/task management app",
   "scripts": {
     "start": "vite",
-    "dev": "vite --host",
-    "preview": "vite preview --host",
+    "dev": "vite --host --port 3000",
+    "prod": "vite --host --port 3002",
+    "preview": "vite preview --host --port 3002",
     "build": "vite build",
-    "serve": "vite preview",
+    "serve": "vite preview --port 3002",
     "test": "vitest run",
     "test:ui": "vitest --ui",
     "test:watch": "vitest"
